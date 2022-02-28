@@ -5,25 +5,22 @@ import Head from 'next/head';
 import { Component, lazy, Suspense } from 'react';
 const Hero = dynamic(() => import('../components/hero'), { ssr: false });
 
-class ErrorBoundary extends Component {
-    constructor(props) {
+class ErrorBoundary extends Component<any, any> {
+    constructor(props: any) {
         super(props);
         this.state = { hasError: false };
     }
 
-    static getDerivedStateFromError(error) {
-        // Zaktualizuj stan, aby następny render pokazał zastępcze UI.
+    static getDerivedStateFromError(error: any) {
         return { hasError: true };
     }
 
-    componentDidCatch(error, errorInfo) {
-        // Możesz także zalogować błąd do zewnętrznego serwisu raportowania błędów
-        console.log(error, errorInfo);
+    componentDidCatch(error: any, errorInfo: any) {
+        console.error(error, errorInfo);
     }
 
     render() {
         if (this.state.hasError) {
-            // Możesz wyrenderować dowolny interfejs zastępczy.
             return <h1>Something went wrong.</h1>;
         }
 

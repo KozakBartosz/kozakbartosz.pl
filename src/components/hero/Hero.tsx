@@ -1,25 +1,91 @@
 import { Canvas, extend, useFrame, useThree } from '@react-three/fiber';
 import { Physics, Debug, Triplet } from '@react-three/cannon';
-import { Effects, OrbitControls, useGLTF } from '@react-three/drei';
+import { Effects, OrbitControls, useCamera, useGLTF } from '@react-three/drei';
 import { useMemo, useState } from 'react';
 import { Plane } from './Plane';
 import { Cone } from './Cone';
 import { Bydlak } from './Bydlak';
 import { UnrealBloomPass } from 'three/examples/jsm/postprocessing/UnrealBloomPass';
-import { Vector2 } from 'three';
+import { Vector2, Vector3, Vector4 } from 'three';
 import { PostEffects } from '../PostEffects';
 
 function createArray(size: number, shift: number) {
-    return new Array(size).fill(null).map((_, index) => index + shift);
+    return new Array(size)
+        .fill(null)
+        .map((_, index) => index + shift)
+        .filter((el) => !(Math.abs(el) < 2));
 }
-const rubish = createArray(21, -10);
+// const rubish = createArray(21, -10);
+const rubish = createArray(51, -25);
 
-extend({
-    UnrealBloomPass
-});
+const fragmentShader = `
+  varying vec3 Normal;
+  varying vec3 Position;
+  uniform vec3 Ka;
+  uniform vec3 Kd;
+  uniform vec3 Ks;
+  uniform vec4 LightPosition;
+  uniform vec3 LightIntensity;
+  uniform float Shininess;
+
+  vec3 phong() {
+    vec3 n = normalize(Normal);
+    vec3 s = normalize(vec3(LightPosition) - Position);
+    vec3 v = normalize(vec3(-Position));
+    vec3 r = reflect(-s, n);
+
+    vec3 ambient = Ka;
+    vec3 diffuse = Kd * max(dot(s, n), 0.0);
+    vec3 specular = Ks * pow(max(dot(r, v), 0.0), Shininess);
+
+    return LightIntensity * (ambient + diffuse + specular);
+  }
+
+  
+  void main() {
+    float ramp = (Position.x + 13.0) / 25.0;
+
+    vec3 left = vec3(0.0, 1.0, 0.6392);
+    vec3 right = vec3(0.0, 0.6392, 1.0);
+    gl_FragColor = vec4(mix(left, right, clamp(ramp, 0.0, 1.0) ), 1.0);
+
+    // gl_FragColor = vec4(ramp, ramp, ramp, 1.0);
+    
+
+}`;
+
+const vertexShader = `
+  varying vec3 Normal;
+  varying vec3 Position;
+  
+  void main() {
+    Normal = normalize(normalMatrix * normal);
+    Position = vec3(modelViewMatrix * vec4(position, 1.0));
+    gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+  }
+`;
+
+let timerGravity: any;
 
 export const Hero = () => {
     const [gravity, setGravity] = useState<Triplet>([0, -50, 0]);
+
+    const material = useMemo(
+        () => ({
+            uniforms: {
+                Ka: { value: new Vector3(1, 1, 1) },
+                Kd: { value: new Vector3(1, 1, 1) },
+                Ks: { value: new Vector3(1, 1, 1) },
+                LightIntensity: { value: new Vector4(0.5, 0.5, 0.5, 1.0) },
+                LightPosition: { value: new Vector4(0.0, 2000.0, 0.0, 1.0) },
+                Shininess: { value: 200.0 }
+            },
+            fragmentShader,
+            vertexShader
+        }),
+        []
+    );
+
     return (
         <div
             onPointerDown={(e) => {
@@ -30,16 +96,24 @@ export const Hero = () => {
                 ]);
             }}
             onPointerUp={(e) => {
-                setGravity([0, -50, 0]);
+                setGravity([0, 0, 0]);
+                clearTimeout(timerGravity);
+                timerGravity = setTimeout(() => {
+                    setGravity([0, -50, 0]);
+                }, 3000);
             }}
         >
             <Canvas
                 style={{ height: '100vh' }}
                 camera={{
-                    fov: 40,
+                    fov: 30,
                     near: 0.1,
                     far: 1000,
-                    position: [0, -2, 110]
+                    position: [0, 15, 150]
+                }}
+                gl={{
+                    powerPreference: 'high-performance',
+                    antialias: true
                 }}
             >
                 <color attach="background" args={[0, 0, 0]} />
@@ -47,39 +121,51 @@ export const Hero = () => {
                 <PostEffects />
 
                 <OrbitControls makeDefault />
+
                 <pointLight
-                    position={[10, 5, 10]}
-                    intensity={0.5}
+                    position={[10, 10, 10]}
+                    intensity={0.34}
                     color={0xaffbff}
                 />
                 <pointLight
-                    position={[-10, 5, -10]}
-                    intensity={0.5}
+                    position={[-10, 10, -10]}
+                    intensity={0.34}
                     color={0xaffbff}
                 />
                 <pointLight
                     position={[10, 25, -10]}
-                    intensity={0.5}
+                    intensity={0.34}
                     color={0xaffbff}
                 />
                 <pointLight
                     position={[-10, 25, 10]}
-                    intensity={0.5}
+                    intensity={0.34}
                     color={0xaffbff}
                 />
-                <fog attach="fog" color={0x050f0d} near={80} far={450} />
+                <fog
+                    attach="fog"
+                    color={0x050f0d}
+                    near={80 * 1}
+                    far={450 * 1}
+                />
                 {/* <fogExp2 color={0x26443f} attach="fog" density={0.009} /> */}
 
                 <Physics gravity={gravity}>
                     {/* <Debug color="red" scale={1.01}> */}
 
-                    <mesh
-                        position={[0, -13, -150]}
-                        rotation={[0, Math.PI * 2, 0]}
-                    >
+                    <mesh position={[0, 0, -150]} rotation={[0, 0, 0]}>
                         <planeGeometry args={[1000, 1000]} />
                         <meshPhysicalMaterial color={0x050f0d} />
                     </mesh>
+
+                    <Plane
+                        position={[-250, 0, 0]}
+                        rotation={[0, Math.PI / 2, 0]}
+                    />
+                    <Plane
+                        position={[250, 0, 0]}
+                        rotation={[0, -Math.PI / 2, 0]}
+                    />
                     <Plane position={[0, -13, 0]} />
 
                     {rubish.map((el) => {
@@ -97,10 +183,11 @@ export const Hero = () => {
                                     Math.random(),
                                     Math.random()
                                 ]}
+                                material={material}
                             />
                         );
                     })}
-                    <Bydlak />
+                    <Bydlak material={material} />
                     {/* </Debug> */}
                 </Physics>
             </Canvas>

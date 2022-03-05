@@ -1,32 +1,44 @@
-import { Canvas, extend, useThree } from '@react-three/fiber';
+import { Canvas, extend, useFrame, useThree } from '@react-three/fiber';
 import { Physics, Debug, Triplet } from '@react-three/cannon';
 import { useMemo, useState } from 'react';
 
-import { UnrealBloomPass } from 'three/examples/jsm/postprocessing/UnrealBloomPass';
-import { BokehPass } from 'three/examples/jsm/postprocessing/BokehPass';
 import { Vector2 } from 'three';
-import { Effects } from '@react-three/drei';
 
-extend({
-    UnrealBloomPass,
-    BokehPass
-});
-
-const params = { focus: 110, aperture: 0.0001, maxblur: 0.18 };
+import {
+    EffectComposer,
+    Bloom,
+    Vignette,
+    DepthOfField,
+    Noise
+} from '@react-three/postprocessing';
 
 export const PostEffects = () => {
+    console.log(Screen);
     const { scene, gl, size, camera } = useThree();
-    const aspect = useMemo(() => new Vector2(size.width, size.height), [size]);
-    const BokehPass = 'bokehPass' as any;
+
+    // useFrame(() => {
+
+    //      camera.position.y += position[1] + Math.sin(time.current) * 0.4;
+    //     }
     return (
-        <Effects
-            multisamping={8} // Default, uses WebGL2 multisamping if available
-            renderIndex={1} // Default
-            disableGamma={false} // Default, would switch off the gamma-correction-pass`
-            disableRenderPass={false} // Default, would remove the first scene-render-pass
-        >
-            <BokehPass attachArray="passes" args={[scene, camera, params]} />
-            {/* <unrealBloomPass attachArray="passes" args={[aspect, 0, 0, 0]} /> */}
-        </Effects>
+        <EffectComposer>
+            <Vignette eskil={false} offset={0.1} darkness={1.1} />
+            <Bloom
+                intensity={10}
+                luminanceThreshold={0.005}
+                luminanceSmoothing={10}
+                width={400}
+                height={300}
+            />
+            {/* <Noise opacity={0.02} /> */}
+
+            {/* <DepthOfField
+                focusDistance={0.1}
+                focalLength={0.5}
+                bokehScale={55}
+                // height={1000}
+                // blur={10}
+            /> */}
+        </EffectComposer>
     );
 };

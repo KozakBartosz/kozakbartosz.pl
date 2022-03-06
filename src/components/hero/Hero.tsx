@@ -15,10 +15,10 @@ function createArray(size: number, shift: number) {
     return new Array(size)
         .fill(null)
         .map((_, index) => index + shift)
-        .filter((el) => !(Math.abs(el) < 2));
+        .filter((el) => !(Math.abs(el) < 1));
 }
-// const rubish = createArray(21, -10);
-const rubish = createArray(51, -25);
+const rubish = createArray(31, -15);
+// const rubish = createArray(51, -25);
 
 let timerGravity: any;
 
@@ -77,6 +77,7 @@ export const Hero = () => {
                 {/* <color attach="background" args={}/> */}
 
                 <PostEffects />
+
                 <CameraEffects />
 
                 {/* <OrbitControls makeDefault /> */}
@@ -97,17 +98,21 @@ export const Hero = () => {
 
                     <Plane position={[0, -13, 0]} />
 
+                    <Plane
+                        position={[0, -13, 100]}
+                        rotation={[0, Math.PI, 0]}
+                    />
+
                     <Mirror />
 
                     {rubish.map((el) => {
-                        const offset = 21 * 8;
                         return (
                             <Cone
                                 key={el}
                                 position={[
-                                    Math.sin(el) * 15 + el * 8,
-                                    el * 8 + offset + Math.tan(el),
-                                    Math.tan(el) * 15 - 100
+                                    Math.sin(el) * 10 + el * 8,
+                                    10 + Math.tan(el) * 5 + 80,
+                                    Math.tan(el) * 15 - 80
                                 ]}
                                 rotation={[
                                     Math.random(),

@@ -9,7 +9,8 @@ export const CameraEffects = () => {
     useEffect(() => {
         document.body.addEventListener('pointermove', (e) => {
             move.current.x = (e.clientX - window.innerWidth / 2) / 50;
-            move.current.y = 15 + (e.clientY - window.innerHeight / 2) / 70;
+            move.current.y =
+                15 + ((e.clientY - window.innerHeight / 2) / 70) * -1;
             // camera.lookAt(0, 0, 0);
         });
         camera.position.z = 25;

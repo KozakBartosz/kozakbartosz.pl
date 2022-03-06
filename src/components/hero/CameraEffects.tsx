@@ -24,7 +24,11 @@ export const CameraEffects = () => {
         move.current.scroll = window.scrollY;
     }, []);
     useFrame(() => {
-        camera.position.z += (150 - camera.position.z) * 0.005;
+        if (window.innerWidth > window.innerHeight) {
+            camera.position.z += (150 - camera.position.z) * 0.005;
+        } else {
+            camera.position.z += (200 - camera.position.z) * 0.005;
+        }
         camera.position.x += (move.current.x - camera.position.x) * 0.05;
         camera.position.y +=
             (move.current.y - move.current.scroll / 30 - camera.position.y) *

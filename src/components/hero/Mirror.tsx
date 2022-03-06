@@ -13,7 +13,7 @@ export const Mirror = () => {
             minDepthThreshold={0.1}
             maxDepthThreshold={3}
             depthScale={3}
-            position={[0, -13, -200 + 100]}
+            position={[0, -13, -150 + 100]}
         >
             {(Material, props) => (
                 <Material

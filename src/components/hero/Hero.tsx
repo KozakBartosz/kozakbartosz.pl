@@ -199,6 +199,12 @@ const Logo = styled.h1`
     /* border: 1px solid red; */
     text-align: center;
     font-size: 70px;
+    @media (max-width: 800px) {
+        font-size: 60px;
+    }
+    @media (max-width: 600px) {
+        font-size: 40px;
+    }
     font-weight: 300;
     background: linear-gradient(
         90deg,

@@ -1,7 +1,7 @@
 import { Triplet, useCylinder } from '@react-three/cannon';
 import { useGLTF } from '@react-three/drei';
 import { useFrame } from '@react-three/fiber';
-import { useEffect } from 'react';
+import { useEffect, useRef, useState } from 'react';
 
 interface Props {
     position?: Triplet;
@@ -18,6 +18,10 @@ export function Cone({ material, ...props }: Props) {
         args: [0.01, a / 2, 0.816 * a, 3]
         // type: 'Static'
     }));
+
+    const [color, setColor] = useState(0);
+
+    const poke = useRef({ x: 0, y: 0 });
 
     const { nodes, materials } = useGLTF('/models/cone.glb');
 
@@ -55,6 +59,13 @@ export function Cone({ material, ...props }: Props) {
                     (Math.random() - 0.5) * 2000
                 ]);
 
+                setColor(1);
+
+                // console.log('e');
+            }}
+            onPointerLeave={(e) => {
+                setColor(0);
+
                 // console.log('loool');
             }}
         >
@@ -68,11 +79,15 @@ export function Cone({ material, ...props }: Props) {
             </mesh>
             <mesh castShadow receiveShadow scale={[0.95, 0.95, 0.95]}>
                 <cylinderGeometry args={[0, a / 2, 0.816 * a, 3]} />
-                <meshPhysicalMaterial
-                    color={0x0e1211}
-                    reflectivity={1}
-                    flatShading
-                />
+                {color === 1 ? (
+                    <shaderMaterial attach="material" {...material} />
+                ) : (
+                    <meshPhysicalMaterial
+                        color={0x0e1211}
+                        reflectivity={1}
+                        flatShading
+                    />
+                )}
             </mesh>
             {/* <shaderMaterial attach="material" {...material} />; */}
         </group>

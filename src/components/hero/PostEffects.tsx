@@ -27,11 +27,29 @@ export const PostEffects = () => {
                 intensity={10}
                 luminanceThreshold={0.005}
                 luminanceSmoothing={10}
-                width={400}
-                height={300}
             />
+            <Bloom
+                intensity={0.3}
+                luminanceThreshold={0.05}
+                luminanceSmoothing={2}
+                width={200}
+                height={200}
+            />
+            {/* <Bloom
+                intensity={0.1}
+                luminanceThreshold={0.05}
+                luminanceSmoothing={1}
+                width={1000}
+                height={100}
+            />
+            <Bloom
+                intensity={0.1}
+                luminanceThreshold={0.05}
+                luminanceSmoothing={1}
+                width={200}
+                height={1000}
+            /> */}
             {/* <Noise opacity={0.02} /> */}
-
             {/* <DepthOfField
                 focusDistance={0.1}
                 focalLength={0.5}

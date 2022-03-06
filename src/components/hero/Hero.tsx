@@ -1,13 +1,20 @@
 import { Canvas, extend, useFrame, useThree } from '@react-three/fiber';
 import { Physics, Debug, Triplet } from '@react-three/cannon';
-import { Effects, OrbitControls, useCamera, useGLTF } from '@react-three/drei';
+import {
+    Effects,
+    OrbitControls,
+    Reflector,
+    useCamera,
+    useGLTF
+} from '@react-three/drei';
 import { useMemo, useState } from 'react';
 import { Plane } from './Plane';
 import { Cone } from './Cone';
 import { Bydlak } from './Bydlak';
 import { UnrealBloomPass } from 'three/examples/jsm/postprocessing/UnrealBloomPass';
 import { Vector2, Vector3, Vector4 } from 'three';
-import { PostEffects } from '../PostEffects';
+import { PostEffects } from './PostEffects';
+import { CameraEffects } from './CameraEffects';
 
 function createArray(size: number, shift: number) {
     return new Array(size)
@@ -115,41 +122,23 @@ export const Hero = () => {
                     powerPreference: 'high-performance',
                     antialias: true
                 }}
+                onPointerMove={(e) => {
+                    e.clientX - window.innerWidth / 2;
+                }}
             >
-                <color attach="background" args={[0, 0, 0]} />
+                {/* <color attach="background" args={}/> */}
 
                 <PostEffects />
+                <CameraEffects />
 
                 <OrbitControls makeDefault />
-
                 <pointLight
-                    position={[10, 10, 10]}
-                    intensity={0.34}
+                    position={[0, 10, -0]}
+                    intensity={0.8}
                     color={0xaffbff}
                 />
-                <pointLight
-                    position={[-10, 10, -10]}
-                    intensity={0.34}
-                    color={0xaffbff}
-                />
-                <pointLight
-                    position={[10, 25, -10]}
-                    intensity={0.34}
-                    color={0xaffbff}
-                />
-                <pointLight
-                    position={[-10, 25, 10]}
-                    intensity={0.34}
-                    color={0xaffbff}
-                />
-                <fog
-                    attach="fog"
-                    color={0x050f0d}
-                    near={80 * 1}
-                    far={450 * 1}
-                />
+                <fog attach="fog" color={0x050f0d} near={50} far={350} />
                 {/* <fogExp2 color={0x26443f} attach="fog" density={0.009} /> */}
-
                 <Physics gravity={gravity}>
                     {/* <Debug color="red" scale={1.01}> */}
 
@@ -158,15 +147,39 @@ export const Hero = () => {
                         <meshPhysicalMaterial color={0x050f0d} />
                     </mesh>
 
-                    <Plane
+                    {/* <Plane
                         position={[-250, 0, 0]}
                         rotation={[0, Math.PI / 2, 0]}
                     />
                     <Plane
                         position={[250, 0, 0]}
                         rotation={[0, -Math.PI / 2, 0]}
-                    />
+                    />*/}
+
                     <Plane position={[0, -13, 0]} />
+
+                    <Reflector
+                        blur={[512, 512]} // Blur ground reflections (width, heigt), 0 skips blur
+                        mixBlur={10} // How much blur mixes with surface roughness
+                        mixStrength={0.1} // Strength of the reflections
+                        resolution={2048} // Off-buffer resolution, lower=faster, higher=better quality
+                        args={[1024, 1024]} // PlaneBufferGeometry arguments
+                        rotation={[-Math.PI / 2, 0, 0]}
+                        mirror={1} // Mirror environment, 0 = texture colors, 1 = pick up env colors
+                        minDepthThreshold={0.1}
+                        maxDepthThreshold={3}
+                        depthScale={3}
+                        position={[0, -13, -512 + 100]}
+                    >
+                        {(Material, props) => (
+                            <Material
+                                // color={0x050f0d}
+                                metalness={1}
+                                roughness={1}
+                                {...props}
+                            />
+                        )}
+                    </Reflector>
 
                     {rubish.map((el) => {
                         const offset = 21 * 8;

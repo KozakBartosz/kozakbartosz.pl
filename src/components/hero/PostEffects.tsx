@@ -30,10 +30,10 @@ export const PostEffects = () => {
             />
             <Bloom
                 intensity={0.3}
-                luminanceThreshold={0.05}
+                luminanceThreshold={0}
                 luminanceSmoothing={2}
-                width={200}
-                height={200}
+                width={300}
+                height={300}
             />
             {/* <Bloom
                 intensity={0.1}

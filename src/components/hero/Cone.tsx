@@ -13,7 +13,7 @@ interface Props {
 export function Cone({ material, ...props }: Props) {
     const a = 8;
     const [ref, api] = useCylinder(() => ({
-        mass: 1,
+        mass: 2,
         ...props,
         args: [0.01, a / 2, 0.816 * a, 3]
         // type: 'Static'
@@ -28,6 +28,7 @@ export function Cone({ material, ...props }: Props) {
             if (x > loopRnage) api.position.set(-loopRnage + 2, y, 0);
             if (x < -loopRnage) api.position.set(loopRnage - 2, y, 0);
             if (z < -130) api.applyImpulse([0, 0, 5], [0, 0, 0]);
+            if (y > 100) api.applyImpulse([0, -10, 0], [0, 0, 0]);
         });
     }, []);
 
@@ -53,7 +54,8 @@ export function Cone({ material, ...props }: Props) {
                     (Math.random() - 0.5) * 2000,
                     (Math.random() - 0.5) * 2000
                 ]);
-                console.log('loool');
+
+                // console.log('loool');
             }}
         >
             <mesh

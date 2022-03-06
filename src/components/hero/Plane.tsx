@@ -16,8 +16,8 @@ export function Plane(props: Props) {
         <mesh ref={ref}>
             <planeGeometry args={[1000, 1000]} />
             <meshPhysicalMaterial
-                color={0x050f0d}
-                specularColor={0x050f0d}
+                color={0x090f0e}
+                specularColor={0x090f0e}
                 specularIntensity={0.3}
             />
         </mesh>

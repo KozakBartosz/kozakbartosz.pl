@@ -2,7 +2,7 @@ import { Canvas, extend, useFrame, useThree } from '@react-three/fiber';
 import { Physics, Debug, Triplet } from '@react-three/cannon';
 import { useMemo, useState } from 'react';
 
-import { Vector2 } from 'three';
+import { TextureLoader, Vector2 } from 'three';
 
 import {
     EffectComposer,
@@ -21,8 +21,8 @@ export const PostEffects = () => {
     //      camera.position.y += position[1] + Math.sin(time.current) * 0.4;
     //     }
     return (
-        <EffectComposer>
-            <Vignette eskil={false} offset={0.1} darkness={1.1} />
+        <EffectComposer depthBuffer={true} autoClear={false}>
+            <Vignette eskil={false} offset={0.2} darkness={1.1} />
             <Bloom
                 intensity={10}
                 luminanceThreshold={0.005}
@@ -49,11 +49,11 @@ export const PostEffects = () => {
                 width={200}
                 height={1000}
             /> */}
-            {/* <Noise opacity={0.02} /> */}
+            <Noise opacity={0.02} />
             {/* <DepthOfField
                 focusDistance={0.1}
                 focalLength={0.5}
-                bokehScale={55}
+                bokehScale={10}
                 // height={1000}
                 // blur={10}
             /> */}

@@ -64,6 +64,7 @@ const Button = styled.a`
     background: #000;
     color: white;
     border: 2px solid white;
+    margin: 400px auto;
 `;
 
 export default Home;

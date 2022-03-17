@@ -2,7 +2,7 @@ import { Canvas, extend, useFrame, useThree } from '@react-three/fiber';
 import { Physics, Debug, Triplet } from '@react-three/cannon';
 import { useMemo, useState } from 'react';
 
-import { TextureLoader, Vector2 } from 'three';
+import THREE, { TextureLoader, Vector2 } from 'three';
 
 import {
     EffectComposer,
@@ -13,7 +13,6 @@ import {
 } from '@react-three/postprocessing';
 
 export const PostEffects = () => {
-    console.log(Screen);
     const { scene, gl, size, camera } = useThree();
 
     // useFrame(() => {
@@ -23,18 +22,18 @@ export const PostEffects = () => {
     return (
         <EffectComposer depthBuffer={true} autoClear={false}>
             <Vignette eskil={false} offset={0.2} darkness={1.1} />
-            <Bloom
+            {/* <Bloom
                 intensity={10}
                 luminanceThreshold={0.005}
                 luminanceSmoothing={10}
-            />
-            <Bloom
+            /> */}
+            {/* <Bloom
                 intensity={0.3}
                 luminanceThreshold={0}
                 luminanceSmoothing={2}
                 width={300}
                 height={300}
-            />
+            /> */}
             {/* <Bloom
                 intensity={0.1}
                 luminanceThreshold={0.05}

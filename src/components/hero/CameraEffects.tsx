@@ -11,7 +11,6 @@ export const CameraEffects = () => {
             move.current.x = (e.clientX - window.innerWidth / 2) / 50;
             move.current.y =
                 15 + ((e.clientY - window.innerHeight / 2) / 70) * -1;
-            // camera.lookAt(0, 0, 0);
         });
         document.addEventListener(
             'scroll',
@@ -24,17 +23,21 @@ export const CameraEffects = () => {
         move.current.scroll = window.scrollY;
     }, []);
     useFrame(() => {
+        let deley = 0.005;
         if (window.innerWidth > window.innerHeight) {
-            camera.position.z += (150 - camera.position.z) * 0.005;
+            deley = 0.005;
+            camera.position.z += (150 - camera.position.z) * deley;
         } else {
-            camera.position.z += (200 - camera.position.z) * 0.005;
+            deley = 0.01;
+            camera.position.z += (200 - camera.position.z) * deley;
         }
-        camera.position.x += (move.current.x - camera.position.x) * 0.05;
+        camera.position.x += (move.current.x - camera.position.x) * deley * 20;
         camera.position.y +=
             (move.current.y - move.current.scroll / 30 - camera.position.y) *
-            0.05;
-        if (camera.position.y < -12) camera.position.y = -12;
-        camera.lookAt(0, 0, 0);
+            deley *
+            20;
+        // if (camera.position.y < -12) camera.position.y = -12;
+        camera.lookAt(0, move.current.scroll / 30, 0);
     });
     return null;
 };

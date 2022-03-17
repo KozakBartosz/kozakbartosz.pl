@@ -2,15 +2,19 @@ import { Triplet, useCylinder } from '@react-three/cannon';
 import { useGLTF } from '@react-three/drei';
 import { useFrame } from '@react-three/fiber';
 import { useEffect, useRef, useState } from 'react';
+import { Vector3 } from 'three';
 
 interface Props {
     position?: Triplet;
     scale?: Triplet;
     rotation?: Triplet;
     material?: any;
+    force: Triplet;
 }
 
-export function Cone({ material, ...props }: Props) {
+var localForce = [0, 0, 0] as Triplet;
+
+export function Cone({ force, material, ...props }: Props) {
     const a = 8;
     const [ref, api] = useCylinder(() => ({
         mass: 2,
@@ -21,11 +25,13 @@ export function Cone({ material, ...props }: Props) {
 
     const [color, setColor] = useState(0);
 
-    const poke = useRef({ x: 0, y: 0 });
-
     const { nodes, materials } = useGLTF('/models/cone.glb');
 
     const loopRnage = 130;
+    useEffect(() => {
+        localForce = force;
+    }, [force]);
+
     useEffect(() => {
         api.velocity.set(0, 0, 40);
         api.position.subscribe(([x, y, z]) => {
@@ -33,10 +39,23 @@ export function Cone({ material, ...props }: Props) {
             if (x < -loopRnage) api.position.set(loopRnage - 2, y, 0);
             if (z < -130) api.applyImpulse([0, 0, 5], [0, 0, 0]);
             if (y > 100) api.applyImpulse([0, -10, 0], [0, 0, 0]);
+            if (localForce[0] != 0 && localForce[1] != 0) {
+                let v2 = new Vector3(localForce[0], localForce[1], 0),
+                    v1 = new Vector3(x, y, z),
+                    direction = new Vector3();
+                direction.subVectors(v2, v1);
+                let distance = v1.distanceTo(v2);
+                if (distance < 100 && distance > 3) {
+                    // console.log(distance, 100 - distance);
+                    api.velocity.set(
+                        (direction.x * (100 - distance)) / 10,
+                        (direction.y * (100 - distance)) / 10,
+                        (direction.z * (100 - distance)) / 10
+                    );
+                }
+            }
         });
     }, []);
-
-    useFrame(() => {});
 
     return (
         <group
@@ -60,13 +79,9 @@ export function Cone({ material, ...props }: Props) {
                 ]);
 
                 setColor(1);
-
-                // console.log('e');
             }}
             onPointerLeave={(e) => {
                 setColor(0);
-
-                // console.log('loool');
             }}
         >
             <mesh

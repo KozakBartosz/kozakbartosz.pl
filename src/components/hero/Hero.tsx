@@ -21,10 +21,14 @@ function createArray(size: number, shift: number) {
 // const rubish = createArray(31, -15);
 const rubish = createArray(41, -20);
 
+const mode = 'gravitygun' as 'wind' | 'gravitygun';
+
 let timerGravity: any;
 
 export const Hero = () => {
+    const [modeActive, setModeActive] = useState(false);
     const [gravity, setGravity] = useState<Triplet>([0, -50, 0]);
+    const [gravitygunVec, setGravitygunVec] = useState<Triplet>([0, 0, 0]);
 
     const material = useMemo(
         () => ({
@@ -57,30 +61,75 @@ export const Hero = () => {
             setTimeout(() => {
                 setGravity([-0.1, -0.2, 0]);
             }, 700);
-
             setTimeout(() => {
                 setGravity([0, -0.2, 0]);
             }, 5000);
         }, 4000);
+        // function handleOrientation(event: any) {
+        //     clearTimeout(timerGravity);
+        //     timerGravity = setTimeout(() => {
+        //         var x = event.alpha;
+        //         var y = event.beta;
+        //         var z = event.gamma;
+        //         setGravity([x / -4, y / -2, 0]);
+        //         console.log('deviceorientation', [x, y, z]);
+        //         // 10 is half the size of the ball
+        //         // It center the positioning point to the center of the ball
+        //         // ball.style.top = (maxY * y) / 180 - 10 + 'px';
+        //         // ball.style.left = (maxX * x) / 180 - 10 + 'px';
+        //         // console.log('deviceorientation', event);
+        //     }, 100);
+        // }
+        // window.addEventListener('deviceorientation', handleOrientation, {
+        //     passive: true
+        // });
+        // setGravity([0, 90, 0]);
+
+        // setInterval(() => {
+        //     setGravitygunVec([0, 0, 0]);
+        // }, 10);
     }, []);
 
     return (
         <Container
             id="Hero"
-            // onPointerDown={(e) => {
-            //     setGravity([
-            //         (e.clientX - window.innerWidth / 2) / 3,
-            //         (e.clientY - window.innerHeight / 2) / -3,
-            //         0
-            //     ]);
-            // }}
-            // onPointerUp={(e) => {
-            //     setGravity([0, 0, 0]);
-            //     clearTimeout(timerGravity);
-            //     timerGravity = setTimeout(() => {
-            //         setGravity([0, -20, 0]);
-            //     }, 3000);
-            // }}
+            onPointerDown={(e) => {
+                setModeActive(true);
+                if (mode == 'wind') {
+                    setGravity([
+                        (e.clientX - window.innerWidth / 2) / 3,
+                        (e.clientY - window.innerHeight / 2) / -3,
+                        0
+                    ]);
+                } else if (mode == 'gravitygun' && modeActive) {
+                    setGravitygunVec([
+                        (e.clientX - window.innerWidth / 2) / 20,
+                        (e.clientY - window.innerHeight / 2) / -20,
+                        0
+                    ]);
+                }
+            }}
+            onPointerMove={(e) => {
+                if (mode == 'gravitygun' && modeActive) {
+                    setGravitygunVec([
+                        (e.clientX - window.innerWidth / 2) / 20,
+                        (e.clientY - window.innerHeight / 2) / -20,
+                        0
+                    ]);
+                } else {
+                    setGravitygunVec([0, 0, 0]);
+                }
+            }}
+            onPointerUp={(e) => {
+                setModeActive(false);
+                if (mode == 'wind') {
+                    setGravity([0, 0, 0]);
+                    clearTimeout(timerGravity);
+                    timerGravity = setTimeout(() => {
+                        setGravity([0, -0.2, 0]);
+                    }, 3000);
+                }
+            }}
         >
             <Canvas
                 style={{
@@ -147,6 +196,7 @@ export const Hero = () => {
                                     Math.random()
                                 ]}
                                 material={material}
+                                force={gravitygunVec}
                             />
                         );
                     })}
@@ -154,6 +204,7 @@ export const Hero = () => {
                         position={[-10, 20, 30]}
                         rotation={[Math.random(), Math.random(), Math.random()]}
                         material={material}
+                        force={gravitygunVec}
                     />
                     <Bydlak material={material} />
                     {/* </Debug> */}

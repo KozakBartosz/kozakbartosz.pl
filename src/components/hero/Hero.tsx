@@ -21,14 +21,11 @@ function createArray(size: number, shift: number) {
 // const rubish = createArray(31, -15);
 const rubish = createArray(41, -20);
 
-const mode = 'gravitygun' as 'wind' | 'gravitygun';
-
 let timerGravity: any;
 
 export const Hero = () => {
     const [modeActive, setModeActive] = useState(false);
     const [gravity, setGravity] = useState<Triplet>([0, -50, 0]);
-    const [gravitygunVec, setGravitygunVec] = useState<Triplet>([0, 0, 0]);
 
     const material = useMemo(
         () => ({
@@ -88,6 +85,14 @@ export const Hero = () => {
         // setInterval(() => {
         //     setGravitygunVec([0, 0, 0]);
         // }, 10);
+
+        document.body.onpointerup = () => {
+            setModeActive(false);
+        };
+
+        document.body.addEventListener('mouseleave', () => {
+            setModeActive(false);
+        });
     }, []);
 
     return (
@@ -95,41 +100,16 @@ export const Hero = () => {
             id="Hero"
             onPointerDown={(e) => {
                 setModeActive(true);
-                if (mode == 'wind') {
-                    setGravity([
-                        (e.clientX - window.innerWidth / 2) / 3,
-                        (e.clientY - window.innerHeight / 2) / -3,
-                        0
-                    ]);
-                } else if (mode == 'gravitygun' && modeActive) {
-                    setGravitygunVec([
-                        (e.clientX - window.innerWidth / 2) / 20,
-                        (e.clientY - window.innerHeight / 2) / -20,
-                        0
-                    ]);
-                }
             }}
-            onPointerMove={(e) => {
-                if (mode == 'gravitygun' && modeActive) {
-                    setGravitygunVec([
-                        (e.clientX - window.innerWidth / 2) / 20,
-                        (e.clientY - window.innerHeight / 2) / -20,
-                        0
-                    ]);
-                } else {
-                    setGravitygunVec([0, 0, 0]);
-                }
-            }}
-            onPointerUp={(e) => {
-                setModeActive(false);
-                if (mode == 'wind') {
-                    setGravity([0, 0, 0]);
-                    clearTimeout(timerGravity);
-                    timerGravity = setTimeout(() => {
-                        setGravity([0, -0.2, 0]);
-                    }, 3000);
-                }
-            }}
+            // onPointerMove={(e) => {
+            //     if (mode == 'gravitygun' && modeActive) {
+            //         setGravitygunVec([
+            //             (e.clientX - window.innerWidth / 2) / 20,
+            //             (e.clientY - window.innerHeight / 2) / -20,
+            //             0
+            //         ]);
+            //     }
+            // }}
         >
             <Canvas
                 style={{
@@ -148,13 +128,21 @@ export const Hero = () => {
                     antialias: true,
                     autoClear: false
                 }}
-                onPointerMove={(e) => {
-                    e.clientX - window.innerWidth / 2;
-                }}
+                // onPointerMove={(e) => {
+                //     if (mode == 'gravitygun') {
+                //         setGravitygunVec([
+                //             (e.clientX - window.innerWidth / 2) / 20,
+                //             (e.clientY - window.innerHeight / 2) / -20,
+                //             0
+                //         ]);
+                //     }
+                // }}
             >
                 <PostEffects />
 
                 <CameraEffects />
+
+                <Mirror />
 
                 {/* <OrbitControls makeDefault /> */}
 
@@ -167,7 +155,7 @@ export const Hero = () => {
                 <Physics gravity={gravity}>
                     {/* <Debug color="red" scale={1.01}> */}
 
-                    <mesh position={[0, 0, -150]} rotation={[0, 0, 0]}>
+                    <mesh position={[0, 0, -200]} rotation={[0, 0, 0]}>
                         <planeGeometry args={[1000, 1000]} />
                         <meshPhysicalMaterial color={0x090f0e} />
                     </mesh>
@@ -178,8 +166,6 @@ export const Hero = () => {
                         position={[0, -13, 100]}
                         rotation={[0, Math.PI, 0]}
                     />
-
-                    <Mirror />
 
                     {rubish.map((el) => {
                         return (
@@ -196,7 +182,7 @@ export const Hero = () => {
                                     Math.random()
                                 ]}
                                 material={material}
-                                force={gravitygunVec}
+                                force={modeActive}
                             />
                         );
                     })}
@@ -204,7 +190,7 @@ export const Hero = () => {
                         position={[-10, 20, 30]}
                         rotation={[Math.random(), Math.random(), Math.random()]}
                         material={material}
-                        force={gravitygunVec}
+                        force={modeActive}
                     />
                     <Bydlak material={material} />
                     {/* </Debug> */}

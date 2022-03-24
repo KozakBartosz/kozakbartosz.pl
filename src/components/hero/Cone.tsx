@@ -9,10 +9,8 @@ interface Props {
     scale?: Triplet;
     rotation?: Triplet;
     material?: any;
-    force: Triplet;
+    force: boolean;
 }
-
-var localForce = [0, 0, 0] as Triplet;
 
 export function Cone({ force, material, ...props }: Props) {
     const a = 8;
@@ -27,31 +25,56 @@ export function Cone({ force, material, ...props }: Props) {
 
     const { nodes, materials } = useGLTF('/models/cone.glb');
 
+    const localForceVec = useRef([0, 0, 0] as Triplet);
+    const localForce = useRef(false);
+
     const loopRnage = 130;
+
     useEffect(() => {
-        localForce = force;
+        localForce.current = force;
     }, [force]);
 
     useEffect(() => {
+        document.body.addEventListener('pointermove', (e) => {
+            if (localForce) {
+                localForceVec.current = [
+                    (e.clientX - window.innerWidth / 2) / 18,
+                    (e.clientY - window.innerHeight / 2) / -18,
+                    0
+                ];
+            }
+        });
+
         api.velocity.set(0, 0, 40);
         api.position.subscribe(([x, y, z]) => {
             if (x > loopRnage) api.position.set(-loopRnage + 2, y, 0);
             if (x < -loopRnage) api.position.set(loopRnage - 2, y, 0);
             if (z < -130) api.applyImpulse([0, 0, 5], [0, 0, 0]);
             if (y > 100) api.applyImpulse([0, -10, 0], [0, 0, 0]);
-            if (localForce[0] != 0 && localForce[1] != 0) {
-                let v2 = new Vector3(localForce[0], localForce[1], 0),
+            if (localForce.current) {
+                let v2 = new Vector3(
+                        localForceVec.current[0],
+                        localForceVec.current[1],
+                        0
+                    ),
                     v1 = new Vector3(x, y, z),
                     direction = new Vector3();
                 direction.subVectors(v2, v1);
                 let distance = v1.distanceTo(v2);
-                if (distance < 100 && distance > 3) {
-                    // console.log(distance, 100 - distance);
-                    api.velocity.set(
-                        (direction.x * (100 - distance)) / 10,
-                        (direction.y * (100 - distance)) / 10,
-                        (direction.z * (100 - distance)) / 10
-                    );
+                if (distance < 75) {
+                    if (distance > 15) {
+                        api.velocity.set(
+                            (direction.x * (75 - distance)) / 5,
+                            (direction.y * (75 - distance)) / 5,
+                            (direction.z * (75 - distance)) / 5
+                        );
+                    } else {
+                        api.velocity.set(
+                            (direction.x * distance) / 4 - 5,
+                            (direction.y * distance) / 4 - 5,
+                            (direction.z * distance) / 4 - 5
+                        );
+                    }
                 }
             }
         });

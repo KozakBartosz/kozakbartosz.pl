@@ -2,9 +2,13 @@ import { useFrame, useThree } from '@react-three/fiber';
 import { useEffect, useRef } from 'react';
 
 export const CameraEffects = () => {
-    const { camera } = useThree();
+    const { camera, gl } = useThree();
 
     const move = useRef({ x: 0, y: 0, scroll: 0 });
+
+    useEffect(function () {
+        gl.forceContextRestore();
+    }, []);
 
     useEffect(() => {
         document.body.addEventListener('pointermove', (e) => {

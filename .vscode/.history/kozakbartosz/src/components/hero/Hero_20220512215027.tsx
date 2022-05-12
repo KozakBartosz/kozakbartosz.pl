@@ -202,16 +202,6 @@ export const Hero = () => {
                         position={[-17, -60, 50]}
                         scale={[15, 15, 15]}
                     />
-                    <Bydlak
-                        material={material}
-                        position={[17, -82, 50]}
-                        scale={[15, 15, 15]}
-                    />
-                    <Bydlak
-                        material={material}
-                        position={[-17, -105, 50]}
-                        scale={[15, 15, 15]}
-                    />
                     {/* </Debug> */}
                 </Physics>
             </Canvas>

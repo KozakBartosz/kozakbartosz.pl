@@ -204,12 +204,12 @@ export const Hero = () => {
                     />
                     <Bydlak
                         material={material}
-                        position={[17, -82, 50]}
+                        position={[17, -90, 50]}
                         scale={[15, 15, 15]}
                     />
                     <Bydlak
                         material={material}
-                        position={[-17, -105, 50]}
+                        position={[-17, -120, 50]}
                         scale={[15, 15, 15]}
                     />
                     {/* </Debug> */}

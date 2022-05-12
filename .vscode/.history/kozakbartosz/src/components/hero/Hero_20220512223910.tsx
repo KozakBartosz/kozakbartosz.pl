@@ -209,7 +209,7 @@ export const Hero = () => {
                     />
                     <Bydlak
                         material={material}
-                        position={[-17, -105, 50]}
+                        position={[-17, -15, 50]}
                         scale={[15, 15, 15]}
                     />
                     {/* </Debug> */}

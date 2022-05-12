@@ -4,7 +4,7 @@ import { useEffect, useRef } from 'react';
 export const CameraEffects = () => {
     const { camera, gl } = useThree();
 
-    const move = useRef({ x: 0, y: 15, scroll: 0 });
+    const move = useRef({ x: 0, y: 10, scroll: 0 });
 
     useEffect(() => {
         gl.forceContextRestore();
@@ -24,11 +24,11 @@ export const CameraEffects = () => {
         camera.position.z = 10;
     }, []);
     useFrame((_, delta) => {
-        let deley = delta * 3;
+        let deley = delta * 2;
         if (window.innerWidth > window.innerHeight) {
-            camera.position.z += (150 - camera.position.z) * (deley * 0.2);
+            camera.position.z += (150 - camera.position.z) * (deley * 0.4);
         } else {
-            camera.position.z += (200 - camera.position.z) * (deley * 0.2);
+            camera.position.z += (200 - camera.position.z) * (deley * 0.4);
         }
         camera.position.x += (move.current.x - camera.position.x) * deley * 20;
         camera.position.y +=

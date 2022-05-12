@@ -117,15 +117,11 @@ export function Cone({ force, material, ...props }: Props) {
             </mesh>
             <mesh castShadow receiveShadow scale={[0.95, 0.95, 0.95]}>
                 <cylinderGeometry args={[0, a / 2, 0.816 * a, 3]} />
-                {color === 1 ? (
-                    <shaderMaterial attach="material" {...material} />
-                ) : (
-                    <meshPhysicalMaterial
-                        color={0x0e1211}
-                        reflectivity={1}
-                        flatShading
-                    />
-                )}
+                <meshPhysicalMaterial
+                    color={0x0e1211}
+                    reflectivity={1}
+                    flatShading
+                />
             </mesh>
             {/* <shaderMaterial attach="material" {...material} />; */}
         </group>

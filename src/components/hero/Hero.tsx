@@ -1,7 +1,7 @@
 import { Canvas } from '@react-three/fiber';
 import { Physics, Debug, Triplet } from '@react-three/cannon';
 import { OrbitControls } from '@react-three/drei';
-import { useEffect, useMemo, useState } from 'react';
+import { MutableRefObject, useEffect, useMemo, useState } from 'react';
 import { Plane } from './Plane';
 import { Cone } from './Cone';
 import { Bydlak } from './Bydlak';
@@ -11,6 +11,7 @@ import { CameraEffects } from './CameraEffects';
 import { Mirror } from './Mirror';
 import { fragmentShader, vertexShader } from './shaders';
 import styled from '@emotion/styled';
+import { Icon } from './Icon';
 
 function createArray(size: number, shift: number) {
     return new Array(size)
@@ -23,9 +24,19 @@ const rubish = createArray(41, -20);
 
 let timerGravity: any;
 
-export const Hero = () => {
+export const Hero = ({
+    iconRef
+}: {
+    iconRef: MutableRefObject<HTMLDivElement[]>;
+}) => {
     const [modeActive, setModeActive] = useState(false);
     const [gravity, setGravity] = useState<Triplet>([0, -50, 0]);
+
+    console.log(
+        'iconRef',
+        iconRef.current,
+        iconRef.current[0].getBoundingClientRect()
+    );
 
     const material = useMemo(
         () => ({
@@ -62,29 +73,6 @@ export const Hero = () => {
                 setGravity([0, -0.2, 0]);
             }, 5000);
         }, 4000);
-        // function handleOrientation(event: any) {
-        //     clearTimeout(timerGravity);
-        //     timerGravity = setTimeout(() => {
-        //         var x = event.alpha;
-        //         var y = event.beta;
-        //         var z = event.gamma;
-        //         setGravity([x / -4, y / -2, 0]);
-        //         console.log('deviceorientation', [x, y, z]);
-        //         // 10 is half the size of the ball
-        //         // It center the positioning point to the center of the ball
-        //         // ball.style.top = (maxY * y) / 180 - 10 + 'px';
-        //         // ball.style.left = (maxX * x) / 180 - 10 + 'px';
-        //         // console.log('deviceorientation', event);
-        //     }, 100);
-        // }
-        // window.addEventListener('deviceorientation', handleOrientation, {
-        //     passive: true
-        // });
-        // setGravity([0, 90, 0]);
-
-        // setInterval(() => {
-        //     setGravitygunVec([0, 0, 0]);
-        // }, 10);
 
         document.body.onpointerup = () => {
             setModeActive(false);
@@ -101,15 +89,6 @@ export const Hero = () => {
             onPointerDown={(e) => {
                 setModeActive(true);
             }}
-            // onPointerMove={(e) => {
-            //     if (mode == 'gravitygun' && modeActive) {
-            //         setGravitygunVec([
-            //             (e.clientX - window.innerWidth / 2) / 20,
-            //             (e.clientY - window.innerHeight / 2) / -20,
-            //             0
-            //         ]);
-            //     }
-            // }}
         >
             <Canvas
                 style={{
@@ -129,29 +108,21 @@ export const Hero = () => {
                     antialias: true,
                     autoClear: false
                 }}
-                // onPointerMove={(e) => {
-                //     if (mode == 'gravitygun') {
-                //         setGravitygunVec([
-                //             (e.clientX - window.innerWidth / 2) / 20,
-                //             (e.clientY - window.innerHeight / 2) / -20,
-                //             0
-                //         ]);
-                //     }
-                // }}
             >
                 <PostEffects />
-
-                <CameraEffects />
-
-                <Mirror />
-
-                {/* <OrbitControls makeDefault /> */}
 
                 <pointLight
                     position={[0, 20, -120]}
                     intensity={0.6}
                     color={0x4dffe1}
                 />
+
+                <CameraEffects />
+
+                <Mirror />
+
+                <OrbitControls makeDefault />
+
                 <fog attach="fog" color={0x090f0e} near={50} far={350} />
                 <Physics gravity={gravity}>
                     {/* <Debug color="red" scale={1.01}> */}
@@ -168,7 +139,7 @@ export const Hero = () => {
                         rotation={[0, Math.PI, 0]}
                     />
 
-                    {rubish.map((el) => (
+                    {/* {rubish.map((el) => (
                         <Cone
                             key={el}
                             position={[
@@ -190,28 +161,25 @@ export const Hero = () => {
                         rotation={[Math.random(), Math.random(), Math.random()]}
                         material={material}
                         force={modeActive}
-                    />
+                    /> */}
                     <Bydlak material={material} scale={[20, 20, 20]} />
-                    <Bydlak
-                        material={material}
-                        position={[17, -30, 50]}
-                        scale={[15, 15, 15]}
-                    />
-                    <Bydlak
-                        material={material}
-                        position={[-17, -60, 50]}
-                        scale={[15, 15, 15]}
-                    />
-                    <Bydlak
-                        material={material}
-                        position={[17, -82, 50]}
-                        scale={[15, 15, 15]}
-                    />
-                    <Bydlak
-                        material={material}
-                        position={[-17, -105, 50]}
-                        scale={[15, 15, 15]}
-                    />
+                    {iconRef.current &&
+                        iconRef.current.map((el) => {
+                            const postiton = [
+                                el.getBoundingClientRect().left,
+                                el.getBoundingClientRect().top +
+                                    document.body.scrollTop,
+                                0
+                            ];
+                            return (
+                                <Icon
+                                    material={material}
+                                    position={postiton}
+                                    scale={[15, 15, 15]}
+                                />
+                            );
+                        })}
+
                     {/* </Debug> */}
                 </Physics>
             </Canvas>
@@ -231,8 +199,9 @@ const Container = styled.div`
 
 const Top = styled.div`
     position: absolute;
-    top: 0;
-    left: 0;
+    background: rgba(255, 18, 18, 0.194);
+    top: 100px;
+    left: 300px;
     right: 0;
     z-index: 3;
     padding: 0;

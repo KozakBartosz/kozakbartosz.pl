@@ -8,20 +8,9 @@ export const CameraEffects = () => {
 
     useEffect(() => {
         gl.forceContextRestore();
-        // document.body.addEventListener('pointermove', (e) => {
-        //     move.current.x = (e.clientX - window.innerWidth / 2) / 50;
-        //     move.current.y =
-        //         15 + ((e.clientY - window.innerHeight / 2) / 70) * -1;
-        // });
-        // document.addEventListener(
-        //     'scroll',
-        //     () => {
-        //         move.current.scroll = window.scrollY;
-        //     },
-        //     { passive: true }
-        // );
-        // move.current.scroll = window.scrollY;
-        camera.position.z = 10;
+
+        // Animation start postion
+        // camera.position.z = 1000;
     }, []);
     useFrame((_, delta) => {
         let deley = delta * 3;

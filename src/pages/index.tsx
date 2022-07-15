@@ -2,36 +2,15 @@ import styled from '@emotion/styled';
 import type { NextPage } from 'next';
 import dynamic from 'next/dynamic';
 import Head from 'next/head';
-import { Component, lazy, Suspense } from 'react';
+import { Component, lazy, Suspense, useRef } from 'react';
 import { Sections } from '../components/Section';
 const Hero = dynamic(() => import('../components/hero'), { ssr: false });
 
-class ErrorBoundary extends Component<any, any> {
-    constructor(props: any) {
-        super(props);
-        this.state = { hasError: false };
-    }
-
-    static getDerivedStateFromError(error: any) {
-        return { hasError: true };
-    }
-
-    componentDidCatch(error: any, errorInfo: any) {
-        console.error(error, errorInfo);
-    }
-
-    render() {
-        if (this.state.hasError) {
-            return <h1>Something went wrong.</h1>;
-        }
-
-        return this.props.children;
-    }
-}
-
 const Home: NextPage = () => {
+    const iconEl = useRef([]);
+
     return (
-        <ErrorBoundary>
+        <>
             <Head>
                 <title>KozakBartosz.pl</title>
                 <meta
@@ -41,16 +20,16 @@ const Home: NextPage = () => {
                 <link rel="icon" href="/favicon.ico" />
             </Head>
 
-            <Hero />
+            <Hero iconRef={iconEl} />
             <main>
                 {/* <Suspense fallback=""> */}
                 {/* </Suspense> */}
 
-                <Sections />
+                <Sections iconRef={iconEl} />
             </main>
 
             <footer></footer>
-        </ErrorBoundary>
+        </>
     );
 };
 

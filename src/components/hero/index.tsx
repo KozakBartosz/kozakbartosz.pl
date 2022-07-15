@@ -1,10 +1,10 @@
 import { Suspense } from 'react';
 import { Hero } from './Hero';
 
-const HeroSuspense = () => {
+const HeroSuspense = (props: any) => {
     return (
         <Suspense fallback="loading">
-            <Hero />
+            <Hero {...props} />
         </Suspense>
     );
 };

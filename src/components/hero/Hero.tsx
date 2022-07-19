@@ -174,7 +174,7 @@ export const Hero = ({
                 <Logo>Kozak Bartosz</Logo>
                 <Aside>Front-end • UX • UI • 3D</Aside>
             </Top>
-            {/* <MargeGradient /> */}
+            <MargeGradient />
         </Container>
     );
 };
@@ -234,7 +234,7 @@ const Logo = styled.h1`
 
 const MargeGradient = styled.div`
     pointer-events: none;
-    height: 60rem;
+    height: 90rem;
     background: linear-gradient(
         0deg,
         rgba(9, 15, 14, 0),
@@ -243,7 +243,7 @@ const MargeGradient = styled.div`
         rgba(9, 15, 14, 0)
     );
     position: absolute;
-    bottom: -10rem;
+    bottom: -30rem;
     left: 0;
     right: 0;
     z-index: 2;

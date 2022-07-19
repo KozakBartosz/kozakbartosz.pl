@@ -59,7 +59,7 @@ export const Sections = ({
 
 const Icon = styled.div`
     position: absolute;
-    top: 50%;
+    top: 0%;
     left: 50%;
     width: 10px;
     height: 10px;
@@ -82,12 +82,14 @@ const Section = styled.div`
         }
         &:nth-child(even) ${Icon} {
             left: -50%;
+            top: 50%;
         }
         &:nth-child(odd) {
             margin-right: 50%;
         }
         &:nth-child(odd) ${Icon} {
             left: 150%;
+            top: 50%;
         }
     }
 `;

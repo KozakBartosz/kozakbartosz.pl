@@ -112,6 +112,13 @@ export const Hero = ({
                 <CameraEffects />
 
                 <Mirror />
+                <mesh
+                    position={[0, -13.5, -170]}
+                    rotation={[Math.PI / 2, 0, 0]}
+                >
+                    <planeGeometry args={[512, 512]} />
+                    <meshPhysicalMaterial color={0x090f0e} />
+                </mesh>
 
                 {/* <OrbitControls makeDefault /> */}
 

@@ -56,7 +56,6 @@ export function Icon({ material, element, scale }: any) {
         meshRef.current.position.z = (linear * linear) / -1.2;
 
         meshRef.current.rotation.y = linear / 20;
-        console.log('aaaaa ', meshRef.current.rotation.y);
     });
     // position = [coords.x, coords.y - camera.position.y / 2, 0];
 

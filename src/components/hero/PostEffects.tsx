@@ -20,6 +20,13 @@ export const PostEffects = () => {
 
     return (
         <EffectComposer depthBuffer={true} autoClear={false}>
+            <DepthOfField
+                focusDistance={0.1555}
+                focalLength={0.05}
+                bokehScale={5}
+                // height={100}
+                blur={100}
+            />
             <Vignette eskil={false} offset={0.2} darkness={1.1} />
             <Bloom
                 intensity={10}
@@ -27,20 +34,13 @@ export const PostEffects = () => {
                 luminanceSmoothing={10}
             />
             <Bloom
-                intensity={0.3}
+                intensity={0.4}
                 luminanceThreshold={0}
                 luminanceSmoothing={2}
                 width={300}
                 height={300}
             />
             <Noise opacity={0.02} />
-            {/* <DepthOfField
-                focusDistance={0.1}
-                focalLength={0.5}
-                bokehScale={8}
-                // height={1000}
-                // blur={10}
-            /> */}
         </EffectComposer>
     );
 };

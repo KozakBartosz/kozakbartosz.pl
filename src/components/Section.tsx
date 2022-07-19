@@ -100,6 +100,6 @@ const Container = styled.div`
     z-index: 5;
     max-width: 178rem;
     padding: 0 2rem 20rem;
-    margin: 0rem auto;
-    margin-top: -700px;
+    margin: 2rem auto;
+    /* margin-top: -700px; */
 `;

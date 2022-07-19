@@ -19,10 +19,8 @@ function createArray(size: number, shift: number) {
         .map((_, index) => index + shift)
         .filter((el) => !(Math.abs(el) < 1));
 }
-// const rubish = createArray(31, -15);
-const rubish = createArray(41, -20);
-
-let timerGravity: any;
+// const rubbish = createArray(31, -15);
+const rubbish = createArray(41, -20);
 
 export const Hero = ({
     iconRef
@@ -31,12 +29,6 @@ export const Hero = ({
 }) => {
     const [modeActive, setModeActive] = useState(false);
     const [gravity, setGravity] = useState<Triplet>([0, -50, 0]);
-
-    console.log(
-        'iconRef',
-        iconRef.current,
-        iconRef.current[0].getBoundingClientRect()
-    );
 
     const material = useMemo(
         () => ({
@@ -121,7 +113,7 @@ export const Hero = ({
 
                 <Mirror />
 
-                <OrbitControls makeDefault />
+                {/* <OrbitControls makeDefault /> */}
 
                 <fog attach="fog" color={0x090f0e} near={50} far={350} />
                 <Physics gravity={gravity}>
@@ -139,7 +131,7 @@ export const Hero = ({
                         rotation={[0, Math.PI, 0]}
                     />
 
-                    {/* {rubish.map((el) => (
+                    {rubbish.map((el) => (
                         <Cone
                             key={el}
                             position={[
@@ -161,21 +153,16 @@ export const Hero = ({
                         rotation={[Math.random(), Math.random(), Math.random()]}
                         material={material}
                         force={modeActive}
-                    /> */}
+                    />
                     <Bydlak material={material} scale={[20, 20, 20]} />
                     {iconRef.current &&
-                        iconRef.current.map((el) => {
-                            const postiton = [
-                                el.getBoundingClientRect().left,
-                                el.getBoundingClientRect().top +
-                                    document.body.scrollTop,
-                                0
-                            ];
+                        iconRef.current.map((el, i) => {
                             return (
                                 <Icon
                                     material={material}
-                                    position={postiton}
+                                    element={el}
                                     scale={[15, 15, 15]}
+                                    key={i}
                                 />
                             );
                         })}
@@ -185,9 +172,9 @@ export const Hero = ({
             </Canvas>
             <Top>
                 <Logo>Kozak Bartosz</Logo>
-                <Asing>Front-end • UX • UI • 3D</Asing>
+                <Aside>Front-end • UX • UI • 3D</Aside>
             </Top>
-            {/* <MargeGradient /> */}
+            <MargeGradient />
         </Container>
     );
 };
@@ -199,9 +186,9 @@ const Container = styled.div`
 
 const Top = styled.div`
     position: absolute;
-    background: rgba(255, 18, 18, 0.194);
-    top: 100px;
-    left: 300px;
+    /* background: rgba(255, 18, 18, 0.194); */
+    top: 0;
+    left: 0;
     right: 0;
     z-index: 3;
     padding: 0;
@@ -213,7 +200,7 @@ const Top = styled.div`
     pointer-events: none;
 `;
 
-const Asing = styled.span`
+const Aside = styled.span`
     text-align: center;
     font-size: 1.8rem;
     font-weight: 300;
@@ -247,10 +234,16 @@ const Logo = styled.h1`
 
 const MargeGradient = styled.div`
     pointer-events: none;
-    height: 30rem;
-    background: linear-gradient(0deg, rgba(9, 15, 14, 1), rgba(9, 15, 14, 0));
+    height: 60rem;
+    background: linear-gradient(
+        0deg,
+        rgba(9, 15, 14, 0),
+        rgba(9, 15, 14, 1),
+        rgba(9, 15, 14, 1),
+        rgba(9, 15, 14, 0)
+    );
     position: absolute;
-    bottom: 0;
+    bottom: -10rem;
     left: 0;
     right: 0;
     z-index: 2;

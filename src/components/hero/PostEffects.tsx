@@ -34,13 +34,13 @@ export const PostEffects = () => {
                 height={300}
             />
             <Noise opacity={0.02} />
-            <DepthOfField
+            {/* <DepthOfField
                 focusDistance={0.1}
                 focalLength={0.5}
                 bokehScale={8}
                 // height={1000}
                 // blur={10}
-            />
+            /> */}
         </EffectComposer>
     );
 };

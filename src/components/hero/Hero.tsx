@@ -174,7 +174,7 @@ export const Hero = ({
                 <Logo>Kozak Bartosz</Logo>
                 <Aside>Front-end • UX • UI • 3D</Aside>
             </Top>
-            <MargeGradient />
+            {/* <MargeGradient /> */}
         </Container>
     );
 };

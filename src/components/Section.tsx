@@ -98,7 +98,7 @@ const Container = styled.div`
     position: absolute; */
     position: relative;
     z-index: 5;
-    max-width: 178rem;
+    max-width: 158rem;
     padding: 0 2rem 20rem;
     margin: 2rem auto;
     /* margin-top: -700px; */

@@ -53,7 +53,7 @@ export function Icon({ material, element, scale }: any) {
 
         meshRef.current.position.x = newPosition[0];
         meshRef.current.position.y = newPosition[1];
-        meshRef.current.position.z = (linear * linear) / -1.5;
+        meshRef.current.position.z = (linear * linear) / -1.2;
 
         meshRef.current.rotation.y = linear / 20;
         console.log('aaaaa ', meshRef.current.rotation.y);
@@ -63,7 +63,7 @@ export function Icon({ material, element, scale }: any) {
     // position = [20, 0, 0];
 
     return (
-        <group dispose={null} scale={[20, 20, 20]} ref={meshRef}>
+        <group dispose={null} scale={[30, 30, 30]} ref={meshRef}>
             <mesh
                 castShadow
                 receiveShadow

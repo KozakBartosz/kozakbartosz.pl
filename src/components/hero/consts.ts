@@ -1,0 +1,1 @@
+export const HERO_DEPHTH = 22;

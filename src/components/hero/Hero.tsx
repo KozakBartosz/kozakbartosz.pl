@@ -112,13 +112,6 @@ export const Hero = ({
                 <CameraEffects />
 
                 <Mirror />
-                <mesh
-                    position={[0, -13.5, -170]}
-                    rotation={[Math.PI / 2, 0, 0]}
-                >
-                    <planeGeometry args={[512, 512]} />
-                    <meshPhysicalMaterial color={0x090f0e} />
-                </mesh>
 
                 {/* <OrbitControls makeDefault /> */}
 
@@ -169,6 +162,7 @@ export const Hero = ({
                                     material={material}
                                     element={el}
                                     scale={[15, 15, 15]}
+                                    url={`/models/icon${i + 1}.glb`}
                                     key={i}
                                 />
                             );
@@ -181,7 +175,7 @@ export const Hero = ({
                 <Logo>Kozak Bartosz</Logo>
                 <Aside>Front-end • UX • UI • 3D</Aside>
             </Top>
-            <MargeGradient />
+            {/* <MargeGradient /> */}
         </Container>
     );
 };
@@ -241,16 +235,24 @@ const Logo = styled.h1`
 
 const MargeGradient = styled.div`
     pointer-events: none;
-    height: 90rem;
+    height: 50rem;
     background: linear-gradient(
+        0deg,
+        rgba(9, 15, 14, 0),
+        rgb(1 1 1),
+        rgb(9 15 14),
+        rgba(9, 15, 14, 0)
+    );
+    /* background: linear-gradient(
         0deg,
         rgba(9, 15, 14, 0),
         rgba(9, 15, 14, 1),
         rgba(9, 15, 14, 1),
         rgba(9, 15, 14, 0)
-    );
+    ); */
+    /* border: 4px solid red; */
     position: absolute;
-    bottom: -30rem;
+    bottom: -10rem;
     left: 0;
     right: 0;
     z-index: 2;

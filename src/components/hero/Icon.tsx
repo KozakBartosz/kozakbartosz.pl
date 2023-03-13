@@ -3,10 +3,16 @@ import { useGLTF } from '@react-three/drei';
 import { useFrame, useThree } from '@react-three/fiber';
 import { useEffect, useMemo, useRef } from 'react';
 import { Vector3, Camera, PerspectiveCamera, Mesh } from 'three';
+import { HERO_DEPHTH } from './consts';
 
-export function Icon({ material, element, scale }: any) {
+export function Icon({ material, element, url }: any) {
     const { camera } = useThree();
-    const { nodes, materials } = useGLTF('/models/logo.glb');
+
+    const { nodes, materials } = useGLTF(url);
+
+    // const icon = useGLTF('/models/icon1.glb');
+
+    // const nodes2 = icon.nodes;
 
     const meshRef = useRef<Mesh>(null!);
 
@@ -20,12 +26,12 @@ export function Icon({ material, element, scale }: any) {
     useFrame((state, delta) => {
         const { top, left } = element.getBoundingClientRect();
 
-        const position = [left, top - window.scrollY / 30, 0];
+        const position = [left, top - window.scrollY / HERO_DEPHTH, 0];
 
         let vector = new Vector3();
 
         projectCamera.position.x = 0;
-        projectCamera.position.y = window.scrollY / -30;
+        projectCamera.position.y = window.scrollY / -HERO_DEPHTH;
         projectCamera.position.z = 150;
         projectCamera.updateProjectionMatrix();
         projectCamera.updateMatrixWorld();
@@ -53,27 +59,29 @@ export function Icon({ material, element, scale }: any) {
 
         meshRef.current.position.x = newPosition[0];
         meshRef.current.position.y = newPosition[1];
-        meshRef.current.position.z = (linear * linear) / -1.2;
+        meshRef.current.position.z = (linear * linear) / -3.2;
 
-        meshRef.current.rotation.y = linear / 20;
+        meshRef.current.rotation.y = linear / HERO_DEPHTH;
     });
+
+    console.log('nodes', nodes, url);
     // position = [coords.x, coords.y - camera.position.y / 2, 0];
 
     // position = [20, 0, 0];
 
     return (
-        <group dispose={null} scale={[30, 30, 30]} ref={meshRef}>
+        <group dispose={null} scale={[20, 20, 20]} ref={meshRef}>
             <mesh
                 castShadow
                 receiveShadow
-                geometry={(nodes.Cone as any).geometry}
-                material={materials['Material.001']}
+                geometry={(nodes.model as any).geometry}
+                material={materials['normal']}
                 // rotation={[0, Math.PI / -4, 0]}
             />
             <mesh
                 castShadow
                 receiveShadow
-                geometry={(nodes.Corner as any).geometry}
+                geometry={(nodes.edge as any).geometry}
                 // rotation={[0, Math.PI / -4, 0]}
             >
                 {/* <meshBasicMaterial color={0x00ffee} /> */}

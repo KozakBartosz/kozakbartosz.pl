@@ -21,20 +21,20 @@ export const PostEffects = () => {
     return (
         <EffectComposer depthBuffer={true} autoClear={false}>
             <DepthOfField
-                focusDistance={0.1555}
-                focalLength={0.05}
+                focusDistance={0.17}
+                focalLength={0.2}
                 bokehScale={5}
                 // height={100}
                 blur={100}
             />
             <Vignette eskil={false} offset={0.2} darkness={1.1} />
             <Bloom
-                intensity={10}
+                intensity={15}
                 luminanceThreshold={0.005}
                 luminanceSmoothing={10}
             />
             <Bloom
-                intensity={0.4}
+                intensity={0.6}
                 luminanceThreshold={0}
                 luminanceSmoothing={2}
                 width={300}

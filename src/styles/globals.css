@@ -22,8 +22,8 @@ body {
 
 #Hero,
 #__next {
-    height: calc(100% + 100px);
-    min-height: calc(100% + 100px);
+    height: 100%;
+    min-height: 100%;
 }
 
 a {

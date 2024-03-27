@@ -52,7 +52,7 @@ export const Sections = ({
                 />
             </Section>
             <Section>
-                <h1>Sy hello _</h1>
+                <h1>Say hello _</h1>
                 <p>
                     Phone:{' '}
                     <Link href="tel: +48 574 227 189">+48 574 227 189</Link>

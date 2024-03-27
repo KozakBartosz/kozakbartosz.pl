@@ -4,7 +4,14 @@ import { Cone } from './Cone';
 import { Bydlak } from './Bydlak';
 import { Icon } from './Icon';
 import { useEffect, useMemo, useRef, useState } from 'react';
-import { Mesh, MeshBasicMaterial, Object3D, Vector3, Vector4 } from 'three';
+import {
+    MathUtils,
+    Mesh,
+    MeshBasicMaterial,
+    Object3D,
+    Vector3,
+    Vector4
+} from 'three';
 import { fragmentShader, vertexShader } from './shaders';
 import { Sphere, Torus } from '@react-three/drei';
 import { useFrame } from '@react-three/fiber';
@@ -41,7 +48,12 @@ export const Playground = () => {
     const [modeActive, setModeActive] = useState(false);
     const [gravity, setGravity] = useState<Triplet>([0, -50, 0]);
 
-    const MySphere = useRef<{ scale: Vector3; userData: any }>(null);
+    const MySphere = useRef<{
+        scale: Vector3;
+        rotation: Vector3;
+        visibility: boolean;
+        userData: any;
+    }>(null);
 
     useEffect(() => {
         if (MySphere.current) MySphere.current.userData.scale = 0.1;
@@ -103,6 +115,39 @@ export const Playground = () => {
                 if (MySphere.current) {
                     MySphere.current.userData.scale = 1;
                 }
+            }
+        });
+        window.addEventListener('deviceorientation', (e) => {
+            if (e.beta !== null && e.gamma !== null && e.alpha !== null) {
+                const betaRadians = e.beta * (Math.PI / 180); // Konwersja kąta beta na radiany
+                const gammaRadians = e.gamma * (Math.PI / 180); // Konwersja kąta gamma na radiany
+
+                // Obliczanie składowych siły grawitacji wzdłuż osi X, Y i Z
+                const forceX = Math.sin(gammaRadians); // Kąt gamma odpowiada sile grawitacji wzdłuż osi X
+                const forceY = Math.sin(betaRadians); // Kąt beta odpowiada sile grawitacji wzdłuż osi Y
+                const forceZ = Math.cos(betaRadians) * Math.cos(gammaRadians); // Kąty beta i gamma odpowiadają sile grawitacji wzdłuż osi Z
+
+                // Przemnożenie przez odpowiedni współczynnik, aby uzyskać siłę grawitacji w dół
+                const multiply = 20;
+
+                // Ustawienie siły grawitacji w stanie aplikacji
+                setGravity([
+                    forceX * multiply,
+                    forceY * -multiply,
+                    forceZ * multiply // Siła grawitacji wzdłuż osi Z
+                ]);
+                const rotationX = MathUtils.degToRad(e.alpha); // Z
+                const rotationY = MathUtils.degToRad(e.beta); // X'
+                const rotationZ = MathUtils.degToRad(e.gamma); // Y''
+                // Obliczenie rotacji w radianach dla obiektu MySphere
+
+                // Przypisanie obliczonych wartości rotacji w radianach do obiektu MySphere.current
+                // if (MySphere.current) {
+                //     MySphere.current.rotation.x = rotationY - Math.PI / 2;
+                //     MySphere.current.rotation.y = rotationX;
+                //     MySphere.current.rotation.z = 0;
+                //     MySphere.current.visibility = false;
+                // }
             }
         });
     }, []);

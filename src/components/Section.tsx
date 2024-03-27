@@ -103,11 +103,17 @@ const Section = styled.div`
     justify-content: center;
     flex-direction: column;
     margin: 30rem 0;
-    padding: 12rem;
+    padding: 20rem 2rem;
 
     min-height: 70rem;
 
+    ${Icon} {
+        top: -10rem;
+    }
+
     @media (min-width: 1000px) {
+        padding: 12rem;
+
         &:nth-child(odd) {
             margin-left: 50%;
         }
@@ -152,6 +158,7 @@ const Container = styled.div`
     z-index: 5;
     max-width: 190rem;
     padding: 30rem auto 10rem;
+    margin: 80rem auto 1rem;
 
     @media (min-width: 1000px) {
         margin: 30rem auto 1rem;

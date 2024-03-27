@@ -4,6 +4,7 @@ import { useFrame, useThree } from '@react-three/fiber';
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { Vector3, Camera, PerspectiveCamera, Mesh, Material } from 'three';
 import { HERO_DEPHTH } from './consts';
+import { ShadowDrop } from './ShadowDrop';
 
 export function Icon({ material, element, url }: any) {
     const { camera } = useThree();
@@ -106,11 +107,7 @@ export function Icon({ material, element, url }: any) {
                     // }}
                 />
             </mesh>
-            <mesh position={[0, 0, 0]} rotation={[0, 0, 0]} scale={[1, 1, 1]}>
-                <torusGeometry args={[20, 0.5, 10, 70, Math.PI]} />
-                <shaderMaterial attach="material" {...material} />
-            </mesh>
-            {/* <Shadow /> */}
+            <ShadowDrop />
         </group>
     );
 }

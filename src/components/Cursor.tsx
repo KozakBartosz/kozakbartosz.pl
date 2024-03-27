@@ -70,6 +70,21 @@ export const Cursor = () => {
 
         document.body.addEventListener('mousemove', handleMouseMove);
 
+        // document.body.addEventListener('touchmove', (e) => {
+        //     const touch = e.touches[0];
+        //     Move(touch.pageX, touch.pageY);
+        // });
+        // document.body.addEventListener('touchend', (e) => {
+        //     CursorInnerRef.current.style.opacity = '0';
+        //     CursorInnerRef.current.style.width = `${50}px`;
+        // });
+        document.body.addEventListener('touchstart', (e) => {
+            if (CursorInnerRef.current) {
+                CursorInnerRef.current.style.opacity = '0';
+                CursorInnerRef.current.style.width = `${50}px`;
+            }
+        });
+
         return () => {
             document.body.removeEventListener('mousemove', handleMouseMove);
         };
@@ -115,8 +130,8 @@ const CursorInner = styled.div`
     box-shadow: 0 0 20px -2px rgba(0, 163, 255, 1),
         0 0 10px -2px rgba(0, 163, 255, 1) inset;
     box-sizing: border-box;
-    transition: transform 1.3s cubic-bezier(0.17, 1.58, 0.6, 1.01),
-        backdrop-filter 1.3s cubic-bezier(0.17, 1.58, 0.6, 1.01);
+    transition: transform 1.3s cubic-bezier(0.17, 1.58, 0.6, 1.01);
+    /* opacity 1s ease; */
     transform: scale(0);
     opacity: 0;
     backdrop-filter: sepia(1) saturate(15) hue-rotate(280deg);

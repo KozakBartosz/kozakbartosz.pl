@@ -24,6 +24,7 @@ export function Cone({ force, material, ...props }: Props) {
 
     const materialRef = useRef(null);
     const meshRef = useRef(null);
+    const phone = useRef(false);
 
     const [color, setColor] = useState(0);
 
@@ -35,6 +36,7 @@ export function Cone({ force, material, ...props }: Props) {
     const loopRnage = 130;
 
     useEffect(() => {
+        if (phone.current) return;
         localForce.current = force;
     }, [force]);
 
@@ -52,7 +54,14 @@ export function Cone({ force, material, ...props }: Props) {
     );
 
     useEffect(() => {
+        document.body.addEventListener('touchstart', (e) => {
+            if (!phone.current) {
+                localForce.current = false;
+            }
+            phone.current = true;
+        });
         document.body.addEventListener('pointermove', (e) => {
+            if (phone.current) return;
             const top = e.clientY;
             const left = e.clientX;
 
@@ -81,15 +90,6 @@ export function Cone({ force, material, ...props }: Props) {
                 coords = projectCamera.position.clone().add(scaled);
 
             const newPosition = [coords.x, coords.y, 0];
-
-            // const linear = (top - window.innerHeight / 2) / 100;
-
-            // api.position.set(
-            //     newPosition[0],
-            //     newPosition[1] - 5,
-            //     (linear * linear) / -3.2
-            // );
-            // api.rotation.set(0, linear / HERO_DEPHTH - 50, 0);
 
             if (localForce) {
                 if (newPosition[1] < -10) {

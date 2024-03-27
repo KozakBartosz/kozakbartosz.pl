@@ -33,7 +33,7 @@ export const Sections = ({
             <Section>
                 <h1>Graphic designer _</h1>
                 <p>
-                    In addition to programming, I'm interested in interface
+                    In addition to programming, I&apos;m interested in interface
                     design, user experience and 3D graphics.
                 </p>
                 <h2>Skills:</h2>
@@ -52,7 +52,7 @@ export const Sections = ({
                 />
             </Section>
             <Section>
-                <h1>Say hello _</h1>
+                <h1>Sy hello _</h1>
                 <p>
                     Phone:{' '}
                     <Link href="tel: +48 574 227 189">+48 574 227 189</Link>

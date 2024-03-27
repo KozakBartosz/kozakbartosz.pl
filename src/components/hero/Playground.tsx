@@ -41,7 +41,7 @@ export const Playground = () => {
     const [modeActive, setModeActive] = useState(false);
     const [gravity, setGravity] = useState<Triplet>([0, -50, 0]);
 
-    const MySphere = useRef<typeof Mesh>(null);
+    const MySphere = useRef<{ scale: Vector3; userData: any }>(null);
 
     useEffect(() => {
         if (MySphere.current) MySphere.current.userData.scale = 0.1;

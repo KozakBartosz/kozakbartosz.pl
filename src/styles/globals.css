@@ -7,6 +7,7 @@ body {
     /* background: #090f0e; */
     min-height: 100%;
     height: 100%;
+    /* background: #090f0e url('/cursor.png'); */
     background: #090f0e;
     padding: 0;
     margin: 0;
@@ -16,8 +17,12 @@ body {
     color: white;
 }
 body {
+    line-height: 2em;
     font-size: 20px;
     font-size: 2rem;
+    cursor: none;
+    /* public/cursor (1).svg */
+    cursor: url('/cursor.png'), auto;
 }
 
 #Hero,
@@ -26,9 +31,69 @@ body {
     min-height: 100%;
 }
 
-a {
-    color: inherit;
+p {
+    margin: 1rem 0;
+}
+
+h1 {
+    color: rgba(0, 255, 163, 1);
     text-decoration: none;
+    background: linear-gradient(
+        90deg,
+        rgba(0, 163, 255, 1),
+        rgba(0, 255, 163, 1)
+    );
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    text-shadow: -2rem 0.5rem 5rem rgba(0, 163, 255, 0.5),
+        1rem -0.5rem 5rem rgba(0, 255, 163, 0.5);
+
+    font-size: 5rem;
+    line-height: 6rem;
+    margin: 0;
+    padding-bottom: 4rem;
+}
+h2 {
+    color: rgba(0, 255, 163, 1);
+    text-decoration: none;
+    background: linear-gradient(
+        90deg,
+        rgba(0, 163, 255, 1),
+        rgba(0, 255, 163, 1)
+    );
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    text-shadow: -2rem 0.5rem 5rem rgba(0, 163, 255, 0.5),
+        1rem -0.5rem 5rem rgba(0, 255, 163, 0.5);
+
+    font-size: 3rem;
+    margin: 0;
+    padding: 3rem 0 1rem;
+}
+
+a {
+    color: rgba(0, 255, 163, 1);
+    text-decoration: none;
+    background: linear-gradient(
+        90deg,
+        rgba(0, 163, 255, 1),
+        rgba(0, 255, 163, 1)
+    );
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    text-shadow: -4rem 0.5rem 5rem rgba(0, 163, 255, 0.5),
+        3rem -0.5rem 5rem rgba(0, 255, 163, 0.5);
+    pointer-events: painted;
+    cursor: pointer;
+}
+/* body:has(a:hover) :is(.cursor-inner) {
+    transform: scale(2) !important;
+    backdrop-filter: invert(1) !important;
+} */
+
+a:hover {
+    text-shadow: -2rem 0.5rem 3rem rgba(0, 163, 255, 1),
+        1rem -0.5rem 3rem rgba(0, 255, 163, 1);
 }
 
 * {

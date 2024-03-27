@@ -21,7 +21,7 @@ export const CameraEffects = () => {
             camera.position.z += (200 - camera.position.z) * (deley * 0.2);
         }
         camera.position.x +=
-            (move.current.x - camera.position.x) * deley * HERO_DEPHTH;
+            (move.current.x * 20 - camera.position.x) * deley * HERO_DEPHTH;
 
         // camera.position.y +=
         //     (move.current.y - window.scrollY / 30 - camera.position.y) *

@@ -28,7 +28,14 @@ export function Bydlak({ material, position, scale }: any) {
                 rotation={[0, Math.PI / -4, 0]}
             >
                 {/* <meshBasicMaterial color={0x00ffee} /> */}
-                <shaderMaterial attach="material" {...material} />;
+                <shaderMaterial
+                    attach="material"
+                    {...material}
+                    uniforms={{
+                        myPosition: { value: new Vector3(0.0, 0.0, 0.0) }
+                    }}
+                />
+                ;
             </mesh>
         </group>
     );

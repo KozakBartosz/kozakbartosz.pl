@@ -1,20 +1,23 @@
 import { useCylinder } from '@react-three/cannon';
-import { useGLTF } from '@react-three/drei';
+import { Shadow, useGLTF } from '@react-three/drei';
 import { useFrame, useThree } from '@react-three/fiber';
-import { useEffect, useMemo, useRef } from 'react';
-import { Vector3, Camera, PerspectiveCamera, Mesh } from 'three';
+import { useEffect, useMemo, useRef, useState } from 'react';
+import { Vector3, Camera, PerspectiveCamera, Mesh, Material } from 'three';
 import { HERO_DEPHTH } from './consts';
 
 export function Icon({ material, element, url }: any) {
     const { camera } = useThree();
 
-    const { nodes, materials } = useGLTF(url);
+    const { nodes, materials } = useGLTF(url) as { nodes: any; materials: any };
+
+    const [myPosition, setMyPosition] = useState(new Vector3(10.0, 0.0, 0.0));
 
     // const icon = useGLTF('/models/icon1.glb');
 
     // const nodes2 = icon.nodes;
 
     const meshRef = useRef<Mesh>(null!);
+    const materialRef = useRef<any>(null!);
 
     const projectCamera = new PerspectiveCamera(
         30,
@@ -58,13 +61,20 @@ export function Icon({ material, element, url }: any) {
         const linear = (top - window.innerHeight / 2) / 100;
 
         meshRef.current.position.x = newPosition[0];
-        meshRef.current.position.y = newPosition[1];
+        meshRef.current.position.y = newPosition[1] - 2.5;
         meshRef.current.position.z = (linear * linear) / -3.2;
 
-        meshRef.current.rotation.y = linear / HERO_DEPHTH;
+        meshRef.current.rotation.y = linear / HERO_DEPHTH - 50;
+
+        if (materialRef.current) {
+            let valueTest: number = newPosition[0] / -3;
+            // console.log('materialRef', valueTest);
+            setMyPosition(new Vector3(8.0, 0.0, 0.0));
+            materialRef.current.uniforms.myPosition.value = myPosition;
+            materialRef.current.needsUpdate = true;
+        }
     });
 
-    console.log('nodes', nodes, url);
     // position = [coords.x, coords.y - camera.position.y / 2, 0];
 
     // position = [20, 0, 0];
@@ -85,8 +95,22 @@ export function Icon({ material, element, url }: any) {
                 // rotation={[0, Math.PI / -4, 0]}
             >
                 {/* <meshBasicMaterial color={0x00ffee} /> */}
-                <shaderMaterial attach="material" {...material} />;
+                <shaderMaterial
+                    attach="material"
+                    {...material}
+                    ref={materialRef}
+                    // uniforms={{
+                    //     myPosition: {
+                    //         value: new Vector3(0.0, 0.0, 0.0)
+                    //     }
+                    // }}
+                />
             </mesh>
+            <mesh position={[0, 0, 0]} rotation={[0, 0, 0]} scale={[1, 1, 1]}>
+                <torusGeometry args={[20, 0.5, 10, 70, Math.PI]} />
+                <shaderMaterial attach="material" {...material} />
+            </mesh>
+            {/* <Shadow /> */}
         </group>
     );
 }

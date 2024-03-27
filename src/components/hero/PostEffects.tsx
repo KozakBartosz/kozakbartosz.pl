@@ -27,20 +27,19 @@ export const PostEffects = () => {
                 // height={100}
                 blur={100}
             />
-            <Vignette eskil={false} offset={0.2} darkness={1.1} />
+            {/* <Vignette eskil={false} offset={0.2} darkness={1.1} /> */}
             <Bloom
                 intensity={15}
                 luminanceThreshold={0.005}
                 luminanceSmoothing={10}
             />
             <Bloom
-                intensity={0.6}
-                luminanceThreshold={0}
+                intensity={1}
+                luminanceThreshold={0.1}
                 luminanceSmoothing={2}
-                width={300}
-                height={300}
+                kernelSize={5}
             />
-            <Noise opacity={0.02} />
+            {/* <Noise opacity={0.02} /> */}
         </EffectComposer>
     );
 };

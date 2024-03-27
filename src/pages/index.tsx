@@ -4,6 +4,7 @@ import dynamic from 'next/dynamic';
 import Head from 'next/head';
 import { Component, lazy, Suspense, useRef } from 'react';
 import { Sections } from '../components/Section';
+import { Cursor } from '../components/Cursor';
 const Hero = dynamic(() => import('../components/hero'), { ssr: false });
 
 const Home: NextPage = () => {
@@ -19,18 +20,38 @@ const Home: NextPage = () => {
                 />
                 <link rel="icon" href="/favicon.ico" />
             </Head>
-
-            <Hero iconRef={iconEl} />
+            <Container>
+                <Hero iconRef={iconEl} />
+            </Container>
             <main>
                 {/* <Suspense fallback=""> */}
                 {/* </Suspense> */}
 
                 <Sections iconRef={iconEl} />
+                <Cursor />
             </main>
 
-            <footer></footer>
+            <Footer>Copyright ©2024 kozakbartosz.pl</Footer>
         </>
     );
 };
+
+const Container = styled.div`
+    position: relative;
+    height: 100%;
+`;
+
+const Footer = styled.footer`
+    height: 20rem;
+    position: relative;
+    z-index: 999;
+    text-align: center;
+    font-size: 1.8rem;
+    color: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0.2;
+`;
 
 export default Home;

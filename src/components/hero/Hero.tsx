@@ -5,30 +5,25 @@ import { MutableRefObject, useEffect, useMemo, useState } from 'react';
 import { Plane } from './Plane';
 import { Cone } from './Cone';
 import { Bydlak } from './Bydlak';
-import { Vector3, Vector4 } from 'three';
+import { Matrix4, Vector3, Vector4 } from 'three';
 import { PostEffects } from './PostEffects';
 import { CameraEffects } from './CameraEffects';
 import { Mirror } from './Mirror';
 import { fragmentShader, vertexShader } from './shaders';
 import styled from '@emotion/styled';
 import { Icon } from './Icon';
+import { Gradient } from './Gradinet';
+import { Playground } from './Playground';
+import Link from 'next/link';
 
-function createArray(size: number, shift: number) {
-    return new Array(size)
-        .fill(null)
-        .map((_, index) => index + shift)
-        .filter((el) => !(Math.abs(el) < 1));
-}
-// const rubbish = createArray(31, -15);
-const rubbish = createArray(41, -20);
+const iconNames = ['1', '3', '4'];
 
 export const Hero = ({
     iconRef
 }: {
     iconRef: MutableRefObject<HTMLDivElement[]>;
 }) => {
-    const [modeActive, setModeActive] = useState(false);
-    const [gravity, setGravity] = useState<Triplet>([0, -50, 0]);
+    const [gravity, setGravity] = useState(false);
 
     const material = useMemo(
         () => ({
@@ -38,7 +33,9 @@ export const Hero = ({
                 Ks: { value: new Vector3(1, 1, 1) },
                 LightIntensity: { value: new Vector4(0.5, 0.5, 0.5, 1.0) },
                 LightPosition: { value: new Vector4(0.0, 2000.0, 0.0, 1.0) },
-                Shininess: { value: 200.0 }
+                Shininess: { value: 200.0 },
+                myColor: { value: new Vector3(1, 0, 0) },
+                myPosition: { value: new Vector3(0.0, 0.0, 0.0) }
             },
             fragmentShader,
             vertexShader
@@ -46,42 +43,10 @@ export const Hero = ({
         []
     );
 
-    useEffect(() => {
-        setTimeout(() => {
-            setGravity([0, 0, 0]);
-            setTimeout(() => {
-                setGravity([0, 0, -10]);
-            }, 100);
-            setTimeout(() => {
-                setGravity([20, 10, -20]);
-            }, 300);
-            setTimeout(() => {
-                setGravity([-10, -20, 0]);
-            }, 500);
-            setTimeout(() => {
-                setGravity([-0.1, -0.2, 0]);
-            }, 700);
-            setTimeout(() => {
-                setGravity([0, -0.2, 0]);
-            }, 5000);
-        }, 4000);
-
-        document.body.onpointerup = () => {
-            setModeActive(false);
-        };
-
-        document.body.addEventListener('mouseleave', () => {
-            setModeActive(false);
-        });
-    }, []);
+    console.log('AAAAAA');
 
     return (
-        <Container
-            id="Hero"
-            onPointerDown={(e) => {
-                setModeActive(true);
-            }}
-        >
+        <Container id="Hero">
             <Canvas
                 style={{
                     height: '100%',
@@ -101,81 +66,45 @@ export const Hero = ({
                     autoClear: false
                 }}
             >
-                <PostEffects />
-
+                <PostEffects key={Math.random()} />
                 <pointLight
                     position={[0, 20, -120]}
                     intensity={0.6}
                     color={0x4dffe1}
                 />
+                <Mirror />
+                <Gradient />
 
                 <CameraEffects />
-
-                <Mirror />
-
                 {/* <OrbitControls makeDefault /> */}
 
                 <fog attach="fog" color={0x090f0e} near={50} far={350} />
-                <Physics gravity={gravity}>
-                    {/* <Debug color="red" scale={1.01}> */}
-
-                    <mesh position={[0, 0, -200]} rotation={[0, 0, 0]}>
-                        <planeGeometry args={[1000, 1000]} />
-                        <meshPhysicalMaterial color={0x090f0e} />
-                    </mesh>
-
-                    <Plane position={[0, -13, 0]} />
-
-                    <Plane
-                        position={[0, -13, 100]}
-                        rotation={[0, Math.PI, 0]}
-                    />
-
-                    {rubbish.map((el) => (
-                        <Cone
-                            key={el}
-                            position={[
-                                Math.sin(el) * 10 + el * 8,
-                                10 + Math.tan(el) * 5 + 80,
-                                Math.tan(el) * 15 - 80
-                            ]}
-                            rotation={[
-                                Math.random(),
-                                Math.random(),
-                                Math.random()
-                            ]}
-                            material={material}
-                            force={modeActive}
-                        />
-                    ))}
-                    <Cone
-                        position={[-10, 20, 30]}
-                        rotation={[Math.random(), Math.random(), Math.random()]}
-                        material={material}
-                        force={modeActive}
-                    />
-                    <Bydlak material={material} scale={[20, 20, 20]} />
-                    {iconRef.current &&
-                        iconRef.current.map((el, i) => {
-                            return (
-                                <Icon
-                                    material={material}
-                                    element={el}
-                                    scale={[15, 15, 15]}
-                                    url={`/models/icon${i + 1}.glb`}
-                                    key={i}
-                                />
-                            );
-                        })}
-
-                    {/* </Debug> */}
-                </Physics>
+                <Playground />
+                {iconRef.current &&
+                    iconRef.current.map((el, i) => {
+                        return (
+                            <Icon
+                                material={material}
+                                element={el}
+                                scale={[15, 15, 15]}
+                                url={`/models/icon${iconNames[i]}.glb`}
+                                key={i}
+                            />
+                        );
+                    })}
             </Canvas>
             <Top>
-                <Logo>Kozak Bartosz</Logo>
-                <Aside>Front-end • UX • UI • 3D</Aside>
+                <Logo>
+                    <Link href="/">Kozak Bartosz</Link>
+                </Logo>
+                <Aside>Front-end • UI • UX • 3D</Aside>
             </Top>
-            {/* <MargeGradient /> */}
+            <Info>
+                <span>Left click - use gravity gun</span>
+                <span>Right click - toggle gravity</span>
+            </Info>
+            <MargeGradientTop />
+            <MargeGradientBottom />
         </Container>
     );
 };
@@ -193,7 +122,7 @@ const Top = styled.div`
     right: 0;
     z-index: 3;
     padding: 0;
-    margin: 8vh 0 0;
+    margin: 15vh 0 0;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -201,17 +130,12 @@ const Top = styled.div`
     pointer-events: none;
 `;
 
-const Aside = styled.span`
-    text-align: center;
-    font-size: 1.8rem;
-    font-weight: 300;
-    color: #d5eaed;
-`;
 const Logo = styled.h1`
     letter-spacing: 0.3rem;
-    margin-bottom: 3rem;
+    margin-bottom: 2rem;
+    padding-bottom: 0;
     text-align: center;
-    font-size: 7rem;
+    font-size: 8rem;
     @media (max-width: 800px) {
         font-size: 6rem;
     }
@@ -233,9 +157,33 @@ const Logo = styled.h1`
     pointer-events: normal;
 `;
 
-const MargeGradient = styled.div`
+const Aside = styled.span`
+    text-align: center;
+    font-size: 2rem;
+    font-weight: 300;
+    color: #d5eaed;
+`;
+
+const Info = styled.div`
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6rem;
+    text-align: center;
+    font-size: 1.8rem;
+    font-weight: 300;
+    color: #d5eaed;
+    position: absolute;
+    bottom: 10%;
+    left: 0;
+    right: 0;
+    z-index: 3;
+    opacity: 0.45;
+`;
+
+const MargeGradientBottom = styled.div`
     pointer-events: none;
-    height: 50rem;
+    height: 20lvh;
     background: linear-gradient(
         0deg,
         rgba(9, 15, 14, 0),
@@ -251,9 +199,33 @@ const MargeGradient = styled.div`
         rgba(9, 15, 14, 0)
     ); */
     /* border: 4px solid red; */
-    position: absolute;
-    bottom: -10rem;
+    position: fixed;
+    bottom: -10lvh;
     left: 0;
     right: 0;
-    z-index: 2;
+    z-index: 100;
+`;
+const MargeGradientTop = styled.div`
+    pointer-events: none;
+    height: 20lvh;
+    background: linear-gradient(
+        0deg,
+        rgba(9, 15, 14, 0),
+        rgba(9, 15, 14, 1),
+        rgba(9, 15, 14, 1),
+        rgba(9, 15, 14, 0)
+    );
+    /* background: linear-gradient(
+        0deg,
+        rgba(9, 15, 14, 0),
+        rgba(9, 15, 14, 1),
+        rgba(9, 15, 14, 1),
+        rgba(9, 15, 14, 0)
+    ); */
+    /* border: 4px solid red; */
+    position: fixed;
+    top: -10lvh;
+    left: 0;
+    right: 0;
+    z-index: 100;
 `;

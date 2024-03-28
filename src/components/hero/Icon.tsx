@@ -10,6 +10,7 @@ export function Icon({ material, element, url }: any) {
     const { camera } = useThree();
 
     const { nodes, materials } = useGLTF(url) as { nodes: any; materials: any };
+    console.log('nodes', nodes);
 
     const [myPosition, setMyPosition] = useState(new Vector3(10.0, 0.0, 0.0));
 
@@ -67,13 +68,17 @@ export function Icon({ material, element, url }: any) {
 
         meshRef.current.rotation.y = linear / HERO_DEPHTH - 50;
 
-        if (materialRef.current) {
-            let valueTest: number = newPosition[0] / -3;
-            // console.log('materialRef', valueTest);
-            setMyPosition(new Vector3(8.0, 0.0, 0.0));
-            materialRef.current.uniforms.myPosition.value = myPosition;
-            materialRef.current.needsUpdate = true;
-        }
+        // if (materialRef.current) {
+        //     let valueTest: number = newPosition[0] / -3;
+        //     // console.log('materialRef', valueTest);
+        //     setMyPosition(new Vector3(8.0, 0.0, 0.0));
+        //     materialRef.current.uniforms.myPosition.value = new Vector3(
+        //         8.0,
+        //         0.0,
+        //         0.0
+        //     );
+        //     materialRef.current.needsUpdate = true;
+        // }
     });
 
     // position = [coords.x, coords.y - camera.position.y / 2, 0];
@@ -100,11 +105,11 @@ export function Icon({ material, element, url }: any) {
                     attach="material"
                     {...material}
                     ref={materialRef}
-                    // uniforms={{
-                    //     myPosition: {
-                    //         value: new Vector3(0.0, 0.0, 0.0)
-                    //     }
-                    // }}
+                    uniforms={{
+                        myPosition: {
+                            value: new Vector3(10.0, 0.0, 0.0)
+                        }
+                    }}
                 />
             </mesh>
             <ShadowDrop />

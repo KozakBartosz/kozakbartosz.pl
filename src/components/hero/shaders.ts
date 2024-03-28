@@ -47,7 +47,7 @@ export const fragmentShader = `
     AlphaRamp = clamp(AlphaRamp * 0.5 + 4.5, 0.0, 1.0) - clamp(AlphaRamp2 * 0.5 + 4.5, 0.0, 1.0);
     AlphaRamp2 = clamp(AlphaRamp * 0.5 + 4.5, 0.0, 1.0) - clamp(AlphaRamp4 * 0.5 + 4.5, 0.0, 1.0);
 
-    vec3 blink = vec3(1.0, 0.0, 0.6392) * AlphaRamp * 0.5;
+    vec3 blink = vec3(1.0, 0.0, 0.6392) * AlphaRamp * 1.5;
     vec3 blink2 = vec3(0.0, 1.0, 0.0) * AlphaRamp2 * 2.0;
     vec3 dark = vec3(1.0, 1.0, 1.0) / clamp(AlphaRamp3 * 0.5 + 4.5, 0.0, 1.0);
     gl_FragColor = vec4((gradient + blink + blink2 ) / dark, 1.0);

@@ -5,6 +5,7 @@ import Head from 'next/head';
 import { Component, lazy, Suspense, useRef } from 'react';
 import { Sections } from '../components/Section';
 import { Cursor } from '../components/Cursor';
+import { Loading } from '../components/Loading';
 const Hero = dynamic(() => import('../components/hero'), { ssr: false });
 
 const Home: NextPage = () => {
@@ -21,6 +22,7 @@ const Home: NextPage = () => {
                 <link rel="icon" href="/favicon.ico" />
             </Head>
             <Container>
+                <Loading>Loading</Loading>
                 <Hero iconRef={iconEl} />
             </Container>
             <main>
@@ -32,11 +34,16 @@ const Home: NextPage = () => {
             </main>
 
             <Footer>Copyright ©2024 kozakbartosz.pl</Footer>
+            <MargeGradientTop />
+            <MargeGradientBottom />
         </>
     );
 };
 
 const Container = styled.div`
+    background-image: url(/bg.png);
+    background-position: center;
+    background-size: cover;
     position: relative;
     height: 100%;
 `;
@@ -52,6 +59,55 @@ const Footer = styled.footer`
     align-items: center;
     justify-content: center;
     opacity: 0.2;
+`;
+
+const MargeGradientBottom = styled.div`
+    pointer-events: none;
+    height: 20lvh;
+    background: linear-gradient(
+        0deg,
+        rgba(9, 15, 14, 0),
+        rgb(1 1 1),
+        rgb(9 15 14),
+        rgba(9, 15, 14, 0)
+    );
+    /* background: linear-gradient(
+    0deg,
+    rgba(9, 15, 14, 0),
+    rgba(9, 15, 14, 1),
+    rgba(9, 15, 14, 1),
+    rgba(9, 15, 14, 0)
+); */
+    /* border: 4px solid red; */
+    position: fixed;
+    bottom: -10lvh;
+    left: 0;
+    right: 0;
+    z-index: 100;
+`;
+const MargeGradientTop = styled.div`
+    pointer-events: none;
+    height: 20lvh;
+    background: linear-gradient(
+        0deg,
+        rgba(9, 15, 14, 0),
+        rgba(9, 15, 14, 1),
+        rgba(9, 15, 14, 1),
+        rgba(9, 15, 14, 0)
+    );
+    /* background: linear-gradient(
+    0deg,
+    rgba(9, 15, 14, 0),
+    rgba(9, 15, 14, 1),
+    rgba(9, 15, 14, 1),
+    rgba(9, 15, 14, 0)
+); */
+    /* border: 4px solid red; */
+    position: fixed;
+    top: -10lvh;
+    left: 0;
+    right: 0;
+    z-index: 300;
 `;
 
 export default Home;

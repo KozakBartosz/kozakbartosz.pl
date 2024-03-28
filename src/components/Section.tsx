@@ -10,7 +10,8 @@ export const Sections = ({
     return (
         <Container>
             <Section>
-                <h1>Front-end developer _</h1>
+                <Curtain />
+                <h1>Front-end developer</h1>
                 <p>
                     Hi, I am a front-end developer with 10 years of experience
                     working on my own open source projects as well as doing
@@ -31,7 +32,8 @@ export const Sections = ({
                 />
             </Section>
             <Section>
-                <h1>Graphic designer _</h1>
+                <Curtain />
+                <h1>Graphic designer</h1>
                 <p>
                     In addition to programming, I&apos;m interested in interface
                     design, user experience and 3D graphics.
@@ -52,7 +54,8 @@ export const Sections = ({
                 />
             </Section>
             <Section>
-                <h1>Say hello _</h1>
+                <Curtain />
+                <h1>Say hello</h1>
                 <p>
                     Phone:{' '}
                     <Link href="tel: +48 574 227 189">+48 574 227 189</Link>
@@ -96,13 +99,13 @@ const Icon = styled.div`
     /* background: red; */
 `;
 
-const Section = styled.div`
+const Section = styled.section`
     position: relative;
     display: flex;
     align-items: flex-start;
     justify-content: center;
     flex-direction: column;
-    margin: 30rem 0;
+    margin: 10rem 0;
     padding: 20rem 2rem;
 
     min-height: 70rem;
@@ -152,25 +155,52 @@ const Section = styled.div`
         }
     }
 `;
+const Curtain = styled.div`
+    @media (min-width: 1200px) {
+        pointer-events: none;
+        inset: -20lvh 2rem -20lvh;
+        position: absolute;
+
+        &::before {
+            content: '';
+            display: block;
+            position: sticky;
+            top: 50lvh;
+            width: 100%;
+            left: 0;
+            height: 50lvh;
+            background: #090f0e;
+            background: linear-gradient(
+                160deg,
+                rgba(9, 15, 14, 0) 0%,
+                rgba(9, 15, 14, 0) 45%,
+                rgba(9, 15, 14, 1) 66%,
+                rgba(9, 15, 14, 1) 100%
+            );
+            filter: blur(10px);
+            z-index: 20;
+            box-sizing: border-box;
+        }
+    }
+`;
 const Container = styled.div`
     display: block;
     position: relative;
     z-index: 5;
     max-width: 190rem;
     padding: 30rem auto 10rem;
-    margin: 80rem auto 1rem;
+    margin: 80rem auto 10rem;
 
     @media (min-width: 1000px) {
-        margin: 30rem auto 1rem;
+        margin: 30rem auto 20rem;
     }
-    /* margin-top: -700px; */
 `;
 const Line = styled.div`
     @media (min-width: 1000px) {
         position: absolute;
         z-index: 15;
-        top: -5rem;
-        bottom: -5rem;
+        top: -40rem;
+        bottom: -20rem;
         left: calc(50% - 1px);
         width: 2px;
         /* height: 100%; */

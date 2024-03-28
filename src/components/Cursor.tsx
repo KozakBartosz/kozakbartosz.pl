@@ -42,23 +42,25 @@ export const Cursor = () => {
                 y: y - window.scrollY
             };
 
-            let lastPos = {
-                x: (lastPos1.x + lastPos2.x) / 2,
-                y: (lastPos1.y + lastPos2.y) / 2
-            };
             // let lastPos = lastPos1;
 
             // requestAnimationFrame(animate);
-            let dis = getDis(pos, lastPos);
+            let dis = getDis(pos, lastPos2);
 
-            let angle = getAngle(pos, lastPos) + 360 * 10;
+            let angle = getAngle(pos, lastPos2) + 360 * 10;
             if (angle) {
                 lastAngle = angle;
             }
             if (CursorWrapperRef.current && CursorInnerRef.current) {
-                if (dis > 5) {
+                if (
+                    dis > 5 ||
+                    lastPos2.x != 0 ||
+                    lastPos2.y != 0 ||
+                    lastPos1.x != 0 ||
+                    lastPos1.y != 0
+                ) {
                     CursorWrapperRef.current.style.transform = `translate(${pos.x}px, ${pos.y}px) rotate(${lastAngle}deg)`;
-                    CursorInnerRef.current.style.width = `${50 + dis * 1.1}px`;
+                    CursorInnerRef.current.style.width = `${50 + dis * 1.12}px`;
                 } else {
                     CursorWrapperRef.current.style.transform = `translate(${pos.x}px, ${pos.y}px) rotate(45deg)`;
                     CursorInnerRef.current.style.width = `${50}px`;
@@ -121,10 +123,10 @@ const CursorInner = styled.div`
 
     background: linear-gradient(
         90deg,
-        rgba(0, 163, 255, 0.7),
+        rgba(0, 163, 255, 0.4),
         rgba(0, 163, 255, 0.2),
         rgba(0, 255, 163, 0.2),
-        rgba(0, 255, 163, 0.5)
+        rgba(0, 255, 163, 0.3)
     );
     border-radius: 25px;
     box-shadow: 0 0 20px -2px rgba(0, 163, 255, 1),
@@ -137,7 +139,7 @@ const CursorInner = styled.div`
     backdrop-filter: sepia(1) saturate(15) hue-rotate(280deg);
 
     body:hover & {
-        transform: scale(1);
+        transform: scale(1.3);
         opacity: 1;
     }
     body:has(a:hover) :is(&) {
@@ -149,5 +151,7 @@ const CursorInner = styled.div`
         transform: scale(3);
         backdrop-filter: invert(1) sepia(1) saturate(5) hue-rotate(280deg);
         opacity: 1;
+        animation: 10s GravityActive infinite
+            cubic-bezier(0.17, 1.58, 0.6, 1.01);
     }
 `;

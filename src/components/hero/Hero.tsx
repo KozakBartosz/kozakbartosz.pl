@@ -94,8 +94,9 @@ export const Hero = ({
                     })}
             </Canvas>
             <Top>
-                <Logo>
-                    <Link href="/">Kozak Bartosz</Link>
+                <Logo id="Logo">
+                    Bartosz Kozak
+                    {/* <Link href="https://kozakbartosz.pl/">Kozak Bartosz</Link> */}
                 </Logo>
                 <Aside>Front-end • UI • UX • 3D</Aside>
             </Top>
@@ -103,14 +104,13 @@ export const Hero = ({
                 <span>Left click - use gravity gun</span>
                 <span>Right click - toggle gravity</span>
             </Info>
-            <MargeGradientTop />
-            <MargeGradientBottom />
         </Container>
     );
 };
 
 const Container = styled.div`
     position: relative;
+    z-index: 2;
     height: 100%;
 `;
 
@@ -122,20 +122,25 @@ const Top = styled.div`
     right: 0;
     z-index: 3;
     padding: 0;
-    margin: 15vh 0 0;
+
     display: flex;
     align-items: center;
     justify-content: center;
     flex-direction: column;
     pointer-events: none;
+
+    margin: 5rem 0 0;
+    @media (min-width: 800px) {
+        margin: 15vh 0 0;
+    }
 `;
 
 const Logo = styled.h1`
+    font-size: 7rem;
     letter-spacing: 0.3rem;
     margin-bottom: 2rem;
     padding-bottom: 0;
     text-align: center;
-    font-size: 8rem;
     @media (max-width: 800px) {
         font-size: 6rem;
     }
@@ -165,67 +170,22 @@ const Aside = styled.span`
 `;
 
 const Info = styled.div`
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 6rem;
-    text-align: center;
-    font-size: 1.8rem;
-    font-weight: 300;
-    color: #d5eaed;
-    position: absolute;
-    bottom: 10%;
-    left: 0;
-    right: 0;
-    z-index: 3;
-    opacity: 0.45;
-`;
-
-const MargeGradientBottom = styled.div`
     pointer-events: none;
-    height: 20lvh;
-    background: linear-gradient(
-        0deg,
-        rgba(9, 15, 14, 0),
-        rgb(1 1 1),
-        rgb(9 15 14),
-        rgba(9, 15, 14, 0)
-    );
-    /* background: linear-gradient(
-        0deg,
-        rgba(9, 15, 14, 0),
-        rgba(9, 15, 14, 1),
-        rgba(9, 15, 14, 1),
-        rgba(9, 15, 14, 0)
-    ); */
-    /* border: 4px solid red; */
-    position: fixed;
-    bottom: -10lvh;
-    left: 0;
-    right: 0;
-    z-index: 100;
-`;
-const MargeGradientTop = styled.div`
-    pointer-events: none;
-    height: 20lvh;
-    background: linear-gradient(
-        0deg,
-        rgba(9, 15, 14, 0),
-        rgba(9, 15, 14, 1),
-        rgba(9, 15, 14, 1),
-        rgba(9, 15, 14, 0)
-    );
-    /* background: linear-gradient(
-        0deg,
-        rgba(9, 15, 14, 0),
-        rgba(9, 15, 14, 1),
-        rgba(9, 15, 14, 1),
-        rgba(9, 15, 14, 0)
-    ); */
-    /* border: 4px solid red; */
-    position: fixed;
-    top: -10lvh;
-    left: 0;
-    right: 0;
-    z-index: 100;
+    display: none;
+    @media (min-width: 1200px) {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 6rem;
+        text-align: center;
+        font-size: 1.8rem;
+        font-weight: 300;
+        color: #d5eaed;
+        position: absolute;
+        bottom: 12rem;
+        left: 0;
+        right: 0;
+        z-index: 3;
+        opacity: 0.55;
+    }
 `;

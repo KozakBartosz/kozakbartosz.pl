@@ -143,12 +143,12 @@ const CursorInner = styled.div`
         opacity: 1;
     }
     body:has(a:hover) :is(&) {
-        transform: scale(3) !important;
+        transform: scale(2) !important;
         backdrop-filter: invert(1) !important;
     }
     body:active &,
     body:has(a:active) :is(&) {
-        transform: scale(3);
+        transform: scale(2);
         backdrop-filter: invert(1) sepia(1) saturate(5) hue-rotate(280deg);
         opacity: 1;
         animation: 10s GravityActive infinite

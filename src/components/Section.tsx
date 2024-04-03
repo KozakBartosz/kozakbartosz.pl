@@ -100,35 +100,37 @@ const Icon = styled.div`
 `;
 
 const Section = styled.section`
+    overflow-y: clip;
     position: relative;
     display: flex;
     align-items: flex-start;
     justify-content: center;
     flex-direction: column;
-    margin: 10rem 0;
-    padding: 20rem 2rem;
+    margin: 70rem 0 20rem;
+    padding: 4rem 2rem;
 
-    min-height: 70rem;
+    min-height: 50rem;
 
     ${Icon} {
-        top: -10rem;
+        top: -30rem;
     }
 
     @media (min-width: 1000px) {
-        padding: 12rem;
+        padding: 4rem 12rem;
+        margin: 20rem 0;
 
         &:nth-child(odd) {
             margin-left: 50%;
         }
         &:nth-child(odd) ${Icon} {
-            left: -50%;
+            left: calc(-50% - 4rem);
             top: 50%;
         }
         &:nth-child(even) {
             margin-right: 50%;
         }
         &:nth-child(even) ${Icon} {
-            left: 150%;
+            left: calc(150% + 4rem);
             top: 50%;
         }
         /* Dot on the center */
@@ -136,29 +138,30 @@ const Section = styled.section`
             content: '';
             position: absolute;
             top: 50%;
-            left: -40px;
-            width: 80px;
+            left: calc(-40px + 33px - 3px);
+            width: calc(80px - 33px - 33px + 2px + 2px);
             height: 80px;
             background: linear-gradient(
-                90deg,
+                45deg,
                 rgba(0, 163, 255, 1),
                 rgba(0, 255, 163, 1)
             );
             border: 33px solid rgb(9 15 14);
+            border-width: 33px 2px;
             z-index: 20;
             border-radius: 100%;
             box-sizing: border-box;
         }
         &:nth-child(even)::after {
             left: auto;
-            right: -40px;
+            right: calc(-40px + 33px - 3px);
         }
     }
 `;
 const Curtain = styled.div`
     @media (min-width: 1200px) {
         pointer-events: none;
-        inset: -20lvh 2rem -20lvh;
+        inset: -50lvh 2rem -50lvh;
         position: absolute;
 
         &::before {
@@ -189,7 +192,7 @@ const Container = styled.div`
     z-index: 5;
     max-width: 190rem;
     padding: 30rem auto 10rem;
-    margin: 80rem auto 10rem;
+    margin: calc(180rem - 60lvh) auto 10rem;
 
     @media (min-width: 1000px) {
         margin: 30rem auto 20rem;

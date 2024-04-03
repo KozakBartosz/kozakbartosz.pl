@@ -112,6 +112,8 @@ const Container = styled.div`
     position: relative;
     z-index: 2;
     height: 100%;
+    height: 100lvh;
+    min-height: 70rem;
 `;
 
 const Top = styled.div`

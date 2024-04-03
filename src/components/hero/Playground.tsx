@@ -145,6 +145,13 @@ export const Playground = () => {
                 //     MySphere.current.rotation.z = 0;
                 //     MySphere.current.visibility = false;
                 // }
+                if (
+                    MySphere.current &&
+                    MySphere.current.scale &&
+                    MySphere.current.userData
+                ) {
+                    MySphere.current.userData.gryo = 1;
+                }
             }
         });
     }, []);
@@ -156,15 +163,28 @@ export const Playground = () => {
             MySphere.current.userData.scale
         ) {
             // += (200 - camera.position.z) * (deley * 0.2);
-            MySphere.current.scale.x +=
-                (MySphere.current.userData.scale - MySphere.current.scale.x) *
-                0.1;
-            MySphere.current.scale.y +=
-                (MySphere.current.userData.scale - MySphere.current.scale.y) *
-                0.1;
-            MySphere.current.scale.z +=
-                (MySphere.current.userData.scale - MySphere.current.scale.z) *
-                0.1;
+
+            if (window.innerWidth > 1000 && window.innerHeight > 800) {
+                MySphere.current.scale.x +=
+                    (MySphere.current.userData.scale -
+                        MySphere.current.scale.x) *
+                    0.1;
+                MySphere.current.scale.y +=
+                    (MySphere.current.userData.scale -
+                        MySphere.current.scale.y) *
+                    0.1;
+                MySphere.current.scale.z +=
+                    (MySphere.current.userData.scale -
+                        MySphere.current.scale.z) *
+                    0.1;
+            } else {
+                MySphere.current.scale.x +=
+                    (0.1 - MySphere.current.scale.x) * 0.1;
+                MySphere.current.scale.y +=
+                    (0.1 - MySphere.current.scale.y) * 0.1;
+                MySphere.current.scale.z +=
+                    (0.1 - MySphere.current.scale.z) * 0.1;
+            }
 
             // MySphere.current.scale.y = 0.1;
 

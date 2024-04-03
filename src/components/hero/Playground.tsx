@@ -129,12 +129,14 @@ export const Playground = () => {
 
                 // Przemnożenie przez odpowiedni współczynnik, aby uzyskać siłę grawitacji w dół
                 const multiply = 20;
+                console.log('a', [forceX, forceY, forceZ]);
 
                 // Ustawienie siły grawitacji w stanie aplikacji
                 setGravity([
-                    forceX * multiply,
+                    forceZ > 0 ? forceX * multiply : forceX * -multiply,
                     forceY * -multiply,
-                    forceZ * multiply // Siła grawitacji wzdłuż osi Z
+                    0
+                    // forceZ * -multiply
                 ]);
                 const rotationX = MathUtils.degToRad(e.alpha); // Z
                 const rotationY = MathUtils.degToRad(e.beta); // X'

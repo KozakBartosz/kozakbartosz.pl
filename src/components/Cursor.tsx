@@ -23,72 +23,63 @@ const getAngle = (p1: Point, p2: Point) => {
 export const Cursor = () => {
     const CursorWrapperRef = useRef<HTMLDivElement>(null);
     const CursorInnerRef = useRef<HTMLDivElement>(null);
+    const stepsBack = 3;
+    let pos = { x: 0, y: 0 };
+    let lastPos: { x: number; y: number }[] = Array.from(
+        { length: stepsBack },
+        () => ({ x: 0, y: 0 })
+    );
+    let lastAngle = 0;
+    let isAnimating = false;
 
-    useEffect(() => {
-        let lastPos1 = { x: 0, y: 0 };
-        let lastPos2 = { x: 0, y: 0 };
-        let pos = { x: 0, y: 0 };
-        let fade = 0;
-
-        let lastAngle = 0;
-
-        const handleMouseMove = (mouseEvent: MouseEvent) => {
-            // standard
-            Move(mouseEvent.pageX, mouseEvent.pageY);
-        };
-        const Move = (x = 0, y = 0) => {
-            pos = {
-                x: x - window.scrollX,
-                y: y - window.scrollY
-            };
-
-            // let lastPos = lastPos1;
-
-            // requestAnimationFrame(animate);
-            let dis = getDis(pos, lastPos2);
-
-            let angle = getAngle(pos, lastPos2) + 360 * 10;
-            if (angle) {
-                lastAngle = angle;
-            }
-            if (CursorWrapperRef.current && CursorInnerRef.current) {
-                if (
-                    dis > 5 ||
-                    lastPos2.x != 0 ||
-                    lastPos2.y != 0 ||
-                    lastPos1.x != 0 ||
-                    lastPos1.y != 0
-                ) {
-                    CursorWrapperRef.current.style.transform = `translate(${pos.x}px, ${pos.y}px) rotate(${lastAngle}deg)`;
-                    CursorInnerRef.current.style.width = `${50 + dis * 1.12}px`;
-                } else {
-                    CursorWrapperRef.current.style.transform = `translate(${pos.x}px, ${pos.y}px) rotate(45deg)`;
-                    CursorInnerRef.current.style.width = `${50}px`;
-                }
-            }
-            lastPos2 = lastPos1;
-            lastPos1 = pos;
-        };
-
-        document.body.addEventListener('mousemove', handleMouseMove);
-
-        // document.body.addEventListener('touchmove', (e) => {
-        //     const touch = e.touches[0];
-        //     Move(touch.pageX, touch.pageY);
-        // });
-        // document.body.addEventListener('touchend', (e) => {
-        //     CursorInnerRef.current.style.opacity = '0';
-        //     CursorInnerRef.current.style.width = `${50}px`;
-        // });
-        document.body.addEventListener('touchstart', (e) => {
-            if (CursorInnerRef.current) {
-                CursorInnerRef.current.style.opacity = '0';
+    const animate = () => {
+        if (!isAnimating) return;
+        requestAnimationFrame(animate);
+        let dis = getDis(pos, lastPos[stepsBack - 1]);
+        let angle = getAngle(pos, lastPos[stepsBack - 1]) + 360 * 10;
+        if (angle && dis > 5) {
+            lastAngle = angle;
+        }
+        if (CursorWrapperRef.current && CursorInnerRef.current) {
+            if (dis > 5) {
+                CursorInnerRef.current.style.width = `${50 + dis * 0.9}px`;
+            } else {
                 CursorInnerRef.current.style.width = `${50}px`;
             }
-        });
+            CursorWrapperRef.current.style.transform = `translate(${pos.x}px, ${pos.y}px) rotate(${lastAngle}deg)`;
+        }
+        lastPos.pop();
+        lastPos.unshift(pos);
+    };
 
+    const handleMouseMove = (mouseEvent: MouseEvent) => {
+        pos = {
+            x: mouseEvent.pageX - window.scrollX,
+            y: mouseEvent.pageY - window.scrollY
+        };
+        if (!isAnimating) {
+            isAnimating = true;
+            animate();
+        }
+    };
+    const handleTouchstart = () => {
+        if (CursorInnerRef.current) {
+            CursorInnerRef.current.style.opacity = '0';
+            CursorInnerRef.current.style.width = `${50}px`;
+        }
+    };
+
+    useEffect(() => {
+        document.body.addEventListener('mousemove', handleMouseMove);
+        document.body.addEventListener('touchstart', handleTouchstart);
         return () => {
-            document.body.removeEventListener('mousemove', handleMouseMove);
+            [
+                document.body.removeEventListener('mousemove', handleMouseMove),
+                document.body.removeEventListener(
+                    'touchstart',
+                    handleTouchstart
+                )
+            ];
         };
     }, []);
 

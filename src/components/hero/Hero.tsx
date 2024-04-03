@@ -104,6 +104,9 @@ export const Hero = ({
                 <span>Left click - use gravity gun</span>
                 <span>Right click - toggle gravity</span>
             </Info>
+            <InfoMobile>
+                <span>Rotate your device to change gravity</span>
+            </InfoMobile>
         </Container>
     );
 };
@@ -172,9 +175,9 @@ const Aside = styled.span`
 `;
 
 const Info = styled.div`
-    pointer-events: none;
     display: none;
-    @media (min-width: 1200px) {
+    @media (min-width: 800px) {
+        pointer-events: none;
         display: flex;
         align-items: center;
         justify-content: center;
@@ -189,5 +192,25 @@ const Info = styled.div`
         right: 0;
         z-index: 3;
         opacity: 0.55;
+    }
+`;
+const InfoMobile = styled.div`
+    pointer-events: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6rem;
+    text-align: center;
+    font-size: 1.8rem;
+    font-weight: 300;
+    color: #d5eaed;
+    position: absolute;
+    bottom: 12rem;
+    left: 0;
+    right: 0;
+    z-index: 3;
+    opacity: 0.55;
+    @media (min-width: 800px) {
+        display: none;
     }
 `;

@@ -63,7 +63,7 @@ const Footer = styled.footer`
 
 const MargeGradientBottom = styled.div`
     pointer-events: none;
-    height: 20lvh;
+    height: 6rem;
     background: linear-gradient(
         0deg,
         rgba(9, 15, 14, 0),
@@ -71,7 +71,7 @@ const MargeGradientBottom = styled.div`
         rgb(9 15 14),
         rgba(9, 15, 14, 0)
     );
-    /* background: linear-gradient(
+    /* background: linear-gradient(  
     0deg,
     rgba(9, 15, 14, 0),
     rgba(9, 15, 14, 1),
@@ -80,14 +80,18 @@ const MargeGradientBottom = styled.div`
 ); */
     /* border: 4px solid red; */
     position: fixed;
-    bottom: -10lvh;
+    bottom: -3rem;
     left: 0;
     right: 0;
     z-index: 100;
+    @media (min-width: 800px) {
+        height: 20lvh;
+        bottom: -10lvh;
+    }
 `;
 const MargeGradientTop = styled.div`
     pointer-events: none;
-    height: 20lvh;
+    height: 6rem;
     background: linear-gradient(
         0deg,
         rgba(9, 15, 14, 0),
@@ -104,10 +108,14 @@ const MargeGradientTop = styled.div`
 ); */
     /* border: 4px solid red; */
     position: fixed;
-    top: -10lvh;
+    top: -3rem;
     left: 0;
     right: 0;
     z-index: 300;
+    @media (min-width: 800px) {
+        height: 20lvh;
+        top: -10lvh;
+    }
 `;
 
 export default Home;

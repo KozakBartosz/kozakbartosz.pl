@@ -119,31 +119,26 @@ export const Playground = () => {
         });
         window.addEventListener('deviceorientation', (e) => {
             if (e.beta !== null && e.gamma !== null && e.alpha !== null) {
-                const betaRadians = e.beta * (Math.PI / 180); // Konwersja kąta beta na radiany
-                const gammaRadians = e.gamma * (Math.PI / 180); // Konwersja kąta gamma na radiany
+                const betaRadians = e.beta * (Math.PI / 180);
+                const gammaRadians = e.gamma * (Math.PI / 180);
 
-                // Obliczanie składowych siły grawitacji wzdłuż osi X, Y i Z
-                const forceX = Math.sin(gammaRadians); // Kąt gamma odpowiada sile grawitacji wzdłuż osi X
-                const forceY = Math.sin(betaRadians); // Kąt beta odpowiada sile grawitacji wzdłuż osi Y
-                const forceZ = Math.cos(betaRadians) * Math.cos(gammaRadians); // Kąty beta i gamma odpowiadają sile grawitacji wzdłuż osi Z
+                const forceX = Math.sin(gammaRadians);
+                const forceY = Math.sin(betaRadians);
+                const forceZ = Math.cos(betaRadians) * Math.cos(gammaRadians);
 
-                // Przemnożenie przez odpowiedni współczynnik, aby uzyskać siłę grawitacji w dół
-                const multiply = 20;
-                console.log('a', [forceX, forceY, forceZ]);
+                const multiply = 25;
+                // console.log('a', [forceX, forceY, forceZ]);
 
-                // Ustawienie siły grawitacji w stanie aplikacji
                 setGravity([
                     forceZ > 0 ? forceX * multiply : forceX * -multiply,
                     forceY * -multiply,
                     0
                     // forceZ * -multiply
                 ]);
-                const rotationX = MathUtils.degToRad(e.alpha); // Z
-                const rotationY = MathUtils.degToRad(e.beta); // X'
-                const rotationZ = MathUtils.degToRad(e.gamma); // Y''
-                // Obliczenie rotacji w radianach dla obiektu MySphere
+                const rotationX = MathUtils.degToRad(e.alpha);
+                const rotationY = MathUtils.degToRad(e.beta);
+                const rotationZ = MathUtils.degToRad(e.gamma);
 
-                // Przypisanie obliczonych wartości rotacji w radianach do obiektu MySphere.current
                 // if (MySphere.current) {
                 //     MySphere.current.rotation.x = rotationY - Math.PI / 2;
                 //     MySphere.current.rotation.y = rotationX;

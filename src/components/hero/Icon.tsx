@@ -64,9 +64,9 @@ export function Icon({ material, element, url }: any) {
 
         meshRef.current.position.x = newPosition[0];
         meshRef.current.position.y = newPosition[1] - 2.5;
-        meshRef.current.position.z = (linear * linear) / -3.2;
+        meshRef.current.position.z = (linear * linear) / -2.5;
 
-        meshRef.current.rotation.y = linear / HERO_DEPHTH - 50;
+        meshRef.current.rotation.y = (linear * 3) / HERO_DEPHTH - 50;
 
         // if (materialRef.current) {
         //     let valueTest: number = newPosition[0] / -3;

@@ -14,19 +14,20 @@ export const CameraEffects = () => {
         // camera.position.z = 1000;
     }, []);
     useFrame((_, delta) => {
-        let deley = delta * 3;
+        let delay = delta * 3;
         if (window.innerWidth > window.innerHeight) {
-            camera.position.z += (150 - camera.position.z) * (deley * 0.2);
+            camera.position.z += (150 - camera.position.z) * (delay * 0.2);
         } else {
-            camera.position.z += (200 - camera.position.z) * (deley * 0.2);
+            camera.position.z += (200 - camera.position.z) * (delay * 0.2);
         }
         camera.position.x +=
-            (move.current.x * 20 - camera.position.x) * deley * HERO_DEPHTH;
+            (move.current.x * 20 - camera.position.x) * delay * HERO_DEPHTH;
 
         // camera.position.y +=
         //     (move.current.y - window.scrollY / 30 - camera.position.y) *
-        //     deley *
-        //     20;
+        //     delay *
+        //     5;
+
         camera.position.y = move.current.y - window.scrollY / HERO_DEPHTH;
 
         // if (camera.position.y < -12) camera.position.y = -12;

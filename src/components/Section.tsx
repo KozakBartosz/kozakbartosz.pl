@@ -138,7 +138,7 @@ const Section = styled.section`
             content: '';
             position: absolute;
             top: 50%;
-            left: calc(-40px + 33px - 3px);
+            left: calc(-40px + 33px - 2px);
             width: calc(80px - 33px - 33px + 2px + 2px);
             height: 80px;
             background: linear-gradient(
@@ -154,7 +154,7 @@ const Section = styled.section`
         }
         &:nth-child(even)::after {
             left: auto;
-            right: calc(-40px + 33px - 3px);
+            right: calc(-40px + 33px - 2px);
         }
     }
 `;

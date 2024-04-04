@@ -23,7 +23,26 @@ function createArray(size: number, shift: number) {
         .filter((el) => !(Math.abs(el) < 1));
 }
 // const rubbish = createArray(31, -15);
-const rubbish = createArray(41, -20);
+
+function extractIntegersFromHash() {
+    const hash = window.location.hash;
+    const regex = /\d+/g;
+    const matches = hash.match(regex);
+    if (matches) {
+        return parseInt(matches.map((match) => parseInt(match, 10)).join(''));
+    } else {
+        return 0;
+    }
+}
+
+const hash = extractIntegersFromHash();
+// if hash includs numbers
+let rubbish: number[] = [];
+if (hash != undefined && hash > 0) {
+    rubbish = createArray(hash, -hash / 2);
+} else {
+    rubbish = createArray(41, -20);
+}
 // const rubbish = createArray(61, -30);
 
 export const Playground = () => {

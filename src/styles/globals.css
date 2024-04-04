@@ -16,6 +16,11 @@ body {
         sans-serif;
     color: white;
 }
+
+#__next > div {
+    background-color: transparent !important;
+}
+
 body {
     line-height: 2em;
     font-size: 20px;

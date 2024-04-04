@@ -11,15 +11,15 @@ export const CameraEffects = () => {
         gl.forceContextRestore();
 
         // Animation start postion
-        // camera.position.z = 1000;
+        camera.position.z = 80;
     }, []);
     useFrame((_, delta) => {
         let delay = delta * 3;
-        if (window.innerWidth > window.innerHeight) {
-            camera.position.z += (150 - camera.position.z) * (delay * 0.2);
-        } else {
-            camera.position.z += (200 - camera.position.z) * (delay * 0.2);
-        }
+        camera.position.z += (150 - camera.position.z) * (delay * 0.2);
+        // if (window.innerWidth > window.innerHeight) {
+        // } else {
+        camera.position.z += (160 - camera.position.z) * (delay * 0.2);
+        // }
         camera.position.x +=
             (move.current.x * 20 - camera.position.x) * delay * HERO_DEPHTH;
 

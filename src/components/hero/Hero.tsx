@@ -75,8 +75,11 @@ export const Hero = ({
                 <Mirror />
                 <Gradient />
 
-                <CameraEffects />
-                {/* <OrbitControls makeDefault /> */}
+                {window.location.hash.includes('orbit') ? (
+                    <OrbitControls makeDefault />
+                ) : (
+                    <CameraEffects />
+                )}
 
                 <fog attach="fog" color={0x090f0e} near={50} far={350} />
                 <Playground />

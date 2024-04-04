@@ -1,6 +1,8 @@
 import React, { useState, useEffect, useRef } from 'react';
 import styled from '@emotion/styled';
 
+const cursorSize = 120;
+
 interface Point {
     x: number;
     y: number;
@@ -23,7 +25,7 @@ const getAngle = (p1: Point, p2: Point) => {
 export const Cursor = () => {
     const CursorWrapperRef = useRef<HTMLDivElement>(null);
     const CursorInnerRef = useRef<HTMLDivElement>(null);
-    const stepsBack = 3;
+    const stepsBack = 4;
     let pos = { x: 0, y: 0 };
     let lastPos: { x: number; y: number }[] = Array.from(
         { length: stepsBack },
@@ -42,9 +44,11 @@ export const Cursor = () => {
         }
         if (CursorWrapperRef.current && CursorInnerRef.current) {
             if (dis > 5) {
-                CursorInnerRef.current.style.width = `${50 + dis * 0.9}px`;
+                CursorInnerRef.current.style.width = `${
+                    cursorSize - 5 + dis * 1.05
+                }px`;
             } else {
-                CursorInnerRef.current.style.width = `${50}px`;
+                CursorInnerRef.current.style.width = `${cursorSize}px`;
             }
             CursorWrapperRef.current.style.transform = `translate(${pos.x}px, ${pos.y}px) rotate(${lastAngle}deg)`;
         }
@@ -65,7 +69,7 @@ export const Cursor = () => {
     const handleTouchstart = () => {
         if (CursorInnerRef.current) {
             CursorInnerRef.current.style.opacity = '0';
-            CursorInnerRef.current.style.width = `${50}px`;
+            CursorInnerRef.current.style.width = `${cursorSize}px`;
         }
     };
 
@@ -99,10 +103,10 @@ const CursorWrapper = styled.div`
     position: fixed;
     left: 0;
     top: 0;
-    width: 50px;
-    height: 50px;
+    width: ${cursorSize}px;
+    height: ${cursorSize}px;
     pointer-events: none;
-    margin: -22px 0 0 -22px;
+    margin: ${cursorSize / -2 + 3}px 0 0 ${cursorSize / -2 + 3}px;
     z-index: 99999999;
 `;
 
@@ -119,30 +123,48 @@ const CursorInner = styled.div`
         rgba(0, 255, 163, 0.2),
         rgba(0, 255, 163, 0.3)
     );
-    border-radius: 25px;
+    border-radius: ${cursorSize - 2}px;
     box-shadow: 0 0 20px -2px rgba(0, 163, 255, 1),
         0 0 10px -2px rgba(0, 163, 255, 1) inset;
     box-sizing: border-box;
-    transition: transform 1.3s cubic-bezier(0.17, 1.58, 0.6, 1.01);
+    transition: transform 1.3s cubic-bezier(0.17, 1.58, 0.6, 1.01),
+        opacity 1.3s cubic-bezier(0.17, 1.58, 0.6, 1.01);
     /* opacity 1s ease; */
     transform: scale(0);
     opacity: 0;
     backdrop-filter: sepia(1) saturate(15) hue-rotate(280deg);
 
     body:hover & {
-        transform: scale(1.3);
+        transform: scale(0.75);
+        opacity: 0.6;
+    }
+    body:has(#Hero:hover) :is(&) {
+        transform: scale(1);
         opacity: 1;
     }
     body:has(a:hover) :is(&) {
-        transform: scale(2) !important;
-        backdrop-filter: invert(1) !important;
+        transform: scale(1.5) !important;
+        backdrop-filter: invert(1);
+        opacity: 1;
     }
-    body:active &,
-    body:has(a:active) :is(&) {
-        transform: scale(2);
+    body:active & {
+        transform: scale(0.85) !important;
         backdrop-filter: invert(1) sepia(1) saturate(5) hue-rotate(280deg);
         opacity: 1;
         animation: 10s GravityActive infinite
             cubic-bezier(0.17, 1.58, 0.6, 1.01);
+        transition: transform 0.3s cubic-bezier(0.17, 1.58, 0.6, 1.01),
+            opacity 0.3s cubic-bezier(0.17, 1.58, 0.6, 1.01);
+        opacity: 1;
+    }
+    body:has(a:active) :is(&) {
+        transform: scale(0.35) !important;
+        backdrop-filter: invert(1) sepia(1) saturate(5) hue-rotate(280deg);
+        opacity: 1;
+        animation: 10s GravityActive infinite
+            cubic-bezier(0.17, 1.58, 0.6, 1.01);
+        transition: transform 0.3s cubic-bezier(0.17, 1.58, 0.6, 1.01),
+            opacity 0.3s cubic-bezier(0.17, 1.58, 0.6, 1.01);
+        opacity: 1;
     }
 `;

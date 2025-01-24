@@ -118,7 +118,7 @@ const Section = styled.section`
     align-items: flex-start;
     justify-content: center;
     flex-direction: column;
-    margin: 70rem 0 20rem;
+    margin: 120rem 0 20rem;
     padding: 4rem 2rem;
     font-size: 1.8rem;
     line-height: 2.2em;
@@ -205,7 +205,8 @@ const Container = styled.div`
     position: relative;
     z-index: 5;
     max-width: 190rem;
-    padding: 30rem auto 10rem;
+    border-top: 20px solid transparent;
+    padding: 50rem auto 10rem;
     margin: calc(180rem - 60lvh) auto 10rem;
 
     @media (min-width: 1000px) {

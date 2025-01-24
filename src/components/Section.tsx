@@ -15,15 +15,19 @@ export const Sections = ({
                 <p>
                     Hi, I am a front-end developer with 10 years of experience
                     working on my own open source projects as well as doing
-                    full-time employment. I like working on projects where I can
-                    use my 3D knowledge in a way that is different from typical
-                    web applications.
+                    full-time employment.
+                </p>
+                <p>
+                    I enjoy working on projects where I can use my 3D knowledge
+                    in a creative way that is different from typical web
+                    applications, while also providing an effective and smoothly
+                    animated user interface.
                 </p>
                 <h2>Skills:</h2>
                 <p>
-                    ECMAScript 6+, Three.js, TypeScript, React,
-                    React-Three-Fiber, Next.js, Gatsby, GraphQL,
-                    Styled-components, Linux, Git.
+                    TypeScript, Three.js, React, Next.js, Tailwind,
+                    React-Three-Fiber, Gatsby, GraphQL, Styled-components, Sass,
+                    Linux, Git.
                 </p>
                 <Icon
                     ref={(el) => {
@@ -35,16 +39,24 @@ export const Sections = ({
                 <Curtain />
                 <h1>Graphic designer</h1>
                 <p>
-                    In addition to programming, I&apos;m interested in interface
-                    design, user experience and 3D graphics.
+                    In addition to programming, I also deals with graphic design
+                    of interfaces and 3D graphics.
+                </p>
+                <p>
+                    Because I designed myself, I feel confident in advising and
+                    discussing possible UX/UI solutions and it helps me make
+                    decisions as a front-end when something is not fully
+                    designed beforehand. Working on unusual projects, I gained
+                    experience in creating interfaces strongly related to 3D
+                    applications that require a slightly different approach.
                 </p>
                 <h2>Skills:</h2>
                 <p>
-                    Figma, user experience, user interface, Adobe Photoshop,
-                    Adobe Illustrator, photography.
+                    UI/UX: Figma, user experience, user interface, Adobe
+                    Photoshop, Adobe Illustrator, photography.
                 </p>
                 <p>
-                    Blender - modeling low and high poly, animations, physic
+                    Blender: modeling low and high poly, animations, physic
                     simulations, procedural materials and texturing.
                 </p>
                 <Icon
@@ -108,6 +120,8 @@ const Section = styled.section`
     flex-direction: column;
     margin: 70rem 0 20rem;
     padding: 4rem 2rem;
+    font-size: 1.8rem;
+    line-height: 2.2em;
 
     min-height: 50rem;
 

@@ -2,6 +2,23 @@
 html {
     font-size: 10px;
 }
+
+@media screen and (max-width: 2000px) {
+    html {
+        font-size: 9.3px;
+    }
+}
+@media screen and (max-width: 1600px) {
+    html {
+        font-size: 8.5px;
+    }
+}
+@media screen and (max-width: 1000px) {
+    html {
+        font-size: 10px;
+    }
+}
+
 html,
 body {
     /* background: #090f0e; */

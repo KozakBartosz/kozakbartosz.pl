@@ -37,7 +37,7 @@ export function Icon({ material, element, url }: any) {
 
         projectCamera.position.x = 0;
         projectCamera.position.y = window.scrollY / -HERO_DEPHTH;
-        projectCamera.position.z = 150;
+        projectCamera.position.z = 125;
         projectCamera.updateProjectionMatrix();
         projectCamera.updateMatrixWorld();
 
@@ -64,9 +64,15 @@ export function Icon({ material, element, url }: any) {
 
         meshRef.current.position.x = newPosition[0];
         meshRef.current.position.y = newPosition[1] - 2.5;
-        meshRef.current.position.z = (linear * linear) / -2.5;
+        meshRef.current.position.z = (linear * linear) / -2.5 + 10;
 
-        meshRef.current.rotation.y = (linear * 3) / HERO_DEPHTH - 50;
+        // slow animation with rotation sinsun style left 10deg left and right 10deg
+        let rotationAdd = Math.sin(state.clock.elapsedTime * 0.15) * 0.3;
+
+        console.log('rotationAdd', rotationAdd);
+
+        meshRef.current.rotation.y =
+            (linear * 4) / HERO_DEPHTH - 50 + rotationAdd;
 
         // if (materialRef.current) {
         //     let valueTest: number = newPosition[0] / -3;

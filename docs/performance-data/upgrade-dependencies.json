@@ -1,0 +1,131 @@
+{
+  "version": "0.1.0",
+  "name": "kozakbartosz",
+  "dependencies": {
+    "@react-three/cannon": {
+      "version": "4.9.0",
+      "resolved": "https://registry.npmjs.org/@react-three/cannon/-/cannon-4.9.0.tgz",
+      "overridden": false,
+      "dependencies": {
+        "cannon-es-debugger": {
+          "version": "1.0.0",
+          "resolved": "https://registry.npmjs.org/cannon-es-debugger/-/cannon-es-debugger-1.0.0.tgz",
+          "overridden": false,
+          "dependencies": {
+            "three": {
+              "version": "0.138.3"
+            }
+          }
+        }
+      }
+    },
+    "@react-three/drei": {
+      "version": "8.18.5",
+      "resolved": "https://registry.npmjs.org/@react-three/drei/-/drei-8.18.5.tgz",
+      "overridden": false,
+      "dependencies": {
+        "@react-spring/three": {
+          "version": "9.4.4",
+          "resolved": "https://registry.npmjs.org/@react-spring/three/-/three-9.4.4.tgz",
+          "overridden": false,
+          "dependencies": {
+            "three": {
+              "version": "0.138.3"
+            }
+          }
+        },
+        "meshline": {
+          "version": "2.0.4",
+          "resolved": "https://registry.npmjs.org/meshline/-/meshline-2.0.4.tgz",
+          "overridden": false,
+          "dependencies": {
+            "three": {
+              "version": "0.138.3"
+            }
+          }
+        },
+        "three-mesh-bvh": {
+          "version": "0.5.6",
+          "resolved": "https://registry.npmjs.org/three-mesh-bvh/-/three-mesh-bvh-0.5.6.tgz",
+          "overridden": false,
+          "dependencies": {
+            "three": {
+              "version": "0.138.3"
+            }
+          }
+        },
+        "three-stdlib": {
+          "version": "2.36.1",
+          "resolved": "https://registry.npmjs.org/three-stdlib/-/three-stdlib-2.36.1.tgz",
+          "overridden": false,
+          "dependencies": {
+            "three": {
+              "version": "0.138.3"
+            }
+          }
+        },
+        "three": {
+          "version": "0.138.3"
+        },
+        "troika-three-text": {
+          "version": "0.46.3",
+          "resolved": "https://registry.npmjs.org/troika-three-text/-/troika-three-text-0.46.3.tgz",
+          "overridden": false,
+          "dependencies": {
+            "three": {
+              "version": "0.138.3"
+            },
+            "troika-three-utils": {
+              "version": "0.46.0",
+              "resolved": "https://registry.npmjs.org/troika-three-utils/-/troika-three-utils-0.46.0.tgz",
+              "overridden": false,
+              "dependencies": {
+                "three": {
+                  "version": "0.138.3"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "@react-three/fiber": {
+      "version": "7.0.26",
+      "resolved": "https://registry.npmjs.org/@react-three/fiber/-/fiber-7.0.26.tgz",
+      "overridden": false,
+      "dependencies": {
+        "three": {
+          "version": "0.138.3"
+        }
+      }
+    },
+    "@react-three/postprocessing": {
+      "version": "2.3.2",
+      "resolved": "https://registry.npmjs.org/@react-three/postprocessing/-/postprocessing-2.3.2.tgz",
+      "overridden": false,
+      "dependencies": {
+        "postprocessing": {
+          "version": "6.26.3"
+        },
+        "three": {
+          "version": "0.138.3"
+        }
+      }
+    },
+    "postprocessing": {
+      "version": "6.26.3",
+      "resolved": "https://registry.npmjs.org/postprocessing/-/postprocessing-6.26.3.tgz",
+      "overridden": false,
+      "dependencies": {
+        "three": {
+          "version": "0.138.3"
+        }
+      }
+    },
+    "three": {
+      "version": "0.138.3",
+      "resolved": "https://registry.npmjs.org/three/-/three-0.138.3.tgz",
+      "overridden": false
+    }
+  }
+}

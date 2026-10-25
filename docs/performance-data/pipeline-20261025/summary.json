@@ -1,0 +1,325 @@
+[
+  {
+    "variant": "no-bloom-1",
+    "baseline": {
+      "trials": 5,
+      "frameMean": 24.353666189113707,
+      "frameP95Mean": 34.00000000000036,
+      "gpuElapsedMean": 47.36742252303882,
+      "over25": 188
+    },
+    "candidate": {
+      "trials": 5,
+      "frameMean": 21.240979238950946,
+      "frameP95Mean": 33.719999999999345,
+      "gpuElapsedMean": 27.119296674143403,
+      "over25": 129
+    }
+  },
+  {
+    "variant": "no-bloom-2",
+    "baseline": {
+      "trials": 5,
+      "frameMean": 18.718332142477415,
+      "frameP95Mean": 24.079999999998837,
+      "gpuElapsedMean": 33.38373868399771,
+      "over25": 57
+    },
+    "candidate": {
+      "trials": 5,
+      "frameMean": 17.137602734029866,
+      "frameP95Mean": 20.73999999999942,
+      "gpuElapsedMean": 15.267684809557888,
+      "over25": 15
+    }
+  },
+  {
+    "variant": "no-blooms",
+    "baseline": {
+      "trials": 5,
+      "frameMean": 16.660677685950407,
+      "frameP95Mean": 17.54000000000233,
+      "gpuElapsedMean": 30.30835637638511,
+      "over25": 0
+    },
+    "candidate": {
+      "trials": 5,
+      "frameMean": 16.658636556473837,
+      "frameP95Mean": 17.56000000000349,
+      "gpuElapsedMean": 11.043752910110193,
+      "over25": 0
+    }
+  },
+  {
+    "variant": "no-dof",
+    "baseline": {
+      "trials": 5,
+      "frameMean": 16.862477440758205,
+      "frameP95Mean": 17.580000000004656,
+      "gpuElapsedMean": 34.25505596448123,
+      "over25": 7
+    },
+    "candidate": {
+      "trials": 5,
+      "frameMean": 16.66551101928375,
+      "frameP95Mean": 17.43999999999942,
+      "gpuElapsedMean": 10.152769230041324,
+      "over25": 0
+    }
+  },
+  {
+    "variant": "no-mirror",
+    "baseline": {
+      "trials": 5,
+      "frameMean": 16.65746887052339,
+      "frameP95Mean": 17.480000000004658,
+      "gpuElapsedMean": 23.97680900522201,
+      "over25": 0
+    },
+    "candidate": {
+      "trials": 5,
+      "frameMean": 16.66678595041327,
+      "frameP95Mean": 17.6,
+      "gpuElapsedMean": 20.27646055730607,
+      "over25": 0
+    }
+  },
+  {
+    "variant": "no-dof-no-mirror",
+    "baseline": {
+      "trials": 5,
+      "frameMean": 16.683307355371916,
+      "frameP95Mean": 17.579999999998837,
+      "gpuElapsedMean": 28.343853683539947,
+      "over25": 1
+    },
+    "candidate": {
+      "trials": 5,
+      "frameMean": 16.669381267217613,
+      "frameP95Mean": 17.619999999995343,
+      "gpuElapsedMean": 12.516276515977962,
+      "over25": 0
+    }
+  },
+  {
+    "variant": "no-effects",
+    "baseline": {
+      "trials": 5,
+      "frameMean": 16.66711404958684,
+      "frameP95Mean": 17.60000000000582,
+      "gpuElapsedMean": 29.250583323191357,
+      "over25": 0
+    },
+    "candidate": {
+      "trials": 5,
+      "frameMean": 16.670772920110178,
+      "frameP95Mean": 17.480000000004658,
+      "gpuElapsedMean": 3.4119029428925622,
+      "over25": 0
+    }
+  },
+  {
+    "variant": "msaa-4",
+    "baseline": {
+      "trials": 5,
+      "frameMean": 20.97297083950339,
+      "frameP95Mean": 27.280000000004655,
+      "gpuElapsedMean": 46.05124444650356,
+      "over25": 91
+    },
+    "candidate": {
+      "trials": 5,
+      "frameMean": 20.952744458663865,
+      "frameP95Mean": 24.120000000001163,
+      "gpuElapsedMean": 44.943016739935864,
+      "over25": 98
+    }
+  },
+  {
+    "variant": "msaa-2",
+    "baseline": {
+      "trials": 5,
+      "frameMean": 26.28450736073058,
+      "frameP95Mean": 34.06000000000349,
+      "gpuElapsedMean": 53.83326853407938,
+      "over25": 219
+    },
+    "candidate": {
+      "trials": 5,
+      "frameMean": 24.55147728587641,
+      "frameP95Mean": 33.8,
+      "gpuElapsedMean": 48.95534841735193,
+      "over25": 194
+    }
+  },
+  {
+    "variant": "msaa-0",
+    "baseline": {
+      "trials": 5,
+      "frameMean": 26.170324553744013,
+      "frameP95Mean": 34.04000000000233,
+      "gpuElapsedMean": 52.767824002694546,
+      "over25": 220
+    },
+    "candidate": {
+      "trials": 5,
+      "frameMean": 21.8526865253605,
+      "frameP95Mean": 33.460000000009316,
+      "gpuElapsedMean": 43.739898228182525,
+      "over25": 139
+    }
+  },
+  {
+    "variant": "bloom-scale-0.25",
+    "baseline": {
+      "trials": 5,
+      "frameMean": 26.402223928924975,
+      "frameP95Mean": 34.2,
+      "gpuElapsedMean": 51.41733192732214,
+      "over25": 219
+    },
+    "candidate": {
+      "trials": 5,
+      "frameMean": 24.359090289854983,
+      "frameP95Mean": 33.860000000009315,
+      "gpuElapsedMean": 49.30123666689603,
+      "over25": 188
+    }
+  },
+  {
+    "variant": "bloom-scale-0.375",
+    "baseline": {
+      "trials": 5,
+      "frameMean": 26.383599227088744,
+      "frameP95Mean": 34.16000000002096,
+      "gpuElapsedMean": 52.24377716570208,
+      "over25": 219
+    },
+    "candidate": {
+      "trials": 5,
+      "frameMean": 25.248202462884798,
+      "frameP95Mean": 34.099999999988356,
+      "gpuElapsedMean": 50.01693628821793,
+      "over25": 204
+    }
+  },
+  {
+    "variant": "kernel-3",
+    "baseline": {
+      "trials": 5,
+      "frameMean": 25.19607456895273,
+      "frameP95Mean": 34.00000000001164,
+      "gpuElapsedMean": 50.26583023587772,
+      "over25": 205
+    },
+    "candidate": {
+      "trials": 5,
+      "frameMean": 24.131327678392896,
+      "frameP95Mean": 33.84000000000233,
+      "gpuElapsedMean": 51.72779214683957,
+      "over25": 184
+    }
+  },
+  {
+    "variant": "kernel-4",
+    "baseline": {
+      "trials": 5,
+      "frameMean": 25.345309109294604,
+      "frameP95Mean": 34.12000000000698,
+      "gpuElapsedMean": 51.54619225690557,
+      "over25": 201
+    },
+    "candidate": {
+      "trials": 5,
+      "frameMean": 23.60598538473055,
+      "frameP95Mean": 33.99999999998836,
+      "gpuElapsedMean": 49.24575284840155,
+      "over25": 173
+    }
+  },
+  {
+    "variant": "dof-height-360",
+    "baseline": {
+      "trials": 5,
+      "frameMean": 25.326474086386067,
+      "frameP95Mean": 34.1,
+      "gpuElapsedMean": 51.34446213185263,
+      "over25": 204
+    },
+    "candidate": {
+      "trials": 5,
+      "frameMean": 25.813555796945586,
+      "frameP95Mean": 34.179999999993015,
+      "gpuElapsedMean": 52.848186062158355,
+      "over25": 210
+    }
+  },
+  {
+    "variant": "dof-height-720",
+    "baseline": {
+      "trials": 5,
+      "frameMean": 25.857733544504413,
+      "frameP95Mean": 34.11999999999534,
+      "gpuElapsedMean": 53.011343022840876,
+      "over25": 212
+    },
+    "candidate": {
+      "trials": 5,
+      "frameMean": 25.49114997413843,
+      "frameP95Mean": 34.1,
+      "gpuElapsedMean": 52.68702831711331,
+      "over25": 206
+    }
+  },
+  {
+    "variant": "render-scale-0.75",
+    "baseline": {
+      "trials": 5,
+      "frameMean": 24.592563443538758,
+      "frameP95Mean": 33.959999999974386,
+      "gpuElapsedMean": 50.63363716457384,
+      "over25": 191
+    },
+    "candidate": {
+      "trials": 5,
+      "frameMean": 17.79468918493173,
+      "frameP95Mean": 23.820000000018627,
+      "gpuElapsedMean": 38.296249373774955,
+      "over25": 38
+    }
+  },
+  {
+    "variant": "render-scale-0.833333",
+    "baseline": {
+      "trials": 5,
+      "frameMean": 25.49076469640829,
+      "frameP95Mean": 34.079999999993014,
+      "gpuElapsedMean": 51.45980231171236,
+      "over25": 202
+    },
+    "candidate": {
+      "trials": 5,
+      "frameMean": 20.78485703941346,
+      "frameP95Mean": 33.619999999983705,
+      "gpuElapsedMean": 42.00884324650917,
+      "over25": 121
+    }
+  },
+  {
+    "variant": "smoothing-1",
+    "baseline": {
+      "trials": 5,
+      "frameMean": 25.711660648295144,
+      "frameP95Mean": 33.93999999999069,
+      "gpuElapsedMean": 51.8171970427684,
+      "over25": 212
+    },
+    "candidate": {
+      "trials": 5,
+      "frameMean": 26.086997021283544,
+      "frameP95Mean": 34.15999999999767,
+      "gpuElapsedMean": 52.40116796435724,
+      "over25": 214
+    }
+  }
+]

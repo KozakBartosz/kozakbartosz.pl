@@ -42,6 +42,10 @@ export function Cone({ force, material, ...props }: Props) {
 
     useEffect(() => {
         api.velocity.set(0, 0, 40);
+        // Reuse scratch vectors for the lifetime of this body's subscription.
+        const target = new Vector3();
+        const position = new Vector3();
+        const direction = new Vector3();
         const unsubscribe = api.position.subscribe(([x, y, z]) => {
             // console.log(materialRef.current);
             // if (materialRef.current && materialRef.current.uniforms) {
@@ -57,15 +61,14 @@ export function Cone({ force, material, ...props }: Props) {
             if (z < -130) api.applyImpulse([0, 0, 5], [0, 0, 0]);
             if (y > 100) api.applyImpulse([0, -10, 0], [0, 0, 0]);
             if (localForce.current && !phone.current) {
-                let v2 = new Vector3(
-                        localForceVec.current[0],
-                        localForceVec.current[1],
-                        localForceVec.current[2] * -1
-                    ),
-                    v1 = new Vector3(x, y, z),
-                    direction = new Vector3();
-                direction.subVectors(v2, v1);
-                let distance = v1.distanceTo(v2);
+                target.set(
+                    localForceVec.current[0],
+                    localForceVec.current[1],
+                    localForceVec.current[2] * -1
+                );
+                position.set(x, y, z);
+                direction.subVectors(target, position);
+                const distance = position.distanceTo(target);
                 if (distance < 75) {
                     if (distance > 15) {
                         api.velocity.set(

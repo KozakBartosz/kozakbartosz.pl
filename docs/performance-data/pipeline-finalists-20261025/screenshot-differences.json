@@ -1,0 +1,32 @@
+[
+  {
+    "variant": "bloom-luminance-half",
+    "maeRGB": 0.2381680184823495,
+    "max": 9,
+    "note": "CSS-composited screenshots; scene and DOM together"
+  },
+  {
+    "variant": "msaa-4",
+    "maeRGB": 0.0,
+    "max": 0,
+    "note": "CSS-composited screenshots; scene and DOM together"
+  },
+  {
+    "variant": "render-scale-0.666667",
+    "maeRGB": 1.6705777542679396,
+    "max": 103,
+    "note": "CSS-composited screenshots; scene and DOM together"
+  },
+  {
+    "variant": "render-scale-0.75",
+    "maeRGB": 1.2003278040002894,
+    "max": 100,
+    "note": "CSS-composited screenshots; scene and DOM together"
+  },
+  {
+    "variant": "render-scale-0.833333",
+    "maeRGB": 0.7844691749855324,
+    "max": 111,
+    "note": "CSS-composited screenshots; scene and DOM together"
+  }
+]

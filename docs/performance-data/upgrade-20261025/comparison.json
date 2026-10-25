@@ -1,0 +1,9 @@
+{
+  "maeRGB": 0.154076990198206,
+  "max": 243,
+  "sameFrozenScene": true,
+  "physicsMatricesRestored": true,
+  "baseline": "@react-three/postprocessing 2.2.5 / nested postprocessing 6.24.1",
+  "candidate": "@react-three/postprocessing 2.3.2 / postprocessing 6.26.3",
+  "timings": "single smoke sample only; not a performance claim"
+}

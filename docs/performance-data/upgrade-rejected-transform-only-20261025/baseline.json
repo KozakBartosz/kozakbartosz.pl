@@ -1,0 +1,421 @@
+{
+  "targets": [
+    {
+      "name": "",
+      "width": 512,
+      "height": 512,
+      "samples": 0,
+      "type": 1009,
+      "format": 1023,
+      "depth": true,
+      "depthType": 1012
+    },
+    {
+      "name": "",
+      "width": 512,
+      "height": 512,
+      "samples": 0,
+      "type": 1009,
+      "format": 1023,
+      "depth": false
+    },
+    {
+      "name": "",
+      "width": 512,
+      "height": 512,
+      "samples": 0,
+      "type": 1009,
+      "format": 1023,
+      "depth": false
+    },
+    {
+      "name": "",
+      "width": 512,
+      "height": 512,
+      "samples": 0,
+      "type": 1009,
+      "format": 1023,
+      "depth": true
+    },
+    {
+      "name": "EffectComposer.Buffer",
+      "width": 2545,
+      "height": 1440,
+      "samples": 8,
+      "type": 1016,
+      "format": 1023,
+      "depth": true,
+      "depthType": 1014
+    },
+    {
+      "name": "DoF.CoC",
+      "width": 2545,
+      "height": 1440,
+      "samples": 0,
+      "type": 1009,
+      "format": 1023,
+      "depth": false
+    },
+    {
+      "name": "Blur.Target.A",
+      "width": 1273,
+      "height": 720,
+      "samples": 0,
+      "type": 1009,
+      "format": 1023,
+      "depth": false
+    },
+    {
+      "name": "Blur.Target.B",
+      "width": 1273,
+      "height": 720,
+      "samples": 0,
+      "type": 1009,
+      "format": 1023,
+      "depth": false
+    },
+    {
+      "name": "DoF.CoC.Blurred",
+      "width": 1273,
+      "height": 720,
+      "samples": 0,
+      "type": 1009,
+      "format": 1023,
+      "depth": false
+    },
+    {
+      "name": "DoF.Masked.Far",
+      "width": 2545,
+      "height": 1440,
+      "samples": 0,
+      "type": 1016,
+      "format": 1023,
+      "depth": false
+    },
+    {
+      "name": "DoF.Intermediate",
+      "width": 1273,
+      "height": 720,
+      "samples": 0,
+      "type": 1016,
+      "format": 1023,
+      "depth": false
+    },
+    {
+      "name": "DoF.Bokeh.Far",
+      "width": 1273,
+      "height": 720,
+      "samples": 0,
+      "type": 1016,
+      "format": 1023,
+      "depth": false
+    },
+    {
+      "name": "DoF.Bokeh.Near",
+      "width": 1273,
+      "height": 720,
+      "samples": 0,
+      "type": 1016,
+      "format": 1023,
+      "depth": false
+    },
+    {
+      "name": "Bloom.Target",
+      "width": 2545,
+      "height": 1440,
+      "samples": 0,
+      "type": 1016,
+      "format": 1023,
+      "depth": false
+    },
+    {
+      "name": "Blur.Target.A",
+      "width": 1273,
+      "height": 720,
+      "samples": 0,
+      "type": 1016,
+      "format": 1023,
+      "depth": false
+    },
+    {
+      "name": "Blur.Target.B",
+      "width": 1273,
+      "height": 720,
+      "samples": 0,
+      "type": 1016,
+      "format": 1023,
+      "depth": false
+    },
+    {
+      "name": "Bloom.Target",
+      "width": 2545,
+      "height": 1440,
+      "samples": 0,
+      "type": 1016,
+      "format": 1023,
+      "depth": false
+    },
+    {
+      "name": "Blur.Target.A",
+      "width": 1273,
+      "height": 720,
+      "samples": 0,
+      "type": 1016,
+      "format": 1023,
+      "depth": false
+    },
+    {
+      "name": "Blur.Target.B",
+      "width": 1273,
+      "height": 720,
+      "samples": 0,
+      "type": 1016,
+      "format": 1023,
+      "depth": false
+    }
+  ],
+  "allocatedTargets": [
+    {
+      "name": "EffectComposer.Buffer",
+      "width": 2545,
+      "height": 1440,
+      "samples": 8,
+      "type": 1016,
+      "format": 1023,
+      "depth": true
+    },
+    {
+      "name": "EffectComposer.Buffer",
+      "width": 2545,
+      "height": 1440,
+      "samples": 8,
+      "type": 1016,
+      "format": 1023,
+      "depth": true
+    },
+    {
+      "name": "DoF.Intermediate",
+      "width": 1273,
+      "height": 720,
+      "samples": 0,
+      "type": 1016,
+      "format": 1023,
+      "depth": false
+    },
+    {
+      "name": "DoF.Masked.Far",
+      "width": 2545,
+      "height": 1440,
+      "samples": 0,
+      "type": 1016,
+      "format": 1023,
+      "depth": false
+    },
+    {
+      "name": "DoF.Bokeh.Near",
+      "width": 1273,
+      "height": 720,
+      "samples": 0,
+      "type": 1016,
+      "format": 1023,
+      "depth": false
+    },
+    {
+      "name": "DoF.Bokeh.Far",
+      "width": 1273,
+      "height": 720,
+      "samples": 0,
+      "type": 1016,
+      "format": 1023,
+      "depth": false
+    },
+    {
+      "name": "DoF.CoC",
+      "width": 2545,
+      "height": 1440,
+      "samples": 0,
+      "type": 1009,
+      "format": 1023,
+      "depth": false
+    },
+    {
+      "name": "DoF.CoC.Blurred",
+      "width": 1273,
+      "height": 720,
+      "samples": 0,
+      "type": 1009,
+      "format": 1023,
+      "depth": false
+    },
+    {
+      "name": "Bloom.Target",
+      "width": 2545,
+      "height": 1440,
+      "samples": 0,
+      "type": 1016,
+      "format": 1023,
+      "depth": false
+    },
+    {
+      "name": "Bloom.Target",
+      "width": 2545,
+      "height": 1440,
+      "samples": 0,
+      "type": 1016,
+      "format": 1023,
+      "depth": false
+    }
+  ],
+  "renders": [
+    {
+      "target": "screen"
+    },
+    {
+      "target": "screen",
+      "material": ""
+    },
+    {
+      "target": "screen",
+      "material": ""
+    },
+    {
+      "target": "screen",
+      "material": ""
+    },
+    {
+      "target": "screen",
+      "material": ""
+    },
+    {
+      "target": "screen",
+      "material": ""
+    },
+    {
+      "target": "EffectComposer.Buffer"
+    },
+    {
+      "target": "DoF.CoC",
+      "material": "CircleOfConfusionMaterial"
+    },
+    {
+      "target": "Blur.Target.A",
+      "material": "KawaseBlurMaterial"
+    },
+    {
+      "target": "Blur.Target.B",
+      "material": "KawaseBlurMaterial"
+    },
+    {
+      "target": "Blur.Target.A",
+      "material": "KawaseBlurMaterial"
+    },
+    {
+      "target": "DoF.CoC.Blurred",
+      "material": "KawaseBlurMaterial"
+    },
+    {
+      "target": "DoF.Masked.Far",
+      "material": "MaskMaterial"
+    },
+    {
+      "target": "DoF.Intermediate",
+      "material": "BokehMaterial"
+    },
+    {
+      "target": "DoF.Bokeh.Far",
+      "material": "BokehMaterial"
+    },
+    {
+      "target": "DoF.Intermediate",
+      "material": "BokehMaterial"
+    },
+    {
+      "target": "DoF.Bokeh.Near",
+      "material": "BokehMaterial"
+    },
+    {
+      "target": "Bloom.Target",
+      "material": "LuminanceMaterial"
+    },
+    {
+      "target": "Blur.Target.A",
+      "material": "KawaseBlurMaterial"
+    },
+    {
+      "target": "Blur.Target.B",
+      "material": "KawaseBlurMaterial"
+    },
+    {
+      "target": "Blur.Target.A",
+      "material": "KawaseBlurMaterial"
+    },
+    {
+      "target": "Blur.Target.B",
+      "material": "KawaseBlurMaterial"
+    },
+    {
+      "target": "Bloom.Target",
+      "material": "KawaseBlurMaterial"
+    },
+    {
+      "target": "Bloom.Target",
+      "material": "LuminanceMaterial"
+    },
+    {
+      "target": "Blur.Target.A",
+      "material": "KawaseBlurMaterial"
+    },
+    {
+      "target": "Blur.Target.B",
+      "material": "KawaseBlurMaterial"
+    },
+    {
+      "target": "Blur.Target.A",
+      "material": "KawaseBlurMaterial"
+    },
+    {
+      "target": "Blur.Target.B",
+      "material": "KawaseBlurMaterial"
+    },
+    {
+      "target": "Blur.Target.A",
+      "material": "KawaseBlurMaterial"
+    },
+    {
+      "target": "Blur.Target.B",
+      "material": "KawaseBlurMaterial"
+    },
+    {
+      "target": "Blur.Target.A",
+      "material": "KawaseBlurMaterial"
+    },
+    {
+      "target": "Blur.Target.B",
+      "material": "KawaseBlurMaterial"
+    },
+    {
+      "target": "Blur.Target.A",
+      "material": "KawaseBlurMaterial"
+    },
+    {
+      "target": "Bloom.Target",
+      "material": "KawaseBlurMaterial"
+    },
+    {
+      "target": "screen",
+      "material": "EffectMaterial"
+    }
+  ],
+  "resolves": 1,
+  "multisampleAllocations": [],
+  "mirrors": 1,
+  "bloomKernels": [
+    null,
+    null
+  ],
+  "effects": [
+    "DepthOfFieldEffect",
+    "BloomEffect",
+    "BloomEffect"
+  ]
+}

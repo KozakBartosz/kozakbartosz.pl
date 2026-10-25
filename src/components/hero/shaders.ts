@@ -11,6 +11,8 @@ export const fragmentShader = `
   uniform vec3 myColor;
   uniform vec3 myPosition;
   uniform mat4 modelMatrix;
+  uniform bool useGradientMatrix;
+  uniform mat4 gradientMatrix;
 
   vec3 phong() {
     vec3 n = normalize(Normal);
@@ -32,7 +34,7 @@ export const fragmentShader = `
   void main() {
     float ramp = (Position.x + 13.0) / 25.0 + myPosition.x;
     
-    vec4 localPosition = modelMatrix * vec4(Position, 1.0);
+    vec4 localPosition = (useGradientMatrix ? gradientMatrix : modelMatrix) * vec4(Position, 1.0);
     float AlphaRamp = (localPosition.y + 10.0) / 100.0;
     float AlphaRamp2 = (localPosition.y - 305.0) / 100.0;
     float AlphaRamp3 = (localPosition.y - 10.0) / 100.0;
@@ -57,7 +59,7 @@ export const fragmentShader = `
 
 
 // void main() {
-//   vec4 localPosition = modelMatrix * vec4(Position, 1.0);
+//   vec4 localPosition = (useGradientMatrix ? gradientMatrix : modelMatrix) * vec4(Position, 1.0);
 //   float AlphaRamp = (localPosition.y + 10.0) / 100.0;
   
 //   float ramp = (Position.x + 13.0) / 25.0;

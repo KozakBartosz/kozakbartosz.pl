@@ -1,0 +1,91 @@
+{
+  "targets": [
+    {
+      "name": "",
+      "width": 512,
+      "height": 512,
+      "samples": 0,
+      "type": 1009,
+      "format": 1023,
+      "depth": true,
+      "depthType": 1012
+    },
+    {
+      "name": "",
+      "width": 512,
+      "height": 512,
+      "samples": 0,
+      "type": 1009,
+      "format": 1023,
+      "depth": false
+    },
+    {
+      "name": "",
+      "width": 512,
+      "height": 512,
+      "samples": 0,
+      "type": 1009,
+      "format": 1023,
+      "depth": false
+    },
+    {
+      "name": "",
+      "width": 512,
+      "height": 512,
+      "samples": 0,
+      "type": 1009,
+      "format": 1023,
+      "depth": true
+    },
+    {
+      "name": "EffectComposer.Buffer",
+      "width": 2545,
+      "height": 1440,
+      "samples": 8,
+      "type": 1016,
+      "format": 1023,
+      "depth": true,
+      "depthType": 1014
+    }
+  ],
+  "renders": [
+    {
+      "target": "screen"
+    },
+    {
+      "target": "screen",
+      "material": ""
+    },
+    {
+      "target": "screen",
+      "material": ""
+    },
+    {
+      "target": "screen",
+      "material": ""
+    },
+    {
+      "target": "screen",
+      "material": ""
+    },
+    {
+      "target": "screen",
+      "material": ""
+    },
+    {
+      "target": "EffectComposer.Buffer"
+    },
+    {
+      "target": "screen",
+      "material": "EffectMaterial"
+    }
+  ],
+  "resolves": 1,
+  "multisampleAllocations": [],
+  "mirrors": 1,
+  "bloomKernels": [
+    null,
+    null
+  ],
+  "effects": []
+}

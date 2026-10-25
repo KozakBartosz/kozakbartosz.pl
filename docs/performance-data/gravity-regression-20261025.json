@@ -1,0 +1,18 @@
+{
+  "baselineCommit": "0b822c1",
+  "harness": "node scripts/check-gravity.cjs",
+  "reproduction": {
+    "action": "mount, advance 1000ms, contextmenu, advance 6000ms",
+    "expectedGravity": [0, -100, 0],
+    "baselineActualGravity": [0, -0.2, 0],
+    "baselineFailure": "intro must not override an explicit toggle"
+  },
+  "afterFix": {
+    "earlyToggle": "pass",
+    "rapidOffThenOn": "pass",
+    "blurReleasesAttraction": "pass",
+    "unmountCancelsTimersAndListeners": "pass",
+    "remountToggle": "pass"
+  },
+  "scope": "Executes the real Playground effect with deterministic timers and EventTargets; browser/worker integration is verified separately. Steady-state RMB after intro worked in the baseline production browser."
+}

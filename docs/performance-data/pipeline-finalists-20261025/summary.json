@@ -1,0 +1,87 @@
+[
+  {
+    "variant": "msaa-4",
+    "baseline": {
+      "trials": 5,
+      "frameMean": 27.451739787732937,
+      "frameP95Mean": 37.03999999999942,
+      "gpuElapsedMean": null,
+      "over25": 239
+    },
+    "candidate": {
+      "trials": 5,
+      "frameMean": 27.44835585585586,
+      "frameP95Mean": 36.98000000000029,
+      "gpuElapsedMean": null,
+      "over25": 248
+    }
+  },
+  {
+    "variant": "bloom-luminance-half",
+    "baseline": {
+      "trials": 5,
+      "frameMean": 27.65416840740027,
+      "frameP95Mean": 39.02000000000116,
+      "gpuElapsedMean": null,
+      "over25": 244
+    },
+    "candidate": {
+      "trials": 5,
+      "frameMean": 26.048134410393043,
+      "frameP95Mean": 35.54000000000233,
+      "gpuElapsedMean": null,
+      "over25": 231
+    }
+  },
+  {
+    "variant": "render-scale-0.833333",
+    "baseline": {
+      "trials": 5,
+      "frameMean": 28.908958941038254,
+      "frameP95Mean": 40.06000000000349,
+      "gpuElapsedMean": null,
+      "over25": 261
+    },
+    "candidate": {
+      "trials": 5,
+      "frameMean": 22.159482856360007,
+      "frameP95Mean": 32.92000000000407,
+      "gpuElapsedMean": null,
+      "over25": 170
+    }
+  },
+  {
+    "variant": "render-scale-0.75",
+    "baseline": {
+      "trials": 5,
+      "frameMean": 27.122437654537652,
+      "frameP95Mean": 37.37999999999884,
+      "gpuElapsedMean": null,
+      "over25": 249
+    },
+    "candidate": {
+      "trials": 5,
+      "frameMean": 20.120920755150216,
+      "frameP95Mean": 29.05999999999767,
+      "gpuElapsedMean": null,
+      "over25": 117
+    }
+  },
+  {
+    "variant": "render-scale-0.666667",
+    "baseline": {
+      "trials": 5,
+      "frameMean": 27.981584084084044,
+      "frameP95Mean": 37.62000000000116,
+      "gpuElapsedMean": null,
+      "over25": 252
+    },
+    "candidate": {
+      "trials": 5,
+      "frameMean": 18.27195014345623,
+      "frameP95Mean": 28.079999999993014,
+      "gpuElapsedMean": null,
+      "over25": 97
+    }
+  }
+]

@@ -1,0 +1,50 @@
+npm error code ERESOLVE
+npm error ERESOLVE could not resolve
+npm error
+npm error While resolving: eslint-plugin-import@2.32.0
+npm error Found: eslint@10.13.0
+npm error node_modules/eslint
+npm error   dev eslint@"10.13.0" from the root project
+npm error   peer eslint@"^6.0.0 || ^7.0.0 || >=8.0.0" from @eslint-community/eslint-utils@4.10.1
+npm error   node_modules/@eslint-community/eslint-utils
+npm error     @eslint-community/eslint-utils@"^4.8.0" from eslint@10.13.0
+npm error     @eslint-community/eslint-utils@"^4.9.1" from @typescript-eslint/utils@8.72.0
+npm error     node_modules/eslint-config-next/node_modules/typescript-eslint/node_modules/@typescript-eslint/utils
+npm error       @typescript-eslint/utils@"8.72.0" from typescript-eslint@8.72.0
+npm error       node_modules/eslint-config-next/node_modules/typescript-eslint
+npm error         typescript-eslint@"^8.56.0" from eslint-config-next@16.4.3
+npm error         node_modules/eslint-config-next
+npm error       2 more (@typescript-eslint/eslint-plugin, @typescript-eslint/type-utils)
+npm error   9 more (@eslint-community/eslint-utils, eslint-config-next, ...)
+npm error
+npm error Could not resolve dependency:
+npm error peer eslint@"^2 || ^3 || ^4 || ^5 || ^6 || ^7.2.0 || ^8 || ^9" from eslint-plugin-import@2.32.0
+npm error node_modules/eslint-config-next/node_modules/eslint-plugin-import
+npm error   eslint-plugin-import@"^2.32.0" from eslint-config-next@16.4.3
+npm error   node_modules/eslint-config-next
+npm error     dev eslint-config-next@"16.4.3" from the root project
+npm error   peerOptional eslint-plugin-import@"*" from eslint-import-resolver-typescript@3.10.1
+npm error   node_modules/eslint-config-next/node_modules/eslint-import-resolver-typescript
+npm error     eslint-import-resolver-typescript@"^3.5.2" from eslint-config-next@16.4.3
+npm error     node_modules/eslint-config-next
+npm error       dev eslint-config-next@"16.4.3" from the root project
+npm error
+npm error Conflicting peer dependency: eslint@9.39.5
+npm error node_modules/eslint
+npm error   peer eslint@"^2 || ^3 || ^4 || ^5 || ^6 || ^7.2.0 || ^8 || ^9" from eslint-plugin-import@2.32.0
+npm error   node_modules/eslint-config-next/node_modules/eslint-plugin-import
+npm error     eslint-plugin-import@"^2.32.0" from eslint-config-next@16.4.3
+npm error     node_modules/eslint-config-next
+npm error       dev eslint-config-next@"16.4.3" from the root project
+npm error     peerOptional eslint-plugin-import@"*" from eslint-import-resolver-typescript@3.10.1
+npm error     node_modules/eslint-config-next/node_modules/eslint-import-resolver-typescript
+npm error       eslint-import-resolver-typescript@"^3.5.2" from eslint-config-next@16.4.3
+npm error       node_modules/eslint-config-next
+npm error         dev eslint-config-next@"16.4.3" from the root project
+npm error
+npm error Fix the upstream dependency conflict, or retry this command with --no-strict-peer-deps, --force, or --legacy-peer-deps to accept an incorrect (and potentially broken) dependency resolution.
+npm error
+npm error
+npm error For a full report see:
+npm error /Users/bartosz/.npm/_logs/2026-10-25T18_16_27_072Z-eresolve-report.txt
+npm error A complete log of this run can be found in: /Users/bartosz/.npm/_logs/2026-10-25T18_16_27_072Z-debug-0.log

@@ -77,67 +77,51 @@ export const Playground = () => {
 
     useEffect(() => {
         if (MySphere.current) MySphere.current.userData.scale = 0.1;
-        setTimeout(() => {
+        // Every new gravity choice supersedes intro/release impulses.
+        const timers = new Set<ReturnType<typeof setTimeout>>();
+        const later = (callback: () => void, delay: number) => {
+            const timer = setTimeout(() => {
+                timers.delete(timer);
+                callback();
+            }, delay);
+            timers.add(timer);
+        };
+        const cancelSequence = () => {
+            timers.forEach(clearTimeout);
+            timers.clear();
+        };
+        later(() => {
             setGravity([0, 0, 0]);
-            setTimeout(() => {
-                setGravity([0, 0, -10]);
-            }, 100);
-            setTimeout(() => {
-                setGravity([20, 10, -20]);
-            }, 300);
-            setTimeout(() => {
+            later(() => setGravity([0, 0, -10]), 100);
+            later(() => setGravity([20, 10, -20]), 300);
+            later(() => {
                 if (MySphere.current) MySphere.current.userData.scale = 1;
                 setGravity([-10, -20, 0]);
             }, 500);
-            setTimeout(() => {
-                setGravity([-0.1, -0.2, 0]);
-            }, 700);
-            setTimeout(() => {
-                setGravity([0, -0.2, 0]);
-            }, 900);
+            later(() => setGravity([-0.1, -0.2, 0]), 700);
+            later(() => setGravity([0, -0.2, 0]), 900);
         }, 4000);
 
-        document.body.addEventListener('pointerup', (e) => {
-            // console.log('pointerdown', e.buttons);
-            setModeActive(false);
-        });
-        document.body.addEventListener('pointerdown', (e) => {
-            // console.log('pointerdown', e.buttons);
+        const release = () => setModeActive(false);
+        const grab = (e: PointerEvent) => {
             if (e.buttons === 1) setModeActive(true);
-        });
-
-        document.body.addEventListener('mouseleave', () => {
-            setModeActive(false);
-        });
-
-        // @ts-ignore
-        let myGravity = false;
-
-        document.body.addEventListener('contextmenu', (e) => {
+        };
+        let gravityEnabled = false;
+        const toggleGravity = (e: Event) => {
             e.preventDefault();
-            myGravity = !myGravity;
-            if (myGravity == true) {
-                setGravity([0, -100, 0]);
-                if (MySphere.current) {
-                    MySphere.current.userData.scale = 0.1;
-                }
-            } else {
-                setGravity([0, -0.2, 0]);
-                setTimeout(() => {
-                    setGravity([0, 0, -10]);
-                }, 10);
-                setTimeout(() => {
-                    setGravity([20, 10, -20]);
-                }, 30);
-                setTimeout(() => {
-                    setGravity([0, -0.2, 0]);
-                }, 50);
-                if (MySphere.current) {
-                    MySphere.current.userData.scale = 1;
-                }
+            cancelSequence();
+            gravityEnabled = !gravityEnabled;
+            setGravity(gravityEnabled ? [0, -100, 0] : [0, -0.2, 0]);
+            if (MySphere.current) {
+                MySphere.current.userData.scale = gravityEnabled ? 0.1 : 1;
             }
-        });
-        window.addEventListener('deviceorientation', (e) => {
+            if (!gravityEnabled) {
+                later(() => setGravity([0, 0, -10]), 10);
+                later(() => setGravity([20, 10, -20]), 30);
+                later(() => setGravity([0, -0.2, 0]), 50);
+            }
+        };
+        const orient = (e: DeviceOrientationEvent) => {
             if (e.beta !== null && e.gamma !== null && e.alpha !== null) {
                 const betaRadians = e.beta * (Math.PI / 180);
                 const gammaRadians = e.gamma * (Math.PI / 180);
@@ -149,6 +133,7 @@ export const Playground = () => {
                 const multiply = 25;
                 // console.log('a', [forceX, forceY, forceZ]);
 
+                cancelSequence();
                 setGravity([
                     forceZ > 0 ? forceX * multiply : forceX * -multiply,
                     forceY * -multiply,
@@ -173,7 +158,24 @@ export const Playground = () => {
                     MySphere.current.userData.gryo = 1;
                 }
             }
-        });
+        };
+        document.body.addEventListener('pointerdown', grab);
+        window.addEventListener('pointerup', release);
+        window.addEventListener('pointercancel', release);
+        window.addEventListener('blur', release);
+        document.body.addEventListener('mouseleave', release);
+        document.body.addEventListener('contextmenu', toggleGravity);
+        window.addEventListener('deviceorientation', orient);
+        return () => {
+            cancelSequence();
+            document.body.removeEventListener('pointerdown', grab);
+            window.removeEventListener('pointerup', release);
+            window.removeEventListener('pointercancel', release);
+            window.removeEventListener('blur', release);
+            document.body.removeEventListener('mouseleave', release);
+            document.body.removeEventListener('contextmenu', toggleGravity);
+            window.removeEventListener('deviceorientation', orient);
+        };
     }, []);
 
     useFrame(() => {
@@ -263,7 +265,7 @@ export const Playground = () => {
                 ref={MySphere}
                 scale={[1, 1, 1]}
             >
-                <torusGeometry args={[47, 0.3, 10, 70, Math.PI]} />
+                <torusGeometry args={[50, 0.16, 10, 90, Math.PI]} />
                 <shaderMaterial
                     attach="material"
                     {...material}

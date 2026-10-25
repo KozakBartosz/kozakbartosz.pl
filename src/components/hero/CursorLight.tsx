@@ -1,6 +1,6 @@
 import { useFrame } from '@react-three/fiber';
 import { useEffect, useMemo, useRef } from 'react';
-import { Plane, PointLight, Raycaster, Vector2, Vector3 } from 'three';
+import { Color, Plane, PointLight, Raycaster, Vector2, Vector3 } from 'three';
 
 // Two unshadowed lights: reuse the scene loop and allocate nothing per frame.
 export const CursorLight = () => {
@@ -8,6 +8,12 @@ export const CursorLight = () => {
     const secondLight = useRef<PointLight>(null);
     const depth = useRef(0);
     const active = useRef(false);
+    const alternateColors = useRef(false);
+    const colors = useMemo(() => ({
+        blue: new Color('#00a3ff'),
+        green: new Color('#00f0cf'),
+        pink: new Color('#dfb4ff')
+    }), []);
     const initialized = useRef(false);
     const { pointer, screen, ray, plane, target, offset, floorHit } = useMemo(() => ({
         pointer: new Vector2(),
@@ -26,17 +32,34 @@ export const CursorLight = () => {
             if (!active.current) return;
             pointer.set(event.clientX, event.clientY);
         };
-        const hide = () => { active.current = false; };
+        const down = (event: PointerEvent) => {
+            if (event.pointerType !== 'mouse' || event.button !== 0) return;
+            move(event);
+            alternateColors.current = true;
+        };
+        const up = (event: PointerEvent) => {
+            if (event.button === 0) alternateColors.current = false;
+        };
+        const hide = () => {
+            active.current = false;
+            alternateColors.current = false;
+        };
         const leave = (event: PointerEvent) => {
             if (!event.relatedTarget) hide();
         };
         const visibility = () => { if (document.hidden) hide(); };
         window.addEventListener('pointermove', move, { passive: true });
+        window.addEventListener('pointerdown', down, { passive: true });
+        window.addEventListener('pointerup', up, { passive: true });
+        window.addEventListener('pointercancel', hide);
         document.addEventListener('pointerout', leave);
         window.addEventListener('blur', hide);
         document.addEventListener('visibilitychange', visibility);
         return () => {
             window.removeEventListener('pointermove', move);
+            window.removeEventListener('pointerdown', down);
+            window.removeEventListener('pointerup', up);
+            window.removeEventListener('pointercancel', hide);
             document.removeEventListener('pointerout', leave);
             window.removeEventListener('blur', hide);
             document.removeEventListener('visibilitychange', visibility);
@@ -46,11 +69,13 @@ export const CursorLight = () => {
     useFrame(({ camera, size, clock }, delta) => {
         if (!light.current || !secondLight.current) return;
         const ease = 1 - Math.exp(-12 * Math.min(delta, 0.1));
+        light.current.color.lerp(alternateColors.current ? colors.pink : colors.blue, ease);
+        secondLight.current.color.lerp(alternateColors.current ? colors.pink : colors.green, ease);
         const time = clock.elapsedTime;
         const blend = (Math.sin(time * 0.9) + 1) * 0.5;
-        // Keep total power at 0.5, with each color ranging from 30% to 100%
+        // Double total power in pink mode, with each light ranging from 30% to 100%
         // of its peak so neither disappears during the crossfade.
-        const peak = 0.5 / 1.3;
+        const peak = (alternateColors.current ? 1 : 0.5) / 1.3;
         light.current.intensity += ((active.current ? peak * (0.3 + 0.7 * blend) : 0) - light.current.intensity) * ease;
         secondLight.current.intensity += ((active.current ? peak * (1 - 0.7 * blend) : 0) - secondLight.current.intensity) * ease;
         if (!active.current) {

@@ -18,7 +18,7 @@ const Home: NextPage = () => {
                 <title>KozakBartosz.pl</title>
                 <meta
                     name="description"
-                    content="Hi, I am a front-end developer with 10 years of experience working on my own open source projects as well as doing full-time employment."
+                    content="Senior front-end developer with 12+ years of experience in React, TypeScript, UX/UI design, and interactive 3D experiences."
                 />
                 <link rel="icon" href="/favicon.ico" />
             </Head>
@@ -124,6 +124,10 @@ const HomeLabel = styled.div`
     text-transform: uppercase;
     span { color: #00a3ff; letter-spacing: .06em; }
     i { width: 3.2rem; height: 1px; background: linear-gradient(90deg, #00a3ff, #00ffa3); }
+    @media (max-width: 999px) {
+        top: calc(2.4rem + env(safe-area-inset-top, 0px));
+        left: 2.4rem;
+    }
 `;
 
 const Explore = styled.a`
@@ -148,7 +152,14 @@ const Explore = styled.a`
     letter-spacing: .2em;
     text-transform: uppercase;
     white-space: nowrap;
-    span { color: #00e6dd; font-size: 2rem; margin-left: .8rem; }
+    span {
+        background: linear-gradient(40deg, #00a3ff, #00ffa3);
+        background-clip: text;
+        -webkit-background-clip: text;
+        color: transparent;
+        font-size: 2rem;
+        margin-left: .8rem;
+    }
 `;
 
 const ExploreControl = () => {

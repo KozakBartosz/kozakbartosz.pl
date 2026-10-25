@@ -17,49 +17,73 @@ export const Sections = ({
                 <h2 id="frontend-title" className="section-title">Front-end <span className="heading-accent">developer</span></h2>
                 <SectionPoint data-section-marker aria-hidden="true"><SectionSymbol section="frontend" /></SectionPoint>
                 <p>
-                    Hi, I am a front-end developer with 10 years of experience
-                    working on my own open source projects as well as doing
-                    full-time employment.
+                    I’m a senior front-end developer with 12+ years of experience.
+                    I build web apps and online stores with React, TypeScript,
+                    and Next.js, and mobile apps with React Native.
                 </p>
                 <p>
-                    I enjoy working on projects where I can use my 3D knowledge
-                    in a creative way that is different from typical web
-                    applications, while also providing an effective and smoothly
-                    animated user interface.
+                    My work ranges from product configurators to marketplaces
+                    with separate dashboards for buyers and sellers. I care
+                    about how an interface feels to use, how fast it runs,
+                    and how easy the code is to change.
                 </p>
-                <Skills items={["TypeScript", "Three.js", "React", "Next.js", "Tailwind", "React-Three-Fiber", "Gatsby", "GraphQL", "Styled-components", "Sass", "Linux", "Git"]} />
+                <Skills items={['TypeScript', 'JavaScript', 'React', 'Next.js', 'React Native', 'TanStack', 'Redux', 'REST APIs', 'GraphQL', 'Tailwind CSS', 'Sass', 'Styled-components', 'Storybook', 'Jest', 'Vite', 'Webpack', 'Accessibility / WCAG', 'SEO', 'Performance optimization', 'Git']} />
                 <Icon
                     ref={(el) => {
                         if (el) iconRef.current[0] = el;
                     }}
                 />
             </Section>
-            <Section id="design" aria-labelledby="design-title" tabIndex={-1}>
-                <Label><span>02</span> Design</Label>
-                <h2 id="design-title" className="section-title">Graphic <span className="heading-accent">designer</span></h2>
-                <SectionPoint data-section-marker aria-hidden="true"><SectionSymbol section="design" /></SectionPoint>
+            <Section id="interactive" aria-labelledby="interactive-title" tabIndex={-1}>
+                <Label><span>02</span> Interactive 3D</Label>
+                <h2 id="interactive-title" className="section-title">3D modeling <span className="heading-accent">&amp; shaders</span></h2>
+                <SectionPoint data-section-marker aria-hidden="true"><SectionSymbol section="interactive" /></SectionPoint>
                 <p>
-                    In addition to programming, I also deals with graphic design
-                    of interfaces and 3D graphics.
+                    I build 3D product configurators that run in the browser.
+                    I’ve worked on tools for configuring metal structures
+                    and equipment for utility vehicles, using Three.js
+                    and React.
                 </p>
                 <p>
-                    Because I designed myself, I feel confident in advising and
-                    discussing possible UX/UI solutions and it helps me make
-                    decisions as a front-end when something is not fully
-                    designed beforehand. Working on unusual projects, I gained
-                    experience in creating interfaces strongly related to 3D
-                    applications that require a slightly different approach.
+                    I also make the models, materials, and animations, and
+                    write custom GLSL shaders. Working on both the assets
+                    and the code helps me spot what will be expensive to
+                    render before it slows the app down.
                 </p>
-                <Skills items={['Figma', 'User experience', 'User interface', 'Adobe Photoshop', 'Adobe Illustrator', 'Photography']} />
-                <Skills label="Blender" items={['Low and high poly modeling', 'Animations', 'Physic simulations', 'Procedural materials', 'Texturing']} />
+                <Skills label="Interactive 3D" items={['Three.js', 'React Three Fiber', 'WebGL', 'GLSL shaders', 'Real-time rendering', 'Rendering pipelines', 'GPU performance', '3D configurators']} />
+                <Skills label="3D modeling" items={['Blender', 'Onshape', 'CAD modeling', 'Parametric modeling', 'Low / high poly modeling', 'Procedural materials', 'Texturing', 'Animation', 'Asset optimization']} />
                 <Icon
                     ref={(el) => {
                         if (el) iconRef.current[1] = el;
                     }}
                 />
             </Section>
+            <Section id="design" aria-labelledby="design-title" tabIndex={-1}>
+                <Label><span>03</span> UX/UI Design</Label>
+                <h2 id="design-title" className="section-title">Interface <span className="heading-accent">design</span></h2>
+                <SectionPoint data-section-marker aria-hidden="true"><SectionSymbol section="design" /></SectionPoint>
+                <p>
+                    I design the interfaces I build, from the first user flow
+                    to the components people interact with. That includes
+                    wireframes, prototypes, and design systems for web
+                    and mobile apps.
+                </p>
+                <p>
+                    Much of my UX work involves helping people configure
+                    complex products. I work out the steps, what needs to
+                    be visible, and how each choice affects the next.
+                    Knowing the code helps me test those decisions in
+                    the app.
+                </p>
+                <Skills label="UX/UI design" items={['Figma', 'User flows', 'Wireframing', 'Prototyping', 'Design systems', 'Responsive interfaces', 'Adobe Photoshop', 'Adobe Illustrator']} />
+                <Icon
+                    ref={(el) => {
+                        if (el) iconRef.current[2] = el;
+                    }}
+                />
+            </Section>
             <Section id="contact" aria-labelledby="contact-title" tabIndex={-1}>
-                <Label><span>03</span> Contact</Label>
+                <Label><span>04</span> Contact</Label>
                 <h2 id="contact-title" className="section-title">Say <span className="heading-accent">hello</span></h2>
                 <SectionPoint data-section-marker aria-hidden="true"><SectionSymbol section="contact" /></SectionPoint>
                 <p className="contact-intro">Have an idea? Let’s make it real.</p>
@@ -74,7 +98,7 @@ export const Sections = ({
 
                 <Icon
                     ref={(el) => {
-                        if (el) iconRef.current[2] = el;
+                        if (el) iconRef.current[3] = el;
                     }}
                 />
             </Section>
@@ -128,7 +152,7 @@ const ContactGrid = styled.div`
     .contact-label span { color: #00a3ff; font-size: 1.5rem; transition: transform 200ms ease; }
     a:hover .contact-label span { transform: translate(2px, -2px); }
     .contact-value {
-        color: #53dce1;
+        color: #00a3ff;
         background: linear-gradient(90deg, #38bcff, #38f5b4);
         -webkit-background-clip: text;
         -webkit-text-fill-color: transparent;
@@ -174,7 +198,7 @@ const Label = styled.p`
 
 const Icon = styled.div`
     position: absolute;
-    top: -18rem;
+    top: -16rem;
     left: 50%;
     width: 1px;
     height: 1px;
@@ -198,19 +222,20 @@ const SectionPoint = styled.div`
             width: 3.2rem;
             height: 3.2rem;
             stroke-width: 1.8;
-            filter: drop-shadow(0 0 8px rgba(0, 220, 210, .45));
+            filter: drop-shadow(0 0 8px rgba(0, 163, 255, .45));
         }
     }
 `;
 
 const Section = styled.section`
+    --model-space: clamp(44rem, 100vw, 64rem);
     position: relative;
     display: flex;
     flex-direction: column;
     align-items: flex-start;
     justify-content: center;
-    padding: 4rem 2.4rem;
-    margin: 28rem 0 8rem;
+    padding: 4rem clamp(3.2rem, 6vw, 4.8rem);
+    margin: var(--model-space) 0 8rem;
     scroll-margin-top: 3rem;
     min-height: 50rem;
     p:not(:first-of-type) {
@@ -221,7 +246,7 @@ const Section = styled.section`
         line-height: 1.7;
     }
     .section-title { max-width: 100%; }
-    &#contact .heading-accent { display: block; }
+    .heading-accent { display: block; }
     &#contact .contact-intro { font-size: clamp(1.9rem, 1.6vw, 2.4rem); color: #b8cbc7; }
 
     a { overflow-wrap: anywhere; }
@@ -251,12 +276,12 @@ const Section = styled.section`
         container-type: inline-size;
         width: 50%;
         min-height: 80rem;
-        padding: clamp(6rem, 6vw, 12rem) clamp(3.2rem, 4vw, 12rem);
+        padding: clamp(6rem, 6vw, 12rem) clamp(4.8rem, 5vw, 12rem);
         margin: 8rem 0;
         .section-title { font-size: clamp(4.6rem, 17cqw, 14rem); }
         &:nth-of-type(odd) { margin-left: 50%; }
         &:nth-of-type(even) {
-            padding-left: max(9rem, min(4vw, 12rem));
+            padding-left: 12rem;
             > p, > .section-title, > .skills {
                 width: min(100%, 68rem);
                 align-self: flex-end;
@@ -332,7 +357,7 @@ const SectionTimeline = () => {
     }, []);
 
     return <Timeline ref={timelineRef} aria-hidden="true">
-        {[0, 1, 2, 3].map(index => <TimelineTrack key={index}><span /></TimelineTrack>)}
+        {[0, 1, 2, 3, 4].map(index => <TimelineTrack key={index}><span /></TimelineTrack>)}
     </Timeline>;
 };
 

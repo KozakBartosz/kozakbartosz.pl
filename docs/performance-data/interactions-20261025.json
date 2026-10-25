@@ -1,0 +1,84 @@
+{
+  "visibilityMode": "simulated-handler",
+  "nativeVisibility": "visible",
+  "gravity": [
+    {
+      "time": 494.69999998807907,
+      "gravity": [
+        0,
+        -50,
+        0
+      ]
+    },
+    {
+      "time": 615.1000000238419,
+      "gravity": [
+        0,
+        -100,
+        0
+      ]
+    },
+    {
+      "time": 5820.800000011921,
+      "gravity": [
+        0,
+        -100,
+        0
+      ]
+    },
+    {
+      "time": 5991.199999988079,
+      "gravity": [
+        0,
+        -0.2,
+        0
+      ]
+    },
+    {
+      "time": 5992.699999988079,
+      "gravity": [
+        0,
+        0,
+        -10
+      ]
+    },
+    {
+      "time": 6008.899999976158,
+      "gravity": [
+        20,
+        10,
+        -20
+      ]
+    },
+    {
+      "time": 6028.800000011921,
+      "gravity": [
+        0,
+        -0.2,
+        0
+      ]
+    }
+  ],
+  "alignment": {
+    "center": [
+      60.79772186279297,
+      507.9998474121094
+    ],
+    "expected": [
+      60.796875,
+      508
+    ],
+    "morph": 0.9999986886978149
+  },
+  "draws": {
+    "shader-cursor": 52,
+    "shader-cursor shader-cursor-outline": 52
+  },
+  "released": {
+    "shader-cursor": 76,
+    "shader-cursor shader-cursor-outline": 76,
+    "shader-cursor shader-cursor-inversion": 23
+  },
+  "cursor": "url(\"http://localhost:3119/cursor.png\") 3 3, auto",
+  "errors": []
+}

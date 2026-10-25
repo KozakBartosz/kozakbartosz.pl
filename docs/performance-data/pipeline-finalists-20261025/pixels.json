@@ -1,0 +1,46 @@
+[
+  {
+    "variant": "msaa-4",
+    "changedChannels": 0,
+    "totalChannels": 14659200,
+    "mae": 0,
+    "max": 0
+  },
+  {
+    "variant": "bloom-luminance-half",
+    "changedChannels": 1809892,
+    "totalChannels": 14659200,
+    "mae": 0.18187691006330495,
+    "max": 9
+  },
+  {
+    "variant": "render-scale-0.833333",
+    "invalidReason": "Framebuffer dimensions differ: byte indices are not corresponding image coordinates. Use screenshot-differences.json instead.",
+    "rejectedRawMetrics": {
+      "changedChannels": 5770164,
+      "totalChannels": 10180800,
+      "mae": 15.328383132956153,
+      "max": 247
+    }
+  },
+  {
+    "variant": "render-scale-0.75",
+    "invalidReason": "Framebuffer dimensions differ: byte indices are not corresponding image coordinates. Use screenshot-differences.json instead.",
+    "rejectedRawMetrics": {
+      "changedChannels": 5399790,
+      "totalChannels": 8246880,
+      "mae": 17.64103697398289,
+      "max": 247
+    }
+  },
+  {
+    "variant": "render-scale-0.666667",
+    "invalidReason": "Framebuffer dimensions differ: byte indices are not corresponding image coordinates. Use screenshot-differences.json instead.",
+    "rejectedRawMetrics": {
+      "changedChannels": 4590898,
+      "totalChannels": 6516480,
+      "mae": 18.351419784914555,
+      "max": 248
+    }
+  }
+]

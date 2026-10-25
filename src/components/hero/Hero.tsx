@@ -17,7 +17,8 @@ import { Playground } from './Playground';
 import Link from 'next/link';
 import { CursorLight } from './CursorLight';
 
-const iconNames = ['1', '3', '4'];
+// UX/UI uses a procedural browser model; other sections keep their GLTF assets.
+const iconNames = ['1', '3', '3', '4'];
 
 export const Hero = ({
     iconRef
@@ -91,6 +92,9 @@ export const Hero = ({
                         return (
                             <Icon
                                 material={material}
+                                browser={i === 2}
+                                frontend={i === 0}
+                                interactive={i === 1}
                                 element={el}
                                 scale={[15, 15, 15]}
                                 url={`/models/icon${iconNames[i]}.glb`}
@@ -104,7 +108,7 @@ export const Hero = ({
                     Bartosz <span>Kozak</span>
                     {/* <Link href="https://kozakbartosz.pl/">Kozak Bartosz</Link> */}
                 </Logo>
-                <Aside>Front-end <b>/</b> Interactive 3D</Aside>
+                <Aside><span>Front-end</span><b>/</b><span>Interactive 3D</span><b>/</b><span>UX/UI Design</span></Aside>
             </Top>
             <Info>
                 <span>LMB / Grab objects</span>
@@ -143,10 +147,14 @@ const Top = styled.div`
     @media (min-width: 800px) {
         margin: 15vh 0 0;
     }
+    @media (max-width: 999px) {
+        margin-top: calc(10rem + env(safe-area-inset-top, 0px));
+        padding-inline: 2.4rem;
+    }
 `;
 
 const Logo = styled.h1`
-    font-size: clamp(4.4rem, 6.5vw, 11rem);
+    font-size: clamp(4rem, 5.8vw, 9.8rem);
     letter-spacing: -.035em;
     margin-bottom: 1.8rem;
     padding-bottom: 0;
@@ -163,12 +171,19 @@ const Logo = styled.h1`
 `;
 
 const Aside = styled.span`
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+    gap: .8rem 0;
+    line-height: 1.8;
+    span { white-space: nowrap; }
     text-align: center;
-    font-size: clamp(1rem, 1vw, 1.4rem);
+    font-size: clamp(.9rem, .9vw, 1.25rem);
     letter-spacing: .4em;
     text-transform: uppercase;
     color: #d5eaed;
-    b { color: #00dcd5; margin-inline: 1.8rem; font-weight: 300; }
+    b { color: #00a3ff; margin-inline: 1.8rem; font-weight: 300; }
 `;
 
 const Info = styled.div`

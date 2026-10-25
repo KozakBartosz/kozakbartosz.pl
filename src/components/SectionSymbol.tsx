@@ -1,4 +1,4 @@
-export type SectionId = 'home' | 'frontend' | 'design' | 'contact';
+export type SectionId = 'home' | 'frontend' | 'interactive' | 'design' | 'contact';
 
 export const SectionSymbol = ({ section, placement = 'marker' }: { section: SectionId; placement?: 'marker' | 'rail' }) => (
     <svg aria-hidden="true" focusable="false" width="20" height="20" viewBox="0 0 24 24"
@@ -11,7 +11,8 @@ export const SectionSymbol = ({ section, placement = 'marker' }: { section: Sect
         </defs>
         {section === 'home' ? <><path d="m3 10 9-7 9 7M5 9v12h14V9M9 21v-7h6v7" /></> :
             section === 'frontend' ? <><path d="m8 7-5 5 5 5M16 7l5 5-5 5M14 4l-4 16" /></> :
-            section === 'design' ? <><path d="m12 3 9 9-9 9-9-9Z" /><path d="M3 12h18M12 3l4 9-4 9-4-9Z" /></> :
+            section === 'interactive' ? <><path d="m12 3 9 9-9 9-9-9Z" /><path d="M3 12h18M12 3l4 9-4 9-4-9Z" /></> :
+            section === 'design' ? <><rect x="4" y="4" width="16" height="16" rx="2" /><path d="M4 9h16M10 9v11" /></> :
                 <><rect x="3" y="5" width="18" height="14" rx="2" /><path d="m3 7 9 6 9-6" /></>}
     </svg>
 );

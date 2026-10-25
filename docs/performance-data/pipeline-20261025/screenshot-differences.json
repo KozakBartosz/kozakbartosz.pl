@@ -1,0 +1,116 @@
+[
+  {
+    "variant": "bloom-scale-0.25",
+    "maeRGB": 1.9762267840350116,
+    "max": 26,
+    "note": "CSS-composited screenshots; scene and DOM together"
+  },
+  {
+    "variant": "bloom-scale-0.375",
+    "maeRGB": 0.8181215639467593,
+    "max": 13,
+    "note": "CSS-composited screenshots; scene and DOM together"
+  },
+  {
+    "variant": "dof-height-360",
+    "maeRGB": 2.016613498263889,
+    "max": 125,
+    "note": "CSS-composited screenshots; scene and DOM together"
+  },
+  {
+    "variant": "dof-height-720",
+    "maeRGB": 0.0,
+    "max": 0,
+    "note": "CSS-composited screenshots; scene and DOM together"
+  },
+  {
+    "variant": "kernel-3",
+    "maeRGB": 2.442348045066551,
+    "max": 52,
+    "note": "CSS-composited screenshots; scene and DOM together"
+  },
+  {
+    "variant": "kernel-4",
+    "maeRGB": 1.420498747649016,
+    "max": 45,
+    "note": "CSS-composited screenshots; scene and DOM together"
+  },
+  {
+    "variant": "msaa-0",
+    "maeRGB": 0.4621362078631366,
+    "max": 109,
+    "note": "CSS-composited screenshots; scene and DOM together"
+  },
+  {
+    "variant": "msaa-2",
+    "maeRGB": 0.30640968605324076,
+    "max": 91,
+    "note": "CSS-composited screenshots; scene and DOM together"
+  },
+  {
+    "variant": "msaa-4",
+    "maeRGB": 0.0,
+    "max": 0,
+    "note": "CSS-composited screenshots; scene and DOM together"
+  },
+  {
+    "variant": "no-bloom-1",
+    "maeRGB": 1.2666736970124421,
+    "max": 53,
+    "note": "CSS-composited screenshots; scene and DOM together"
+  },
+  {
+    "variant": "no-bloom-2",
+    "maeRGB": 3.0831793212890624,
+    "max": 53,
+    "note": "CSS-composited screenshots; scene and DOM together"
+  },
+  {
+    "variant": "no-blooms",
+    "maeRGB": 5.128410147207755,
+    "max": 102,
+    "note": "CSS-composited screenshots; scene and DOM together"
+  },
+  {
+    "variant": "no-dof-no-mirror",
+    "maeRGB": 2.0741122549551503,
+    "max": 207,
+    "note": "CSS-composited screenshots; scene and DOM together"
+  },
+  {
+    "variant": "no-dof",
+    "maeRGB": 2.0741122549551503,
+    "max": 207,
+    "note": "CSS-composited screenshots; scene and DOM together"
+  },
+  {
+    "variant": "no-effects",
+    "maeRGB": 8.134882066514757,
+    "max": 249,
+    "note": "CSS-composited screenshots; scene and DOM together"
+  },
+  {
+    "variant": "no-mirror",
+    "maeRGB": 0.012004846643518521,
+    "max": 2,
+    "note": "CSS-composited screenshots; scene and DOM together"
+  },
+  {
+    "variant": "render-scale-0.75",
+    "maeRGB": 17.47939986617477,
+    "max": 250,
+    "note": "CSS-composited screenshots; scene and DOM together"
+  },
+  {
+    "variant": "render-scale-0.833333",
+    "maeRGB": 17.680147162543403,
+    "max": 249,
+    "note": "CSS-composited screenshots; scene and DOM together"
+  },
+  {
+    "variant": "smoothing-1",
+    "maeRGB": 18.962457071940104,
+    "max": 216,
+    "note": "CSS-composited screenshots; scene and DOM together"
+  }
+]

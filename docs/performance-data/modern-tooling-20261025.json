@@ -1,0 +1,23 @@
+{
+  "eslint": {
+    "version": "9.39.5",
+    "engines": {
+      "node": "^18.18.0 || ^20.9.0 || >=21.1.0"
+    },
+    "peerDependencies": {
+      "jiti": "*"
+    }
+  },
+  "typescript": {
+    "version": "5.9.3",
+    "engines": {
+      "node": ">=14.17"
+    },
+    "peerDependencies": null
+  },
+  "@types/node": {
+    "version": "24.19.2",
+    "engines": null,
+    "peerDependencies": {}
+  }
+}

@@ -127,3 +127,15 @@ Resolve these through visual iteration while preserving the agreed scope above.
 - Added a stable, server-rendered Home anchor around the opening scene, including keyboard focus, a home symbol, and progress tracking to Development.
 
 - Fixed clipped heading descenders by extending the gradient text painting area. Enlarged skill chips to 15px text with more padding and blue-to-green borders.
+
+## Separate Front-end, Interactive 3D and UX/UI sections
+
+By user request, the page order is now Home → Front-end → 3D / Interactive →
+UX/UI Design → Contact. Interactive rendering and modeling skills moved out of
+Front-end and the former combined Design section into Interactive 3D; UX/UI
+retains its own interface design skills and copy. Both Interactive 3D and UX/UI
+currently reuse the existing monkey model (`icon3.glb`), pending a dedicated UX/UI
+model. Contact keeps its existing model. Section markers, numbering, navigation,
+footer links and timeline tracks include the additional section. Existing
+`#design` links still target UX/UI; the new section uses `#interactive`.
+No browser automation, tests or build were run, following the user's preference.

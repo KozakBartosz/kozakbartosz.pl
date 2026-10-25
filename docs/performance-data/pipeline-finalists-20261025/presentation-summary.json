@@ -1,0 +1,68 @@
+[
+  {
+    "variant": "baseline",
+    "animationPresentations": 107,
+    "chromeDroppedFrameEvents": 247,
+    "partialUpdates": 2,
+    "fullDroppedFrameEvents": 245,
+    "coreAnimationCommits": 112,
+    "presentationIntervalP95": 38.63,
+    "presentationSpanMs": 2939.967,
+    "note": "Single ~3 second Chrome trace per variant; compositor events are not physical display photometry. DroppedFrame includes partial updates; separate counts retained."
+  },
+  {
+    "variant": "bloom-luminance-half",
+    "animationPresentations": 116,
+    "chromeDroppedFrameEvents": 234,
+    "partialUpdates": 0,
+    "fullDroppedFrameEvents": 234,
+    "coreAnimationCommits": 121,
+    "presentationIntervalP95": 33.971,
+    "presentationSpanMs": 2908.044,
+    "note": "Single ~3 second Chrome trace per variant; compositor events are not physical display photometry. DroppedFrame includes partial updates; separate counts retained."
+  },
+  {
+    "variant": "msaa-4",
+    "animationPresentations": 106,
+    "chromeDroppedFrameEvents": 246,
+    "partialUpdates": 4,
+    "fullDroppedFrameEvents": 242,
+    "coreAnimationCommits": 111,
+    "presentationIntervalP95": 36.096,
+    "presentationSpanMs": 2869.901,
+    "note": "Single ~3 second Chrome trace per variant; compositor events are not physical display photometry. DroppedFrame includes partial updates; separate counts retained."
+  },
+  {
+    "variant": "render-scale-0.666667",
+    "animationPresentations": 159,
+    "chromeDroppedFrameEvents": 194,
+    "partialUpdates": 0,
+    "fullDroppedFrameEvents": 194,
+    "coreAnimationCommits": 164,
+    "presentationIntervalP95": 25.535,
+    "presentationSpanMs": 2916.614,
+    "note": "Single ~3 second Chrome trace per variant; compositor events are not physical display photometry. DroppedFrame includes partial updates; separate counts retained."
+  },
+  {
+    "variant": "render-scale-0.75",
+    "animationPresentations": 142,
+    "chromeDroppedFrameEvents": 203,
+    "partialUpdates": 0,
+    "fullDroppedFrameEvents": 203,
+    "coreAnimationCommits": 147,
+    "presentationIntervalP95": 26.509,
+    "presentationSpanMs": 2901.017,
+    "note": "Single ~3 second Chrome trace per variant; compositor events are not physical display photometry. DroppedFrame includes partial updates; separate counts retained."
+  },
+  {
+    "variant": "render-scale-0.833333",
+    "animationPresentations": 128,
+    "chromeDroppedFrameEvents": 219,
+    "partialUpdates": 0,
+    "fullDroppedFrameEvents": 219,
+    "coreAnimationCommits": 133,
+    "presentationIntervalP95": 32.378,
+    "presentationSpanMs": 2909.23,
+    "note": "Single ~3 second Chrome trace per variant; compositor events are not physical display photometry. DroppedFrame includes partial updates; separate counts retained."
+  }
+]

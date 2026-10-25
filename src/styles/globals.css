@@ -45,7 +45,7 @@ h1, .section-title {
     line-height: 1.08;
     letter-spacing: -.045em;
     font-weight: 300;
-    color: #49e1cf;
+    color: #00a3ff;
     background: linear-gradient(40deg, #00a3ff, #00ffa3);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
@@ -86,18 +86,18 @@ h1, .section-title {
     50%, 92% { opacity: .15; }
 }
 a:focus-visible, section:focus-visible {
-    outline: 2px solid #65e8d4;
+    outline: 2px solid #00a3ff;
     outline-offset: 6px;
 }
 section:focus { outline: none; }
-section:focus-visible { outline: 2px solid #65e8d4; }
+section:focus-visible { outline: 2px solid #00a3ff; }
 @media (prefers-reduced-motion: reduce) {
     *, *::before, *::after { animation: none !important; transition: none !important; scroll-behavior: auto !important; }
     .shader-cursor { display: none; }
 }
 
 a {
-    color: rgba(0, 255, 163, 1);
+    color: #00a3ff;
     text-decoration: none;
     background: linear-gradient(
         90deg,
@@ -180,7 +180,7 @@ a:hover {
 }
 
 ::selection {
-    background: rgba(1, 195, 225, 0.455);
+    background: rgba(0, 163, 255, 0.455);
     color: #fff;
 }
 

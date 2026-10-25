@@ -3,8 +3,9 @@ import { MouseEvent } from 'react';
 
 const links = [
     { id: 'home', label: 'Home' },
-    { id: 'frontend', label: 'Development' },
-    { id: 'design', label: 'Design' },
+    { id: 'frontend', label: 'Front-end' },
+    { id: 'interactive', label: '3D / Interactive' },
+    { id: 'design', label: 'UX/UI Design' },
     { id: 'contact', label: 'Contact' },
 ];
 
@@ -44,6 +45,7 @@ export const Footer = () => (
 
 const Root = styled.footer`
     position: relative;
+    margin-top: 200px;
     z-index: 350;
     isolation: isolate;
     container-type: inline-size;
@@ -62,22 +64,23 @@ const Root = styled.footer`
         gap: 1.6rem;
         padding: 2.4rem;
         min-height: 12rem;
-        &:nth-of-type(-n+2) { border-bottom: 1px solid #24504e; }
+        border-bottom: 1px solid #24504e;
+        &:last-of-type { grid-column: 1 / -1; border-bottom: 0; }
         transition: background-color 200ms ease;
-        &:nth-of-type(odd) { border-right: 1px solid #24504e; }
+        &:nth-of-type(odd):not(:last-of-type) { border-right: 1px solid #24504e; }
         &:hover, &:focus-visible { background-color: rgba(0, 163, 255, .07); }
         &:focus-visible { outline-offset: -2px; }
         &:hover .link-arrow { transform: translate(3px, -3px); }
     }
     .link-number { grid-column: 1 / -1; font-size: 1rem; letter-spacing: .16em; color: #6e9692; line-height: 1; }
     .link-name { font-size: clamp(1.3rem, 1.2vw, 1.8rem); color: #dce5e3; letter-spacing: .08em; text-transform: uppercase; line-height: 1.5; }
-    .link-arrow { color: #00d5df; line-height: 1; transition: transform 200ms ease; }
+    .link-arrow { color: #00a3ff; line-height: 1; transition: transform 200ms ease; }
     .signature { margin: 4rem 0; font-size: clamp(7rem, 10.5vw, 18rem); font-weight: 300; letter-spacing: -.065em; line-height: .9; color: #f2f5f4; }
     .signature span { background: linear-gradient(100deg, #00a3ff, #00edbc); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
     .footer-bottom { display: flex; justify-content: space-between; align-items: center; gap: 2rem; padding-top: 2.4rem; border-top: 1px solid #24504e; }
     small { font-size: 1.2rem; color: #819894; line-height: 1.5; }
     .footer-bottom a { display: flex; align-items: center; gap: 2rem; padding: 1.4rem 0 1.4rem 1.4rem; color: #bacfca; font-size: 1.1rem; letter-spacing: .14em; text-transform: uppercase; line-height: 1.5; }
-    .footer-bottom a span { color: #00d5df; font-size: 2rem; }
+    .footer-bottom a span { color: #00a3ff; font-size: 2rem; }
     @media (min-width: 1000px) {
         --footer-left: clamp(12rem, 10vw, 20rem);
         padding-left: var(--footer-left);

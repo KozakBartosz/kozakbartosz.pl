@@ -5,7 +5,8 @@ import { SectionId, SectionSymbol } from './SectionSymbol';
 const entries: { id: SectionId; name: string }[] = [
     { id: 'home', name: 'Home' },
     { id: 'frontend', name: 'Development' },
-    { id: 'design', name: 'Design' },
+    { id: 'interactive', name: 'Interactive 3D' },
+    { id: 'design', name: 'UX/UI Design' },
     { id: 'contact', name: 'Contact' }
 ];
 
@@ -17,21 +18,20 @@ export const SectionNavigation = () => {
         let frame = 0;
         const update = () => {
             frame = 0;
-            const marker = window.innerHeight * .45;
+            const marker = window.innerHeight / 2;
             let current = '';
             entries.forEach(({ id }) => {
                 const section = document.getElementById(id);
                 if (section && section.getBoundingClientRect().top <= marker) current = id;
             });
             setActive(current);
-            const index = entries.findIndex(entry => entry.id === current);
             const section = document.getElementById(current);
-            const next = entries[index + 1];
-            const nextSection = next ? document.getElementById(next.id) : null;
             if (section) {
                 const rect = section.getBoundingClientRect();
-                const end = nextSection ? nextSection.getBoundingClientRect().top : rect.bottom;
-                setProgress(Math.max(0, Math.min(1, (marker - rect.top) / Math.max(1, end - rect.top))));
+                // Use the same viewport marker for progress and section activation.
+                setProgress(Math.max(0, Math.min(1,
+                    (marker - rect.top) / Math.max(1, rect.height)
+                )));
             } else setProgress(0);
         };
         const onScroll = () => {
@@ -86,7 +86,7 @@ const Rail = styled.nav`
     @media (min-width: 1000px) {
         display: block;
         position: fixed;
-        left: clamp(1.6rem, 2vw, 4rem);
+        left: clamp(.8rem, 1vw, 2rem);
         top: 50%;
         transform: translateY(-50%);
         z-index: 400;
@@ -99,7 +99,7 @@ const Rail = styled.nav`
             width: 6.4rem;
             height: 6.4rem;
             gap: .9rem;
-            padding: 2.2rem .6rem 0;
+            padding: 2.2rem .6rem;
             line-height: 2rem;
             transition: height 360ms cubic-bezier(.22, 1, .36, 1), color 240ms ease;
             font-size: 1.2rem;
@@ -110,20 +110,19 @@ const Rail = styled.nav`
             text-shadow: none;
         }
         a svg { width: 1.6rem; height: 1.6rem; margin-top: .2rem; flex-shrink: 0; transition: opacity 240ms ease; }
-        a[aria-current] { color: #55ebd4; height: 12.4rem; }
+        a[aria-current] { color: #55ebd4; height: 14.4rem; }
         .progress {
             position: absolute;
-            top: 4.4rem;
+            top: 5.8rem;
             left: 1.3rem;
             width: 2px;
-            bottom: -2.2rem;
+            bottom: 2.2rem;
             opacity: 0;
             pointer-events: none;
             transition: opacity 240ms ease;
             background: #24423f;
         }
         a[aria-current] .progress { opacity: 1; }
-        li:last-child .progress { bottom: 0; }
         .progress > span {
             display: block;
             width: 100%;

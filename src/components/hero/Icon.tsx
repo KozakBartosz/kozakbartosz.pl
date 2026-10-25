@@ -6,12 +6,14 @@ import { Vector3, Camera, PerspectiveCamera, Mesh, Material } from 'three';
 import { useReducedMotion } from '../useReducedMotion';
 import { HERO_DEPHTH, getHeroScrollOffset } from './consts';
 import { ShadowDrop } from './ShadowDrop';
+import { InteractiveAccessories } from './InteractiveAccessories';
+import { BrowserModel } from './BrowserModel';
+import { FrontendAccessories } from './FrontendAccessories';
 
-export function Icon({ material, element, url }: any) {
+export function Icon({ material, element, url, browser = false, frontend = false, interactive = false }: any) {
     const { camera } = useThree();
     const reducedMotion = useReducedMotion();
 
-    const { nodes, materials } = useGLTF(url) as { nodes: any; materials: any };
 
     const [myPosition, setMyPosition] = useState(new Vector3(10.0, 0.0, 0.0));
 
@@ -92,6 +94,20 @@ export function Icon({ material, element, url }: any) {
         meshRef.current.position.y = newPosition[1] - 2.5;
         meshRef.current.position.z = (linear * linear) / -2.5 + 10;
 
+        if (window.innerWidth < 1000) {
+            // Use the rendered camera so the mobile model stays at its DOM anchor.
+            vector.set(
+                (left / window.innerWidth) * 2 - 1,
+                -(top / window.innerHeight) * 2 + 1,
+                0
+            ).unproject(camera);
+            vector.sub(camera.position).normalize();
+            const distance = (meshRef.current.position.z - camera.position.z) / vector.z;
+            coords.copy(camera.position).addScaledVector(vector, distance);
+            meshRef.current.position.x = coords.x;
+            meshRef.current.position.y = coords.y;
+        }
+
         // slow animation with rotation sinsun style left 10deg left and right 10deg
         let rotationAdd = reducedMotion ? 0 : Math.sin(state.clock.elapsedTime * 0.15) * 0.3;
 
@@ -119,32 +135,20 @@ export function Icon({ material, element, url }: any) {
 
     return (
         <group dispose={null} scale={[20, 20, 20]} ref={meshRef}>
-            <mesh
-                castShadow
-                receiveShadow
-                geometry={(nodes.model as any).geometry}
-                material={materials['normal']}
-                // rotation={[0, Math.PI / -4, 0]}
-            />
-            <mesh
-                castShadow
-                receiveShadow
-                geometry={(nodes.edge as any).geometry}
-                // rotation={[0, Math.PI / -4, 0]}
-            >
-                {/* <meshBasicMaterial color={0x00ffee} /> */}
-                <shaderMaterial
-                    attach="material"
-                    {...material}
-                    ref={materialRef}
-                    uniforms={{
-                        myPosition: {
-                            value: new Vector3(10.0, 0.0, 0.0)
-                        }
-                    }}
-                />
-            </mesh>
+            {browser ? <BrowserModel material={material} /> : <GltfModel url={url} material={material} />}
+            {interactive && <InteractiveAccessories material={material} />}
+            {frontend && <FrontendAccessories material={material} />}
             <ShadowDrop />
         </group>
     );
+}
+
+function GltfModel({ url, material }: any) {
+    const { nodes, materials } = useGLTF(url) as { nodes: any; materials: any };
+    return <>
+        <mesh geometry={nodes.model.geometry} material={materials.normal} castShadow receiveShadow />
+        <mesh geometry={nodes.edge.geometry} castShadow receiveShadow>
+            <shaderMaterial {...material} uniforms={{ ...material.uniforms, myPosition: { value: new Vector3(10, 0, 0) } }} />
+        </mesh>
+    </>;
 }

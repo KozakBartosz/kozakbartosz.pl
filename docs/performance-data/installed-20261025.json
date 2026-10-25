@@ -1,0 +1,206 @@
+{
+  "commit": "0b822c182575ecf178a7f4d5b147dc5c422e2eb8",
+  "node": "v24.20.0",
+  "platform": "darwin",
+  "arch": "arm64",
+  "packages": {
+    "node_modules/@react-three/cannon": {
+      "version": "4.9.0",
+      "resolved": "https://registry.npmjs.org/@react-three/cannon/-/cannon-4.9.0.tgz",
+      "integrity": "sha512-xMJ7ZTzZfZzwtBFx81QxuAfh1uUYiDKnJGzesArQHJu7qNO/qiRBJNzJZEijBG6seGn0/EdfBBfO8nccAOSHhg==",
+      "dependencies": {
+        "cannon-es": "^0.18.0",
+        "cannon-es-debugger": "^1.0.0",
+        "events": "^3.3.0"
+      },
+      "peerDependencies": {
+        "react": ">=17.0",
+        "react-dom": ">=17.0"
+      }
+    },
+    "node_modules/@react-three/drei": {
+      "version": "8.18.5",
+      "resolved": "https://registry.npmjs.org/@react-three/drei/-/drei-8.18.5.tgz",
+      "integrity": "sha512-W+R1aWz52u9RgAXsj+5jfK/0ztZp2xxSpjfAvuf5QK3NhZhBNDErgWcz+xQDlcXmtlfqlLRITvCJLHhPR4IBhQ==",
+      "dependencies": {
+        "@babel/runtime": "^7.11.2",
+        "@react-spring/three": "^9.3.1",
+        "@use-gesture/react": "^10.2.0",
+        "detect-gpu": "^3.1.28",
+        "glsl-noise": "^0.0.0",
+        "lodash.omit": "^4.5.0",
+        "lodash.pick": "^4.4.0",
+        "meshline": "^2.0.4",
+        "react-composer": "^5.0.2",
+        "react-merge-refs": "^1.1.0",
+        "stats.js": "^0.17.0",
+        "suspend-react": "^0.0.8",
+        "three-mesh-bvh": "^0.5.4",
+        "three-stdlib": "^2.8.7",
+        "troika-three-text": "^0.46.2",
+        "utility-types": "^3.10.0",
+        "zustand": "^3.5.13"
+      },
+      "peerDependencies": {
+        "@react-three/fiber": ">=6.0",
+        "react": ">=17.0",
+        "react-dom": ">=17.0",
+        "three": ">=0.137"
+      },
+      "peerDependenciesMeta": {
+        "react-dom": {
+          "optional": true
+        }
+      }
+    },
+    "node_modules/@react-three/fiber": {
+      "version": "7.0.26",
+      "resolved": "https://registry.npmjs.org/@react-three/fiber/-/fiber-7.0.26.tgz",
+      "integrity": "sha512-46NBais4fQIGcMGLBbOf84lp8y/cg73jOEVmAQQJqWX6iOVeNg29jYd15LBuCW2qPD1qDRU0rOfLbMDgwr/vxQ==",
+      "dependencies": {
+        "@babel/runtime": "^7.13.10",
+        "react-merge-refs": "^1.1.0",
+        "react-reconciler": "^0.26.2",
+        "react-three-fiber": "0.0.0-deprecated",
+        "react-use-measure": "^2.1.1",
+        "resize-observer-polyfill": "^1.5.1",
+        "scheduler": "^0.20.2",
+        "use-asset": "^1.0.4",
+        "utility-types": "^3.10.0",
+        "zustand": "^3.5.1"
+      },
+      "peerDependencies": {
+        "react": ">=17.0",
+        "react-dom": ">=17.0",
+        "three": ">=0.133"
+      },
+      "peerDependenciesMeta": {
+        "react-dom": {
+          "optional": true
+        }
+      }
+    },
+    "node_modules/@react-three/postprocessing": {
+      "version": "2.2.5",
+      "resolved": "https://registry.npmjs.org/@react-three/postprocessing/-/postprocessing-2.2.5.tgz",
+      "integrity": "sha512-Zf9b4g8h9sGC8Njc0J8UuWVHIM8c0hb+aHRC2zwQXEuMpiJ7hsxW2d2EX3o7K19gYJpPNmjGnO4sBcfD7mUjMg==",
+      "dependencies": {
+        "postprocessing": "6.24.1",
+        "react-merge-refs": "^1.1.0",
+        "three-stdlib": "^2.8.6"
+      },
+      "peerDependencies": {
+        "@react-three/fiber": ">=7.0",
+        "react": ">=17.0",
+        "react-dom": ">=17.0",
+        "three": ">=0.136.0"
+      },
+      "peerDependenciesMeta": {
+        "react-dom": {
+          "optional": true
+        }
+      }
+    },
+    "node_modules/@react-three/postprocessing/node_modules/postprocessing": {
+      "version": "6.24.1",
+      "resolved": "https://registry.npmjs.org/postprocessing/-/postprocessing-6.24.1.tgz",
+      "integrity": "sha512-P11gHk5gXoxSddumWKk3Pv3MxYSWQU+rhEqPRJpLO70NOJfzmT4+80yG5hCJ0yBGUAjhzxbdF3XtRo7mHeiQZA==",
+      "engines": {
+        "node": ">= 0.13.2"
+      },
+      "peerDependencies": {
+        "three": ">= 0.102.0 < 0.138.0"
+      }
+    },
+    "node_modules/next": {
+      "version": "12.1.0",
+      "resolved": "https://registry.npmjs.org/next/-/next-12.1.0.tgz",
+      "integrity": "sha512-s885kWvnIlxsUFHq9UGyIyLiuD0G3BUC/xrH0CEnH5lHEWkwQcHOORgbDF0hbrW9vr/7am4ETfX4A7M6DjrE7Q==",
+      "dependencies": {
+        "@next/env": "12.1.0",
+        "caniuse-lite": "^1.0.30001283",
+        "postcss": "8.4.5",
+        "styled-jsx": "5.0.0",
+        "use-subscription": "1.5.1"
+      },
+      "bin": {
+        "next": "dist/bin/next"
+      },
+      "engines": {
+        "node": ">=12.22.0"
+      },
+      "optionalDependencies": {
+        "@next/swc-android-arm64": "12.1.0",
+        "@next/swc-darwin-arm64": "12.1.0",
+        "@next/swc-darwin-x64": "12.1.0",
+        "@next/swc-linux-arm-gnueabihf": "12.1.0",
+        "@next/swc-linux-arm64-gnu": "12.1.0",
+        "@next/swc-linux-arm64-musl": "12.1.0",
+        "@next/swc-linux-x64-gnu": "12.1.0",
+        "@next/swc-linux-x64-musl": "12.1.0",
+        "@next/swc-win32-arm64-msvc": "12.1.0",
+        "@next/swc-win32-ia32-msvc": "12.1.0",
+        "@next/swc-win32-x64-msvc": "12.1.0"
+      },
+      "peerDependencies": {
+        "fibers": ">= 3.1.0",
+        "node-sass": "^6.0.0 || ^7.0.0",
+        "react": "^17.0.2 || ^18.0.0-0",
+        "react-dom": "^17.0.2 || ^18.0.0-0",
+        "sass": "^1.3.0"
+      },
+      "peerDependenciesMeta": {
+        "fibers": {
+          "optional": true
+        },
+        "node-sass": {
+          "optional": true
+        },
+        "sass": {
+          "optional": true
+        }
+      }
+    },
+    "node_modules/postprocessing": {
+      "version": "6.25.0",
+      "resolved": "https://registry.npmjs.org/postprocessing/-/postprocessing-6.25.0.tgz",
+      "integrity": "sha512-nGSLR6IAr5gjiqzw6fL9fV4ygEdkPnYI8835l43A5LMGATLiw1Z13ykbVrwBxAMcEu7NyFVSS54mno7w4/a3xw==",
+      "engines": {
+        "node": ">= 0.13.2"
+      },
+      "peerDependencies": {
+        "three": ">= 0.107.0 < 0.139.0"
+      }
+    },
+    "node_modules/react": {
+      "version": "17.0.2",
+      "resolved": "https://registry.npmjs.org/react/-/react-17.0.2.tgz",
+      "integrity": "sha512-gnhPt75i/dq/z3/6q/0asP78D0u592D5L1pd7M8P+dck6Fu/jJeL6iVVK23fptSUZj8Vjf++7wXA8UNclGQcbA==",
+      "dependencies": {
+        "loose-envify": "^1.1.0",
+        "object-assign": "^4.1.1"
+      },
+      "engines": {
+        "node": ">=0.10.0"
+      }
+    },
+    "node_modules/react-dom": {
+      "version": "17.0.2",
+      "resolved": "https://registry.npmjs.org/react-dom/-/react-dom-17.0.2.tgz",
+      "integrity": "sha512-s4h96KtLDUQlsENhMn1ar8t2bEa+q/YAtj8pPPdIjPDGBDIVNsrD9aXNWqspUe6AzKCIG0C1HZZLqLV7qpOBGA==",
+      "dependencies": {
+        "loose-envify": "^1.1.0",
+        "object-assign": "^4.1.1",
+        "scheduler": "^0.20.2"
+      },
+      "peerDependencies": {
+        "react": "17.0.2"
+      }
+    },
+    "node_modules/three": {
+      "version": "0.138.3",
+      "resolved": "https://registry.npmjs.org/three/-/three-0.138.3.tgz",
+      "integrity": "sha512-4t1cKC8gimNyJChJbaklg8W/qj3PpsLJUIFm5LIuAy/hVxxNm1ru2FGTSfbTSsuHmC/7ipsyuGKqrSAKLNtkzg=="
+    }
+  }
+}

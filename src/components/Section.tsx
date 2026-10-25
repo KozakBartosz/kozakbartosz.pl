@@ -238,10 +238,8 @@ const Section = styled.section`
     .skills ul { display: flex; flex-wrap: wrap; gap: .8rem; list-style: none; padding: 0; margin: 0; }
     .skills li {
         padding: .9rem 1.6rem;
-        border: 1px solid transparent;
+        border: 1px solid #24504e;
         border-radius: 3rem;
-        background: linear-gradient(#090f0e, #090f0e) padding-box,
-            linear-gradient(110deg, rgba(0, 163, 255, .65), rgba(0, 255, 163, .65)) border-box;
         color: #dce5e3;
         font-size: 1.5rem;
         line-height: 1.5;
@@ -264,6 +262,7 @@ const Section = styled.section`
                 align-self: flex-end;
             }
         }
+        &#contact { margin-bottom: 7rem; }
         &:nth-of-type(even) ${SectionPoint} { left: 100%; }
         &:nth-of-type(odd) ${Icon} { left: -50%; top: 50%; }
         &:nth-of-type(even) ${Icon} { left: 150%; top: 50%; }
@@ -272,7 +271,7 @@ const Section = styled.section`
 const Container = styled.div`
     position: relative;
     z-index: 5;
-    margin: 24rem auto 8rem;
+    margin: 24rem auto 7rem;
     width: 100%;
     @media (min-width: 1000px) { margin-top: 10rem; }
 `;
@@ -296,11 +295,11 @@ const SectionTimeline = () => {
                 return rect.top + rect.height / 2;
             });
             const explore = document.getElementById('explore-more');
-            const footer = document.getElementById('footer');
-            if (!explore || !footer) return;
+            const contact = document.getElementById('contact');
+            if (!explore || !contact) return;
             const radii = markers.map(marker => (marker.querySelector('svg')?.getBoundingClientRect().height || 32) / 2 + 12);
             const starts = [explore.getBoundingClientRect().bottom + 12, ...centers.map((center, index) => center + radii[index])];
-            const ends = [...centers.map((center, index) => center - radii[index]), footer.getBoundingClientRect().top];
+            const ends = [...centers.map((center, index) => center - radii[index]), contact.getBoundingClientRect().bottom];
             const atBottom = window.scrollY + window.innerHeight >= document.documentElement.scrollHeight - 2;
             tracks.forEach((track, index) => {
                 const start = starts[index];
@@ -308,7 +307,8 @@ const SectionTimeline = () => {
                 track.style.top = `${start - origin}px`;
                 track.style.height = `${Math.max(0, end - start)}px`;
                 const progress = atBottom ? 1 : Math.max(0, Math.min(1, (scrollMarker - start) / Math.max(1, end - start)));
-                (track.firstElementChild as HTMLElement).style.transform = `scaleY(${progress})`;
+                (track.firstElementChild as HTMLElement).style.height = `${progress * 100}%`;
+                track.dataset.complete = String(progress >= 1);
             });
         };
         const schedule = () => {
@@ -354,10 +354,41 @@ const TimelineTrack = styled.div`
     > span {
         display: block;
         width: 100%;
-        height: 100%;
-        transform: scaleY(0);
-        transform-origin: top;
-        transition: transform 180ms linear;
-        background: linear-gradient(#00a3ff, #00ffa3);
+        position: relative;
+        height: 0;
+        transition: height 700ms cubic-bezier(.16, 1, .3, 1);
+        &::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(#00a3ff, #00ffa3);
+            /* Keep the feather a constant size as the fill grows. */
+            -webkit-mask-image: linear-gradient(to bottom, #000 0, #000 calc(100% - 80px), rgba(0, 0, 0, .9) calc(100% - 60px), rgba(0, 0, 0, .5) calc(100% - 32px), rgba(0, 0, 0, .12) calc(100% - 12px), transparent 100%);
+            mask-image: linear-gradient(to bottom, #000 0, #000 calc(100% - 80px), rgba(0, 0, 0, .9) calc(100% - 60px), rgba(0, 0, 0, .5) calc(100% - 32px), rgba(0, 0, 0, .12) calc(100% - 12px), transparent 100%);
+        }
+        &::after {
+            content: '';
+            position: absolute;
+            left: -9px;
+            bottom: 0;
+            width: 20px;
+            height: 112px;
+            max-height: 100%;
+            background: radial-gradient(ellipse, rgba(40, 255, 205, .95) 0%, rgba(0, 255, 195, .55) 25%, rgba(0, 255, 195, .16) 50%, transparent 75%);
+            filter: blur(6px);
+            transition: opacity 500ms ease;
+        }
+    }
+    &[data-complete='true'] > span {
+        &::before {
+            -webkit-mask-image: none;
+            mask-image: none;
+        }
+        &::after {
+            opacity: 0;
+        }
+    }
+    @media (prefers-reduced-motion: reduce) {
+        > span, > span::after { transition: none; }
     }
 `;

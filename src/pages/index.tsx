@@ -6,6 +6,7 @@ import { useEffect, useRef, useState } from 'react';
 import { Sections } from '../components/Section';
 import { Cursor } from '../components/Cursor';
 import { Loading } from '../components/Loading';
+import { Footer } from '../components/Footer';
 const Hero = dynamic(() => import('../components/hero'), { ssr: false });
 
 const Home: NextPage = () => {
@@ -35,7 +36,7 @@ const Home: NextPage = () => {
                 <Cursor />
             </main>
 
-            <Footer id="footer">Copyright ©2024 kozakbartosz.pl</Footer>
+            <Footer />
             <MargeGradientTop />
             <MargeGradientBottom />
         </>
@@ -48,19 +49,6 @@ const Container = styled.div`
     background-size: cover;
     position: relative;
     height: 100%;
-`;
-
-const Footer = styled.footer`
-    height: 20rem;
-    position: relative;
-    z-index: 999;
-    text-align: center;
-    font-size: 1.8rem;
-    color: #fff;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    opacity: 0.2;
 `;
 
 const MargeGradientBottom = styled.div`

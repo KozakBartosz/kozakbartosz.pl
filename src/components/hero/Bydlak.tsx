@@ -1,10 +1,8 @@
 import { useCylinder } from '@react-three/cannon';
 import { useGLTF } from '@react-three/drei';
-import { useMemo } from 'react';
-import { Vector3, Vector4 } from 'three';
+import { Vector3 } from 'three';
 
 export function Bydlak({ material, position, scale }: any) {
-    const { nodes, materials } = useGLTF('/models/logo.glb');
     const [ref] = useCylinder(() => ({
         mass: 10,
         position: position ? position : [0, 0, 0],
@@ -14,6 +12,15 @@ export function Bydlak({ material, position, scale }: any) {
     }));
     return (
         <group dispose={null} scale={scale ? scale : [0, 0, 0]} ref={ref}>
+            <BydlakModel material={material} />
+        </group>
+    );
+}
+
+// Shared visual model; the hero adds its physics body separately.
+export function BydlakModel({ material }: any) {
+    const { nodes, materials } = useGLTF('/models/logo.glb');
+    return <group dispose={null}>
             <mesh
                 castShadow
                 receiveShadow
@@ -35,8 +42,6 @@ export function Bydlak({ material, position, scale }: any) {
                         myPosition: { value: new Vector3(0.0, 0.0, 0.0) }
                     }}
                 />
-                ;
             </mesh>
-        </group>
-    );
+    </group>;
 }

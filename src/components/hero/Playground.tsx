@@ -16,6 +16,7 @@ import {
 import { fragmentShader, vertexShader } from './shaders';
 import { Sphere, Torus } from '@react-three/drei';
 import { useFrame } from '@react-three/fiber';
+import { isPlaygroundPointer } from './isPlaygroundPointer';
 
 function createArray(size: number, shift: number) {
     return new Array(size)
@@ -104,10 +105,14 @@ export const Playground = () => {
 
         const release = () => setModeActive(false);
         const grab = (e: PointerEvent) => {
-            if (e.buttons === 1) setModeActive(true);
+            if (e.buttons === 1 && isPlaygroundPointer(e)) setModeActive(true);
+        };
+        const move = (e: PointerEvent) => {
+            if (!isPlaygroundPointer(e)) release();
         };
         let gravityEnabled = false;
         const toggleGravity = (e: Event) => {
+            if (!isPlaygroundPointer(e as MouseEvent)) return;
             e.preventDefault();
             cancelSequence();
             gravityEnabled = !gravityEnabled;
@@ -160,6 +165,8 @@ export const Playground = () => {
             }
         };
         document.body.addEventListener('pointerdown', grab);
+        window.addEventListener('pointermove', move);
+        window.addEventListener('scroll', release, { passive: true });
         window.addEventListener('pointerup', release);
         window.addEventListener('pointercancel', release);
         window.addEventListener('blur', release);
@@ -169,6 +176,8 @@ export const Playground = () => {
         return () => {
             cancelSequence();
             document.body.removeEventListener('pointerdown', grab);
+            window.removeEventListener('pointermove', move);
+            window.removeEventListener('scroll', release);
             window.removeEventListener('pointerup', release);
             window.removeEventListener('pointercancel', release);
             window.removeEventListener('blur', release);

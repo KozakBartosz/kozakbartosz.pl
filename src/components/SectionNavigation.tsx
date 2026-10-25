@@ -52,7 +52,7 @@ export const SectionNavigation = () => {
             <ol>
                 {entries.map(({ id, name }, index) => (
                     <li key={id}>
-                        <a href={`#${id}`} aria-label={`0${index + 1} — ${name}`}
+                        <a href={`#${id}`} aria-label={`0${index} — ${name}`}
                             aria-current={active === id ? 'location' : undefined}
                             onClick={event => {
                                 event.preventDefault();
@@ -60,12 +60,16 @@ export const SectionNavigation = () => {
                                 if (!section) return;
                                 history.pushState(null, '', `#${id}`);
                                 section.focus({ preventScroll: true });
-                                section.scrollIntoView({
+                                const bounds = section.getBoundingClientRect();
+                                const offset = bounds.height < window.innerHeight
+                                    ? (window.innerHeight - bounds.height) / 2
+                                    : 0;
+                                window.scrollTo({
+                                    top: window.scrollY + bounds.top - offset,
                                     behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth',
-                                    block: 'start'
                                 });
                             }}>
-                            <span aria-hidden="true">0{index + 1}</span>
+                            <span aria-hidden="true">0{index}</span>
                             <SectionSymbol section={id} placement="rail" />
                             <span className="progress" aria-hidden="true"><span style={{ transform: `scaleY(${active === id ? progress : 0})` }} /></span>
                             <span className="name">{name}</span>
@@ -89,10 +93,14 @@ const Rail = styled.nav`
         ol { list-style: none; margin: 0; padding: 0; }
         a {
             display: flex;
-            align-items: center;
+            align-items: flex-start;
             position: relative;
             min-width: 4.4rem;
+            width: 6.4rem;
             height: 6.4rem;
+            gap: .9rem;
+            padding: 2.2rem .6rem 0;
+            line-height: 2rem;
             transition: height 360ms cubic-bezier(.22, 1, .36, 1), color 240ms ease;
             font-size: 1.2rem;
             letter-spacing: .08em;
@@ -101,8 +109,7 @@ const Rail = styled.nav`
             -webkit-text-fill-color: currentColor;
             text-shadow: none;
         }
-        a { gap: .9rem; width: 6.4rem; padding: 0 .6rem; align-items: flex-start; padding-top: 2.2rem; line-height: 2rem; }
-        a svg { width: 1.6rem; height: 1.6rem; margin-top: .2rem; transition: opacity 240ms ease; }
+        a svg { width: 1.6rem; height: 1.6rem; margin-top: .2rem; flex-shrink: 0; transition: opacity 240ms ease; }
         a[aria-current] { color: #55ebd4; height: 12.4rem; }
         .progress {
             position: absolute;
@@ -127,9 +134,11 @@ const Rail = styled.nav`
         }
         .name {
             position: absolute;
-            left: 6rem;
-            padding: .4rem .8rem;
-            background: #090f0e;
+            left: calc(100% + 1.2rem);
+            top: 2.2rem;
+            padding: 0;
+            white-space: nowrap;
+            background: none;
             opacity: 0;
             pointer-events: none;
         }

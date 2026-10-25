@@ -1,5 +1,5 @@
 import styled from '@emotion/styled';
-import { MutableRefObject } from 'react';
+import { MutableRefObject, useEffect, useRef } from 'react';
 import { SectionSymbol } from './SectionSymbol';
 import { SectionNavigation } from './SectionNavigation';
 
@@ -13,9 +13,9 @@ export const Sections = ({
         <SectionNavigation />
         <Container>
             <Section id="frontend" aria-labelledby="frontend-title" tabIndex={-1}>
-                <Label><span>02</span> Development</Label>
+                <Label><span>01</span> Development</Label>
                 <h2 id="frontend-title" className="section-title">Front-end <span className="heading-accent">developer</span></h2>
-                <SectionPoint aria-hidden="true"><SectionSymbol section="frontend" /></SectionPoint>
+                <SectionPoint data-section-marker aria-hidden="true"><SectionSymbol section="frontend" /></SectionPoint>
                 <p>
                     Hi, I am a front-end developer with 10 years of experience
                     working on my own open source projects as well as doing
@@ -35,9 +35,9 @@ export const Sections = ({
                 />
             </Section>
             <Section id="design" aria-labelledby="design-title" tabIndex={-1}>
-                <Label><span>03</span> Design</Label>
+                <Label><span>02</span> Design</Label>
                 <h2 id="design-title" className="section-title">Graphic <span className="heading-accent">designer</span></h2>
-                <SectionPoint aria-hidden="true"><SectionSymbol section="design" /></SectionPoint>
+                <SectionPoint data-section-marker aria-hidden="true"><SectionSymbol section="design" /></SectionPoint>
                 <p>
                     In addition to programming, I also deals with graphic design
                     of interfaces and 3D graphics.
@@ -59,9 +59,9 @@ export const Sections = ({
                 />
             </Section>
             <Section id="contact" aria-labelledby="contact-title" tabIndex={-1}>
-                <Label><span>04</span> Contact</Label>
+                <Label><span>03</span> Contact</Label>
                 <h2 id="contact-title" className="section-title">Say <span className="heading-accent">hello</span></h2>
-                <SectionPoint aria-hidden="true"><SectionSymbol section="contact" /></SectionPoint>
+                <SectionPoint data-section-marker aria-hidden="true"><SectionSymbol section="contact" /></SectionPoint>
                 <p className="contact-intro">Have an idea? Let’s make it real.</p>
                 <ContactGrid>
                     {contacts.map(({ label, value, href }) => (
@@ -78,7 +78,7 @@ export const Sections = ({
                     }}
                 />
             </Section>
-            <Line />
+            <SectionTimeline />
         </Container>
         </>
     );
@@ -192,8 +192,14 @@ const SectionPoint = styled.div`
         transform: translate(-50%, -50%);
         width: 4.4rem;
         height: 4.4rem;
-        background: #090f0e;
+        background: none;
         z-index: 2;
+        svg {
+            width: 3.2rem;
+            height: 3.2rem;
+            stroke-width: 1.8;
+            filter: drop-shadow(0 0 8px rgba(0, 220, 210, .45));
+        }
     }
 `;
 
@@ -251,6 +257,13 @@ const Section = styled.section`
         margin: 8rem 0;
         .section-title { font-size: clamp(4.6rem, 17cqw, 14rem); }
         &:nth-of-type(odd) { margin-left: 50%; }
+        &:nth-of-type(even) {
+            padding-left: max(9rem, min(4vw, 12rem));
+            > p, > .section-title, > .skills {
+                width: min(100%, 68rem);
+                align-self: flex-end;
+            }
+        }
         &:nth-of-type(even) ${SectionPoint} { left: 100%; }
         &:nth-of-type(odd) ${Icon} { left: -50%; top: 50%; }
         &:nth-of-type(even) ${Icon} { left: 150%; top: 50%; }
@@ -263,15 +276,88 @@ const Container = styled.div`
     width: 100%;
     @media (min-width: 1000px) { margin-top: 10rem; }
 `;
-const Line = styled.div`
+const SectionTimeline = () => {
+    const timelineRef = useRef<HTMLDivElement>(null);
+
+    useEffect(() => {
+        const timeline = timelineRef.current;
+        const container = timeline?.parentElement;
+        if (!timeline || !container) return;
+        const markers = Array.from(container.querySelectorAll<HTMLElement>('[data-section-marker]'));
+        const tracks = Array.from(timeline.children) as HTMLElement[];
+        let frame = 0;
+        const update = () => {
+            frame = 0;
+            if (window.innerWidth < 1000) return;
+            const origin = timeline.getBoundingClientRect().top;
+            const scrollMarker = window.innerHeight / 2;
+            const centers = markers.map(marker => {
+                const rect = marker.getBoundingClientRect();
+                return rect.top + rect.height / 2;
+            });
+            const explore = document.getElementById('explore-more');
+            const footer = document.getElementById('footer');
+            if (!explore || !footer) return;
+            const radii = markers.map(marker => (marker.querySelector('svg')?.getBoundingClientRect().height || 32) / 2 + 12);
+            const starts = [explore.getBoundingClientRect().bottom + 12, ...centers.map((center, index) => center + radii[index])];
+            const ends = [...centers.map((center, index) => center - radii[index]), footer.getBoundingClientRect().top];
+            const atBottom = window.scrollY + window.innerHeight >= document.documentElement.scrollHeight - 2;
+            tracks.forEach((track, index) => {
+                const start = starts[index];
+                const end = ends[index];
+                track.style.top = `${start - origin}px`;
+                track.style.height = `${Math.max(0, end - start)}px`;
+                const progress = atBottom ? 1 : Math.max(0, Math.min(1, (scrollMarker - start) / Math.max(1, end - start)));
+                (track.firstElementChild as HTMLElement).style.transform = `scaleY(${progress})`;
+            });
+        };
+        const schedule = () => {
+            if (!frame) frame = requestAnimationFrame(update);
+        };
+        const observer = new ResizeObserver(schedule);
+        observer.observe(container);
+        observer.observe(document.body);
+        const home = document.getElementById('home');
+        if (home) observer.observe(home);
+        markers.forEach(marker => marker.parentElement && observer.observe(marker.parentElement));
+        window.addEventListener('scroll', schedule, { passive: true });
+        window.addEventListener('resize', schedule);
+        update();
+        return () => {
+            cancelAnimationFrame(frame);
+            observer.disconnect();
+            window.removeEventListener('scroll', schedule);
+            window.removeEventListener('resize', schedule);
+        };
+    }, []);
+
+    return <Timeline ref={timelineRef} aria-hidden="true">
+        {[0, 1, 2, 3].map(index => <TimelineTrack key={index}><span /></TimelineTrack>)}
+    </Timeline>;
+};
+
+const Timeline = styled.div`
+    display: none;
     @media (min-width: 1000px) {
+        display: block;
         position: absolute;
-        top: 0;
-        bottom: 0;
-        left: 50%;
-        width: 1px;
-        opacity: .45;
-        background: linear-gradient(#00a3ff, #00ffa3);
+        inset: 0;
         pointer-events: none;
+    }
+`;
+
+const TimelineTrack = styled.div`
+    position: absolute;
+    left: calc(50% - 1px);
+    width: 2px;
+    background: #24423f;
+    > span {
+        display: block;
+        width: 100%;
+        height: 100%;
+        transform: scaleY(0);
+        transform-origin: top;
+        transition: transform 180ms linear;
+        background: linear-gradient(#00a3ff, #00ffa3);
     }
 `;

@@ -66,7 +66,7 @@ export const Hero = ({
                     autoClear: false
                 }}
             >
-                <PostEffects key={Math.random()} />
+                <PostEffects />
                 <pointLight
                     position={[0, 20, -120]}
                     intensity={0.6}
@@ -98,14 +98,14 @@ export const Hero = ({
             </Canvas>
             <Top>
                 <Logo id="Logo">
-                    Bartosz Kozak
+                    Bartosz <span>Kozak</span>
                     {/* <Link href="https://kozakbartosz.pl/">Kozak Bartosz</Link> */}
                 </Logo>
-                <Aside>Front-end • UI • UX • 3D</Aside>
+                <Aside>Front-end <b>/</b> Interactive 3D</Aside>
             </Top>
             <Info>
-                <span>Left click - use gravity gun</span>
-                <span>Right click - toggle gravity</span>
+                <span>LMB / Grab objects</span>
+                <span>RMB / Toggle gravity</span>
             </Info>
             <InfoMobile>
                 <span>Rotate your device to change gravity</span>
@@ -116,7 +116,6 @@ export const Hero = ({
 
 const Container = styled.div`
     position: relative;
-    z-index: 2;
     height: 100%;
     height: 100lvh;
     min-height: 70rem;
@@ -128,7 +127,7 @@ const Top = styled.div`
     top: 0;
     left: 0;
     right: 0;
-    z-index: 3;
+    z-index: 350;
     padding: 0;
 
     display: flex;
@@ -144,57 +143,56 @@ const Top = styled.div`
 `;
 
 const Logo = styled.h1`
-    font-size: 7rem;
-    letter-spacing: 0.3rem;
-    margin-bottom: 2rem;
+    font-size: clamp(4.4rem, 6.5vw, 11rem);
+    letter-spacing: -.035em;
+    margin-bottom: 1.8rem;
     padding-bottom: 0;
     text-align: center;
-    @media (max-width: 800px) {
-        font-size: 6rem;
-    }
-    @media (max-width: 600px) {
-        font-size: 4rem;
-    }
     font-weight: 300;
-    background: linear-gradient(
-        90deg,
-        rgba(0, 163, 255, 1),
-        rgba(0, 255, 163, 1)
-    );
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    text-shadow: //
-        -4rem 0.5rem 5rem rgba(0, 163, 255, 0.5),
-        3rem -0.5rem 5rem rgba(0, 255, 163, 0.5);
-
-    pointer-events: normal;
+    color: #f2f5f4;
+    background: none;
+    -webkit-text-fill-color: currentColor;
+    span {
+        background: linear-gradient(90deg, #00a3ff, #00f0cf);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+    }
 `;
 
 const Aside = styled.span`
     text-align: center;
-    font-size: 2rem;
-    font-weight: 300;
+    font-size: clamp(1rem, 1vw, 1.4rem);
+    letter-spacing: .4em;
+    text-transform: uppercase;
     color: #d5eaed;
+    b { color: #00dcd5; margin-inline: 1.8rem; font-weight: 300; }
 `;
 
 const Info = styled.div`
     display: none;
-    @media (min-width: 800px) {
+    @media (min-width: 1000px) {
         pointer-events: none;
         display: flex;
         align-items: center;
-        justify-content: center;
-        gap: 6rem;
-        text-align: center;
-        font-size: 1.8rem;
-        font-weight: 300;
-        color: #d5eaed;
+        justify-content: space-between;
+        font-size: 1.2rem;
+        line-height: 2rem;
+        letter-spacing: .2em;
+        text-transform: uppercase;
+        color: #bccdcb;
         position: absolute;
-        bottom: 12rem;
-        left: 0;
-        right: 0;
-        z-index: 3;
-        opacity: 0.55;
+        bottom: 6rem;
+        left: clamp(2.4rem, 3vw, 6rem);
+        right: clamp(2.4rem, 3vw, 6rem);
+        z-index: 350;
+        span { display: flex; align-items: center; gap: 2rem; }
+        span::before {
+            content: '';
+            width: 4.8rem;
+            height: 1px;
+            background: linear-gradient(90deg, #00a3ff, #00ffa3);
+        }
+        span:last-child::before { order: 1; }
     }
 `;
 const InfoMobile = styled.div`
@@ -211,9 +209,9 @@ const InfoMobile = styled.div`
     bottom: 12rem;
     left: 0;
     right: 0;
-    z-index: 3;
+    z-index: 350;
     opacity: 0.55;
-    @media (min-width: 800px) {
+    @media (min-width: 1000px) {
         display: none;
     }
 `;

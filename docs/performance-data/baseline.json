@@ -1,0 +1,167 @@
+{
+  "env": {
+    "renderer": [
+      "ANGLE (Apple, ANGLE Metal Renderer: Apple M1 Pro, Unspecified Version)",
+      "ANGLE (Apple, ANGLE Metal Renderer: Apple M1 Pro, Unspecified Version)",
+      "ANGLE (Apple, ANGLE Metal Renderer: Apple M1 Pro, Unspecified Version)",
+      "ANGLE (Apple, ANGLE Metal Renderer: Apple M1 Pro, Unspecified Version)",
+      null
+    ],
+    "buffers": [
+      {
+        "class": "shader-cursor shader-cursor-inversion",
+        "width": 2137,
+        "height": 1500
+      },
+      {
+        "class": "shader-cursor",
+        "width": 2137,
+        "height": 1500
+      },
+      {
+        "class": "shader-cursor shader-cursor-outline",
+        "width": 2137,
+        "height": 1500
+      },
+      {
+        "class": "",
+        "width": 1425,
+        "height": 1000
+      },
+      {
+        "class": "",
+        "width": 0,
+        "height": 0
+      }
+    ],
+    "dpr": 2
+  },
+  "results": [
+    {
+      "name": "idle",
+      "frames": 241,
+      "p50": 16.69999999999891,
+      "p95": 17.5,
+      "over25": 0,
+      "draws": {
+        "scene": 26266
+      },
+      "longTasks": [],
+      "TaskDuration": 0.575446,
+      "ScriptDuration": 0.447927,
+      "LayoutDuration": 0,
+      "RecalcStyleDuration": 0.032428
+    },
+    {
+      "name": "movement",
+      "frames": 241,
+      "p50": 16.69999999999709,
+      "p95": 17.600000000002183,
+      "over25": 0,
+      "draws": {
+        "scene": 31948,
+        "cursor": 720
+      },
+      "longTasks": [],
+      "TaskDuration": 0.67008,
+      "ScriptDuration": 0.5679649999999999,
+      "LayoutDuration": 0,
+      "RecalcStyleDuration": 0.027773
+    },
+    {
+      "name": "hold",
+      "frames": 241,
+      "p50": 16.69999999999709,
+      "p95": 17.5,
+      "over25": 0,
+      "draws": {
+        "scene": 44158,
+        "cursor": 723
+      },
+      "longTasks": [],
+      "TaskDuration": 0.6272660000000001,
+      "ScriptDuration": 0.535201,
+      "LayoutDuration": 0,
+      "RecalcStyleDuration": 0.023402999999999993
+    },
+    {
+      "name": "no-cursor-draw",
+      "frames": 241,
+      "p50": 16.69999999999709,
+      "p95": 17.599999999998545,
+      "over25": 0,
+      "draws": {
+        "scene": 49408,
+        "cursor": 720
+      },
+      "longTasks": [],
+      "TaskDuration": 0.5625810000000002,
+      "ScriptDuration": 0.4773930000000002,
+      "LayoutDuration": 0,
+      "RecalcStyleDuration": 0.021586999999999995
+    },
+    {
+      "name": "no-scene-draw",
+      "frames": 241,
+      "p50": 16.69999999999709,
+      "p95": 17.5,
+      "over25": 0,
+      "draws": {
+        "scene": 53604,
+        "cursor": 720
+      },
+      "longTasks": [],
+      "TaskDuration": 0.587091,
+      "ScriptDuration": 0.49426000000000014,
+      "LayoutDuration": 0,
+      "RecalcStyleDuration": 0.022536
+    },
+    {
+      "name": "frontend",
+      "frames": 241,
+      "p50": 16.69999999999709,
+      "p95": 17.599999999998545,
+      "over25": 0,
+      "draws": {
+        "scene": 57500
+      },
+      "longTasks": [],
+      "TaskDuration": 0.5065150000000003,
+      "ScriptDuration": 0.400725,
+      "LayoutDuration": 0,
+      "RecalcStyleDuration": 0.018950999999999996
+    },
+    {
+      "name": "contact",
+      "frames": 241,
+      "p50": 16.69999999999709,
+      "p95": 17.400000000001455,
+      "over25": 0,
+      "draws": {
+        "scene": 28284
+      },
+      "longTasks": [],
+      "TaskDuration": 0.4349660000000002,
+      "ScriptDuration": 0.3168949999999997,
+      "LayoutDuration": 0,
+      "RecalcStyleDuration": 0.018958000000000003
+    },
+    {
+      "name": "scroll",
+      "frames": 241,
+      "p50": 16.69999999999709,
+      "p95": 17.5,
+      "over25": 0,
+      "draws": {
+        "scene": 46777,
+        "cursor": 708
+      },
+      "longTasks": [],
+      "TaskDuration": 0.7214980000000004,
+      "ScriptDuration": 0.5023439999999999,
+      "LayoutDuration": 0.009123000000000001,
+      "RecalcStyleDuration": 0.06855299999999998
+    }
+  ],
+  "errors": []
+}

@@ -1,0 +1,73 @@
+{
+  "env": {
+    "renderer": [
+      "ANGLE (Apple, ANGLE Metal Renderer: Apple M1 Pro, Unspecified Version)",
+      "ANGLE (Apple, ANGLE Metal Renderer: Apple M1 Pro, Unspecified Version)",
+      "ANGLE (Apple, ANGLE Metal Renderer: Apple M1 Pro, Unspecified Version)",
+      "ANGLE (Apple, ANGLE Metal Renderer: Apple M1 Pro, Unspecified Version)",
+      null
+    ],
+    "buffers": [
+      {
+        "class": "shader-cursor shader-cursor-inversion",
+        "width": 3817,
+        "height": 2160
+      },
+      {
+        "class": "shader-cursor",
+        "width": 3817,
+        "height": 2160
+      },
+      {
+        "class": "shader-cursor shader-cursor-outline",
+        "width": 3817,
+        "height": 2160
+      },
+      {
+        "class": "",
+        "width": 2545,
+        "height": 1440
+      },
+      {
+        "class": "",
+        "width": 0,
+        "height": 0
+      }
+    ],
+    "dpr": 2
+  },
+  "results": [
+    {
+      "name": "idle",
+      "frames": 164,
+      "p50": 17.599999999998545,
+      "p95": 34,
+      "over25": 77,
+      "draws": {
+        "scene": 31723
+      },
+      "longTasks": [],
+      "TaskDuration": 0.26686200000000004,
+      "ScriptDuration": 0.202498,
+      "LayoutDuration": 0,
+      "RecalcStyleDuration": 0.013130000000000001
+    },
+    {
+      "name": "movement",
+      "frames": 151,
+      "p50": 32.60000000000218,
+      "p95": 34.20000000000073,
+      "over25": 89,
+      "draws": {
+        "scene": 29091,
+        "cursor": 300
+      },
+      "longTasks": [],
+      "TaskDuration": 0.32935100000000006,
+      "ScriptDuration": 0.27462500000000006,
+      "LayoutDuration": 0,
+      "RecalcStyleDuration": 0.012197999999999997
+    }
+  ],
+  "errors": []
+}

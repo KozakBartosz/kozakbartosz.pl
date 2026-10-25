@@ -36,7 +36,7 @@ that would require providing its content as a GPU texture.
   morph progress never multiplies an accumulated angle.
 - Links, buttons, form controls, and `[data-cursor="link"]` morph into a box matching the element bounds.
 - Scrolling refreshes the hovered element; box bounds are read during interpolation.
-- Three draw calls render press inversion, hover hue, and outline. Scissoring limits fragment work to their region;
+- Two draw calls render hue and outline during ordinary movement. The inversion pass runs only while a press fades in/out (three draws), and clears once after release. Scissoring limits fragment work to their region;
   device pixel ratio is capped at 1.5. The transparent surfaces still span the viewport.
 - The animation loop sleeps after interpolation settles, and resumes on input.
 - Touch input hides the decoration. Reduced motion and devices without a fine,

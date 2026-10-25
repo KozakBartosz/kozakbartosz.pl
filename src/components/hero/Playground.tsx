@@ -1,5 +1,6 @@
 import { Physics, Debug, Triplet } from '@react-three/cannon';
 import { Plane } from './Plane';
+import { GrabPointerProvider } from './GrabPointer';
 import { Cone } from './Cone';
 import { Bydlak } from './Bydlak';
 import { Icon } from './Icon';
@@ -220,7 +221,9 @@ export const Playground = () => {
 
     return (
         <Physics gravity={gravity}>
-            {/* <Physics gravity={gravity}> */}
+            <GrabPointerProvider>
+            {/* <Physics gravity={gravity}>
+            <GrabPointerProvider> */}
             {/* <Debug color="red" scale={1.01}> */}
 
             <mesh position={[0, 0, -200]} rotation={[0, 0, 0]}>
@@ -271,6 +274,7 @@ export const Playground = () => {
                     // }}
                 />
             </mesh>
+            </GrabPointerProvider>
         </Physics>
     );
 };

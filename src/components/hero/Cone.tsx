@@ -2,7 +2,8 @@ import { Triplet, useCylinder } from '@react-three/cannon';
 import { useGLTF } from '@react-three/drei';
 import { useFrame } from '@react-three/fiber';
 import { useEffect, useRef, useState } from 'react';
-import { PerspectiveCamera, Vector3 } from 'three';
+import { Vector3 } from 'three';
+import { useGrabPointer } from './GrabPointer';
 import { HERO_DEPHTH } from './consts';
 
 interface Props {
@@ -24,13 +25,12 @@ export function Cone({ force, material, ...props }: Props) {
 
     const materialRef = useRef(null);
     const meshRef = useRef(null);
-    const phone = useRef(false);
+    const { position: localForceVec, touch: phone } = useGrabPointer();
 
     const [color, setColor] = useState(0);
 
     const { nodes, materials } = useGLTF('/models/cone.glb');
 
-    const localForceVec = useRef([0, 0, 0] as Triplet);
     const localForce = useRef(false);
 
     const loopRnage = 130;
@@ -38,84 +38,11 @@ export function Cone({ force, material, ...props }: Props) {
     useEffect(() => {
         if (phone.current) return;
         localForce.current = force;
-    }, [force]);
-
-    // useFrame(() => {
-    //     if (meshRef.current) {
-    //         // meshRef.current.color.setHex(0xff00ff);
-    //         // meshRef.current.needsUpdate = true;
-    //     }
-    // }, 1);
-    const projectCamera = new PerspectiveCamera(
-        30,
-        window.innerWidth / window.innerHeight,
-        0.1,
-        1000
-    );
+    }, [force, phone]);
 
     useEffect(() => {
-        document.body.addEventListener('touchstart', (e) => {
-            if (!phone.current) {
-                localForce.current = false;
-            }
-            phone.current = true;
-        });
-        document.body.addEventListener('pointermove', (e) => {
-            if (phone.current) return;
-            const top = e.clientY;
-            const left = e.clientX;
-
-            // project the mouse position to the camera
-            const position = [left, top - window.scrollY / HERO_DEPHTH, 0];
-
-            let vector = new Vector3();
-
-            projectCamera.position.x = 0;
-            projectCamera.position.y = window.scrollY / -HERO_DEPHTH;
-            projectCamera.position.z = 150;
-            projectCamera.updateProjectionMatrix();
-            projectCamera.updateMatrixWorld();
-
-            let x = (position[0] / window.innerWidth) * 2 - 1;
-            let y = -(position[1] / window.innerHeight) * 2 + 1;
-
-            vector.set(x, y, position[2]);
-
-            vector.unproject(projectCamera);
-
-            vector.sub(projectCamera.position).normalize();
-            // scale the projected ray
-            var distance = -projectCamera.position.z / vector.z,
-                scaled = vector.multiplyScalar(distance),
-                coords = projectCamera.position.clone().add(scaled);
-
-            const newPosition = [coords.x, coords.y, 0];
-
-            if (localForce) {
-                if (newPosition[1] < -10) {
-                    localForceVec.current = [
-                        newPosition[0],
-                        -10,
-                        newPosition[1] * 2 + 10
-                    ];
-                } else {
-                    localForceVec.current = [newPosition[0], newPosition[1], 0];
-                }
-            }
-        });
-
-        // document.body.addEventListener('pointermove', (e) => {
-        //     if (localForce) {
-        //         localForceVec.current = [
-        //             (e.clientX - window.innerWidth / 2) / 18,
-        //             (e.clientY - window.innerHeight / 2) / -18,
-        //             0
-        //         ];
-        //     }
-        // });
-
         api.velocity.set(0, 0, 40);
-        api.position.subscribe(([x, y, z]) => {
+        const unsubscribe = api.position.subscribe(([x, y, z]) => {
             // console.log(materialRef.current);
             // if (materialRef.current && materialRef.current.uniforms) {
             //     materialRef.current.uniforms.myPosition.value = new Vector3(
@@ -129,7 +56,7 @@ export function Cone({ force, material, ...props }: Props) {
             if (x < -loopRnage) api.position.set(loopRnage - 2, y, 0);
             if (z < -130) api.applyImpulse([0, 0, 5], [0, 0, 0]);
             if (y > 100) api.applyImpulse([0, -10, 0], [0, 0, 0]);
-            if (localForce.current) {
+            if (localForce.current && !phone.current) {
                 let v2 = new Vector3(
                         localForceVec.current[0],
                         localForceVec.current[1],
@@ -156,7 +83,8 @@ export function Cone({ force, material, ...props }: Props) {
                 }
             }
         });
-    }, []);
+        return unsubscribe;
+    }, [api, localForceVec, phone]);
 
     return (
         <group

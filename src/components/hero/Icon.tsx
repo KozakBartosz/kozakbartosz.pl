@@ -12,7 +12,6 @@ export function Icon({ material, element, url }: any) {
     const reducedMotion = useReducedMotion();
 
     const { nodes, materials } = useGLTF(url) as { nodes: any; materials: any };
-    console.log('nodes', nodes);
 
     const [myPosition, setMyPosition] = useState(new Vector3(10.0, 0.0, 0.0));
 
@@ -23,19 +22,42 @@ export function Icon({ material, element, url }: any) {
     const meshRef = useRef<Mesh>(null!);
     const materialRef = useRef<any>(null!);
 
-    const projectCamera = new PerspectiveCamera(
+    const projectCamera = useMemo(() => new PerspectiveCamera(
         30,
         window.innerWidth / window.innerHeight,
         0.1,
         1000
-    );
+    ), []);
+    const vector = useMemo(() => new Vector3(), []);
+    const coords = useMemo(() => new Vector3(), []);
+    const bounds = useRef({ top: 0, left: 0, dirty: true });
+
+    useEffect(() => {
+        const markDirty = () => { bounds.current.dirty = true; };
+        const observer = new ResizeObserver(markDirty);
+        observer.observe(document.body);
+        observer.observe(element);
+        window.addEventListener('scroll', markDirty, { passive: true });
+        window.addEventListener('resize', markDirty);
+        markDirty();
+        return () => {
+            observer.disconnect();
+            window.removeEventListener('scroll', markDirty);
+            window.removeEventListener('resize', markDirty);
+        };
+    }, [element]);
 
     useFrame((state, delta) => {
-        const { top, left } = element.getBoundingClientRect();
+        if (bounds.current.dirty) {
+            const rect = element.getBoundingClientRect();
+            bounds.current.top = rect.top;
+            bounds.current.left = rect.left;
+            bounds.current.dirty = false;
+        }
+        const { top, left } = bounds.current;
 
         const position = [left, top - window.scrollY / HERO_DEPHTH, 0];
 
-        let vector = new Vector3();
 
         projectCamera.aspect = window.innerWidth / window.innerHeight;
         projectCamera.position.x = 0;
@@ -59,9 +81,9 @@ export function Icon({ material, element, url }: any) {
         // scale the projected ray
         var distance = -projectCamera.position.z / vector.z,
             scaled = vector.multiplyScalar(distance),
-            coords = projectCamera.position.clone().add(scaled);
+            projected = coords.copy(projectCamera.position).add(scaled);
 
-        const newPosition = [coords.x, coords.y, 0];
+        const newPosition = [projected.x, projected.y, 0];
 
         const linear = (top - window.innerHeight / 2) / 100;
 

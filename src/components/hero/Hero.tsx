@@ -43,7 +43,6 @@ export const Hero = ({
         []
     );
 
-    console.log('AAAAAA');
 
     return (
         <Container id="Hero">
@@ -62,7 +61,9 @@ export const Hero = ({
                 }}
                 gl={{
                     powerPreference: 'high-performance',
-                    antialias: true,
+                    // The composer already multisamples the scene. Its final
+                    // fullscreen pass needs no second multisampled framebuffer.
+                    antialias: false,
                     autoClear: false
                 }}
             >

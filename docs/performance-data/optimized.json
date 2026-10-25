@@ -1,0 +1,167 @@
+{
+  "env": {
+    "renderer": [
+      "ANGLE (Apple, ANGLE Metal Renderer: Apple M1 Pro, Unspecified Version)",
+      "ANGLE (Apple, ANGLE Metal Renderer: Apple M1 Pro, Unspecified Version)",
+      "ANGLE (Apple, ANGLE Metal Renderer: Apple M1 Pro, Unspecified Version)",
+      "ANGLE (Apple, ANGLE Metal Renderer: Apple M1 Pro, Unspecified Version)",
+      null
+    ],
+    "buffers": [
+      {
+        "class": "shader-cursor shader-cursor-inversion",
+        "width": 2137,
+        "height": 1500
+      },
+      {
+        "class": "shader-cursor",
+        "width": 2137,
+        "height": 1500
+      },
+      {
+        "class": "shader-cursor shader-cursor-outline",
+        "width": 2137,
+        "height": 1500
+      },
+      {
+        "class": "",
+        "width": 1425,
+        "height": 1000
+      },
+      {
+        "class": "",
+        "width": 0,
+        "height": 0
+      }
+    ],
+    "dpr": 2
+  },
+  "results": [
+    {
+      "name": "idle",
+      "frames": 241,
+      "p50": 16.69999999999891,
+      "p95": 17.5,
+      "over25": 0,
+      "draws": {
+        "scene": 41500
+      },
+      "longTasks": [],
+      "TaskDuration": 0.683449,
+      "ScriptDuration": 0.5500750000000001,
+      "LayoutDuration": 0,
+      "RecalcStyleDuration": 0.02834
+    },
+    {
+      "name": "movement",
+      "frames": 241,
+      "p50": 16.69999999999709,
+      "p95": 17.599999999998545,
+      "over25": 0,
+      "draws": {
+        "scene": 44826,
+        "cursor": 480
+      },
+      "longTasks": [],
+      "TaskDuration": 0.738661,
+      "ScriptDuration": 0.640523,
+      "LayoutDuration": 0,
+      "RecalcStyleDuration": 0.026285000000000003
+    },
+    {
+      "name": "hold",
+      "frames": 241,
+      "p50": 16.700000000000728,
+      "p95": 17.69999999999709,
+      "over25": 0,
+      "draws": {
+        "scene": 45164,
+        "cursor": 723
+      },
+      "longTasks": [],
+      "TaskDuration": 0.6030850000000001,
+      "ScriptDuration": 0.4998799999999999,
+      "LayoutDuration": 0,
+      "RecalcStyleDuration": 0.021675
+    },
+    {
+      "name": "no-cursor-draw",
+      "frames": 241,
+      "p50": 16.69999999999709,
+      "p95": 17.69999999999709,
+      "over25": 0,
+      "draws": {
+        "scene": 47048,
+        "cursor": 480
+      },
+      "longTasks": [],
+      "TaskDuration": 0.6257639999999998,
+      "ScriptDuration": 0.522653,
+      "LayoutDuration": 0,
+      "RecalcStyleDuration": 0.02172199999999999
+    },
+    {
+      "name": "no-scene-draw",
+      "frames": 241,
+      "p50": 16.69999999999709,
+      "p95": 17.599999999998545,
+      "over25": 0,
+      "draws": {
+        "scene": 47718,
+        "cursor": 480
+      },
+      "longTasks": [],
+      "TaskDuration": 0.6049460000000004,
+      "ScriptDuration": 0.492931,
+      "LayoutDuration": 0,
+      "RecalcStyleDuration": 0.021828000000000014
+    },
+    {
+      "name": "frontend",
+      "frames": 241,
+      "p50": 16.69999999999709,
+      "p95": 17.599999999998545,
+      "over25": 0,
+      "draws": {
+        "scene": 48682
+      },
+      "longTasks": [],
+      "TaskDuration": 0.46990099999999924,
+      "ScriptDuration": 0.36280100000000015,
+      "LayoutDuration": 0,
+      "RecalcStyleDuration": 0.018935000000000007
+    },
+    {
+      "name": "contact",
+      "frames": 241,
+      "p50": 16.69999999999709,
+      "p95": 17.599999999998545,
+      "over25": 0,
+      "draws": {
+        "scene": 30125
+      },
+      "longTasks": [],
+      "TaskDuration": 0.4390489999999998,
+      "ScriptDuration": 0.3133430000000006,
+      "LayoutDuration": 0,
+      "RecalcStyleDuration": 0.018665999999999988
+    },
+    {
+      "name": "scroll",
+      "frames": 241,
+      "p50": 16.69999999999709,
+      "p95": 18,
+      "over25": 0,
+      "draws": {
+        "scene": 41444,
+        "cursor": 472
+      },
+      "longTasks": [],
+      "TaskDuration": 0.6728699999999996,
+      "ScriptDuration": 0.4523830000000002,
+      "LayoutDuration": 0.008754000000000001,
+      "RecalcStyleDuration": 0.06720099999999998
+    }
+  ],
+  "errors": []
+}

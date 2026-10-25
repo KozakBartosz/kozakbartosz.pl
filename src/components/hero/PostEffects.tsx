@@ -19,7 +19,7 @@ export const PostEffects = () => {
     //     }
 
     return (
-        <EffectComposer depthBuffer={true} autoClear={false}>
+        <EffectComposer disableNormalPass depthBuffer={true} autoClear={false}>
             <DepthOfField
                 focusDistance={0.16}
                 focalLength={0.08}

@@ -72,6 +72,8 @@ export const Cursor = () => {
             let width = window.innerWidth;
             let height = window.innerHeight;
 
+            let inversionDrawn = false;
+
             const render = (time: number) => {
                 frame = 0;
                 const dt = Math.min((time - previousTime) / 1000 || 1 / 60, 0.05);
@@ -109,6 +111,17 @@ export const Cursor = () => {
                 const left = Math.max(0, center.x - reachX);
                 const bottom = Math.max(0, height - center.y - reachY);
                 renderers.forEach((renderer, layer) => {
+                    // Inversion is transparent outside a press. Clear its last frame
+                    // once on release, then leave the inactive layer untouched.
+                    if (layer === 0 && uniforms.uPress.value < 0.001) {
+                        if (inversionDrawn) {
+                            renderer.setScissorTest(false);
+                            renderer.clear();
+                            inversionDrawn = false;
+                        }
+                        return;
+                    }
+                    if (layer === 0) inversionDrawn = true;
                     renderer.setScissorTest(false);
                     renderer.clear();
                     renderer.setScissor(left, bottom,

@@ -3,11 +3,13 @@ import { Shadow, useGLTF } from '@react-three/drei';
 import { useFrame, useThree } from '@react-three/fiber';
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { Vector3, Camera, PerspectiveCamera, Mesh, Material } from 'three';
+import { useReducedMotion } from '../useReducedMotion';
 import { HERO_DEPHTH } from './consts';
 import { ShadowDrop } from './ShadowDrop';
 
 export function Icon({ material, element, url }: any) {
     const { camera } = useThree();
+    const reducedMotion = useReducedMotion();
 
     const { nodes, materials } = useGLTF(url) as { nodes: any; materials: any };
     console.log('nodes', nodes);
@@ -35,6 +37,7 @@ export function Icon({ material, element, url }: any) {
 
         let vector = new Vector3();
 
+        projectCamera.aspect = window.innerWidth / window.innerHeight;
         projectCamera.position.x = 0;
         projectCamera.position.y = window.scrollY / -HERO_DEPHTH;
         projectCamera.position.z = 125;
@@ -67,9 +70,9 @@ export function Icon({ material, element, url }: any) {
         meshRef.current.position.z = (linear * linear) / -2.5 + 10;
 
         // slow animation with rotation sinsun style left 10deg left and right 10deg
-        let rotationAdd = Math.sin(state.clock.elapsedTime * 0.15) * 0.3;
+        let rotationAdd = reducedMotion ? 0 : Math.sin(state.clock.elapsedTime * 0.15) * 0.3;
 
-        console.log('rotationAdd', rotationAdd);
+
 
         meshRef.current.rotation.y =
             (linear * 4) / HERO_DEPHTH - 50 + rotationAdd;

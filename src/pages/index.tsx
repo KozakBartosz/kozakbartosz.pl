@@ -21,7 +21,7 @@ const Home: NextPage = () => {
                 />
                 <link rel="icon" href="/favicon.ico" />
             </Head>
-            <Container>
+            <Container id="home" tabIndex={-1} aria-label="Home">
                 <Loading>Loading</Loading>
                 <Hero iconRef={iconEl} />
             </Container>

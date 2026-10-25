@@ -3,22 +3,6 @@ html {
     font-size: 10px;
 }
 
-@media screen and (max-width: 2000px) {
-    html {
-        font-size: 9.3px;
-    }
-}
-@media screen and (max-width: 1600px) {
-    html {
-        font-size: 8.5px;
-    }
-}
-@media screen and (max-width: 1000px) {
-    html {
-        font-size: 10px;
-    }
-}
-
 html,
 body {
     /* background: #090f0e; */
@@ -58,54 +42,59 @@ p {
     margin: 1rem 0;
 }
 
-h1 {
-    font-size: 5.5rem;
-    line-height: 6rem;
+h1, .section-title {
+    font-size: clamp(4.6rem, 5.2vw, 8.8rem);
+    line-height: 1.08;
+    letter-spacing: -.045em;
     font-weight: 300;
-    color: rgba(0, 255, 163, 1);
-    background: linear-gradient(
-        40deg,
-        rgba(0, 163, 255, 1),
-        rgba(0, 255, 163, 1)
-    );
+    color: #49e1cf;
+    background: linear-gradient(40deg, #00a3ff, #00ffa3);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
-    text-shadow: -2rem 0.5rem 5rem rgba(0, 163, 255, 0.5),
-        1rem -0.5rem 5rem rgba(0, 255, 163, 0.5);
-
-    margin: 0;
-    padding-bottom: 4rem;
+    margin: 0 0 3.2rem;
+    padding: 0 0 .08em;
 }
-section h1::after {
+.section-title {
+    font-size: clamp(5.6rem, 15vw, 9rem);
+    line-height: 1;
+    margin-bottom: 4rem;
+    color: #f2f5f4;
+    background: none;
+    -webkit-text-fill-color: currentColor;
+}
+@media (min-width: 1000px) {
+    .section-title { font-size: clamp(8rem, 8vw, 14rem); }
+}
+.heading-accent {
+    display: block;
+    padding-bottom: .2em;
+    margin-bottom: -.2em;
+    background: linear-gradient(40deg, #00a3ff, #00ffa3);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+#contact .heading-accent::after {
     content: '';
     display: inline-block;
-    vertical-align: baseline;
-    margin-left: 1rem;
-    width: 3rem;
-    height: 3px;
-    background: linear-gradient(
-        90deg,
-        rgba(0, 163, 255, 1),
-        rgba(0, 255, 163, 1)
-    );
+    width: .34em;
+    height: .035em;
+    min-height: 2px;
+    margin-left: .12em;
+    background: linear-gradient(90deg, #00a3ff, #00ffa3);
+    animation: terminal-cursor 1.2s step-end infinite;
 }
-h2 {
-    font-size: 2.5rem;
-    font-weight: 600;
-    color: rgba(0, 255, 163, 1);
-    text-decoration: none;
-    background: linear-gradient(
-        90deg,
-        rgba(0, 163, 255, 1),
-        rgba(0, 255, 163, 1)
-    );
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    text-shadow: -2rem 0.5rem 5rem rgba(0, 163, 255, 0.5),
-        1rem -0.5rem 5rem rgba(0, 255, 163, 0.5);
-
-    margin: 0;
-    padding: 3rem 0 1rem;
+@keyframes terminal-cursor {
+    0%, 49% { opacity: 1; }
+    50%, 100% { opacity: 0; }
+}
+a:focus-visible, section:focus-visible {
+    outline: 2px solid #65e8d4;
+    outline-offset: 6px;
+}
+section:focus { outline: none; }
+section:focus-visible { outline: 2px solid #65e8d4; }
+@media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after { animation: none !important; transition: none !important; scroll-behavior: auto !important; }
 }
 
 a {

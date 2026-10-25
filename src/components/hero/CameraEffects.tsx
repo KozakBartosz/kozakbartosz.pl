@@ -1,9 +1,11 @@
 import { useFrame, useThree } from '@react-three/fiber';
 import { useEffect, useRef } from 'react';
+import { useReducedMotion } from '../useReducedMotion';
 import { HERO_DEPHTH } from './consts';
 
 export const CameraEffects = () => {
     const { camera, gl } = useThree();
+    const reducedMotion = useReducedMotion();
 
     const move = useRef({ x: 0, y: 15, scroll: 0 });
 
@@ -15,10 +17,11 @@ export const CameraEffects = () => {
     }, []);
     useFrame((_, delta) => {
         let delay = delta * 3;
-        camera.position.z += (150 - camera.position.z) * (delay * 0.2);
+        if (reducedMotion) camera.position.z = 155;
+        if (!reducedMotion) camera.position.z += (150 - camera.position.z) * (delay * 0.2);
         // if (window.innerWidth > window.innerHeight) {
         // } else {
-        camera.position.z += (160 - camera.position.z) * (delay * 0.2);
+        if (!reducedMotion) camera.position.z += (160 - camera.position.z) * (delay * 0.2);
         // }
         camera.position.x +=
             (move.current.x * 20 - camera.position.x) * delay * HERO_DEPHTH;

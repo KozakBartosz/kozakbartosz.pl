@@ -1,0 +1,25 @@
+// CSS pixels and seconds. Shared by the animation and GPU shader.
+export const cursorConfig = {
+    radius: 22,
+    heroRadius: 28,
+    followSpeed: 38,
+    hoverTransitionSpeed: 12,
+    hoverTransitionDuration: 0.32,
+    trailFollowSpeed: 22,
+    rotationSpeed: 30,
+    stretchThreshold: 4,
+    maxFrameDelta: 0.05,
+    trailGain: 1.5,
+    // Normal extension scale; maxTrailLength is a safety ceiling.
+    maxExtension: 48,
+    maxTrailLength: 200,
+    pressShrink: 0.12,
+    cornerRadius: 5,
+    maxPixelRatio: 1.5,
+    hueColor: '#ff00a6',
+    accentStart: '#00a3ff',
+    accentEnd: '#00ffa3',
+    hueOpacity: 0.7,
+    outlineOpacity: 0.9,
+    glowOpacity: 0.1,
+} as const;

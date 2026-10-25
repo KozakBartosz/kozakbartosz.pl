@@ -1,8 +1,9 @@
 import { useEffect, useRef } from 'react';
 import {
-    Mesh, NoBlending, OrthographicCamera, PlaneGeometry, Scene, ShaderMaterial,
+    Color, Mesh, NoBlending, OrthographicCamera, PlaneGeometry, Scene, ShaderMaterial,
     Vector2, WebGLRenderer
 } from 'three';
+import { cursorConfig } from './cursorConfig';
 import { cursorFragmentShader, cursorVertexShader } from './cursorShader';
 
 const INTERACTIVE = 'a[href], button:not(:disabled), [role="button"], input:not(:disabled), textarea:not(:disabled), select:not(:disabled), [data-cursor="link"]';
@@ -43,10 +44,19 @@ export const Cursor = () => {
             const uniforms = {
                 uResolution: { value: new Vector2() },
                 uCenter: { value: new Vector2() },
-                uHalfSize: { value: new Vector2(22, 22) },
+                uHalfSize: { value: new Vector2(cursorConfig.radius, cursorConfig.radius) },
                 uAngle: { value: 0 }, uStretch: { value: 0 },
                 uMorph: { value: 0 }, uOpacity: { value: 0 },
-                uPress: { value: 0 }, uOutline: { value: 0 }, uInvert: { value: 0 }
+                uPress: { value: 0 }, uOutline: { value: 0 }, uInvert: { value: 0 },
+                uMaxExtension: { value: cursorConfig.maxExtension },
+                uPressShrink: { value: cursorConfig.pressShrink },
+                uCornerRadius: { value: cursorConfig.cornerRadius },
+                uHueColor: { value: new Color(cursorConfig.hueColor) },
+                uAccentStart: { value: new Color(cursorConfig.accentStart) },
+                uAccentEnd: { value: new Color(cursorConfig.accentEnd) },
+                uHueOpacity: { value: cursorConfig.hueOpacity },
+                uOutlineOpacity: { value: cursorConfig.outlineOpacity },
+                uGlowOpacity: { value: cursorConfig.glowOpacity }
             };
             const geometry = new PlaneGeometry(2, 2);
             const material = new ShaderMaterial({
@@ -59,14 +69,17 @@ export const Cursor = () => {
             const center = uniforms.uCenter.value;
             const size = uniforms.uHalfSize.value;
             const target = new Vector2();
+            const trail = new Vector2();
             const targetSize = new Vector2();
             const origin = new Vector2();
             let hovered: Element | null = null;
+            let previousHovered: Element | null = null;
+            let hoverTransitionStart = -Infinity;
             let visible = false;
             let pressed = false;
             let initialized = false;
             let contextAvailable = true;
-            let radius = 22;
+            let radius: number = cursorConfig.radius;
             let frame = 0;
             let previousTime = 0;
             let width = window.innerWidth;
@@ -76,10 +89,20 @@ export const Cursor = () => {
 
             const render = (time: number) => {
                 frame = 0;
-                const dt = Math.min((time - previousTime) / 1000 || 1 / 60, 0.05);
+                const dt = Math.min((time - previousTime) / 1000 || 1 / 60, cursorConfig.maxFrameDelta);
                 previousTime = time;
-                const ease = 1 - Math.exp(-20 * dt);
-                const rect = hovered?.isConnected ? hovered.getBoundingClientRect() : null;
+                const ease = 1 - Math.exp(-cursorConfig.followSpeed * dt);
+                const activeHovered = hovered?.isConnected ? hovered : null;
+                if (activeHovered !== previousHovered) {
+                    previousHovered = activeHovered;
+                    hoverTransitionStart = time;
+                }
+                const progress = Math.min(1, (time - hoverTransitionStart) / (cursorConfig.hoverTransitionDuration * 1000));
+                const recovery = progress * progress * (3 - 2 * progress);
+                const transitionSpeed = cursorConfig.hoverTransitionSpeed +
+                    (cursorConfig.followSpeed - cursorConfig.hoverTransitionSpeed) * recovery;
+                const shapeEase = 1 - Math.exp(-transitionSpeed * dt);
+                const rect = activeHovered?.getBoundingClientRect() || null;
                 const morph = rect ? 1 : 0;
                 target.copy(point).sub(origin);
                 targetSize.set(radius, radius);
@@ -87,27 +110,39 @@ export const Cursor = () => {
                     target.set(rect.left + rect.width / 2 - origin.x, rect.top + rect.height / 2 - origin.y);
                     targetSize.set(rect.width / 2, rect.height / 2);
                 }
-                const dx = target.x - center.x;
-                const dy = target.y - center.y;
+                // A slower history point sets the trailing direction independently of
+                // the responsive head, so turning does not swing around its middle.
+                const trailEase = 1 - Math.exp(-cursorConfig.trailFollowSpeed * dt);
+                const rotationEase = 1 - Math.exp(-cursorConfig.rotationSpeed * dt);
+                center.lerp(target, shapeEase);
+                const dx = center.x - trail.x;
+                const dy = center.y - trail.y;
                 const distance = Math.sqrt(dx * dx + dy * dy);
-                // A capsule is invariant under PI: keep the angle bounded and
-                // approach the link's horizontal axis without accumulated turns.
-                const desiredAngle = rect ? 0 : distance > 0.5
+                const desiredAngle = rect ? 0 : distance > 0.05
                     ? Math.atan2(dy, dx) : uniforms.uAngle.value;
                 const difference = desiredAngle - uniforms.uAngle.value;
-                const angularDistance = Math.atan2(Math.sin(2 * difference), Math.cos(2 * difference)) / 2;
-                const angle = uniforms.uAngle.value + angularDistance * ease;
-                uniforms.uAngle.value = Math.atan2(Math.sin(2 * angle), Math.cos(2 * angle)) / 2;
-                center.lerp(target, ease);
-                size.lerp(targetSize, ease);
-                const stretch = rect ? 0 : Math.min(distance / 65, 1);
-                uniforms.uStretch.value += (stretch - uniforms.uStretch.value) * ease;
-                uniforms.uMorph.value += (morph - uniforms.uMorph.value) * ease;
+                const angularDistance = Math.atan2(Math.sin(difference), Math.cos(difference));
+                // Align the tail with its history point; smoothing this angle separately
+                // lets it swing past the path on reversals. Ease only during hover transitions.
+                const angle = rect || progress < 1
+                    ? uniforms.uAngle.value + angularDistance * Math.min(rotationEase, shapeEase)
+                    : desiredAngle;
+                uniforms.uAngle.value = Math.atan2(Math.sin(angle), Math.cos(angle));
+                trail.lerp(target, trailEase);
+                size.lerp(targetSize, shapeEase);
+                const motion = Math.max(0, distance - cursorConfig.stretchThreshold);
+                const length = Math.min(distance, motion * cursorConfig.trailGain, cursorConfig.maxTrailLength);
+                const stretch = rect ? 0 : length / (2 * cursorConfig.maxExtension);
+                uniforms.uStretch.value += (stretch - uniforms.uStretch.value) * shapeEase;
+                // Enforce history bounds after easing as well, including abrupt stops.
+                uniforms.uStretch.value = Math.min(uniforms.uStretch.value, length / (2 * cursorConfig.maxExtension));
+                uniforms.uMorph.value += (morph - uniforms.uMorph.value) * shapeEase;
                 uniforms.uOpacity.value += ((visible ? 1 : 0) - uniforms.uOpacity.value) * ease;
                 uniforms.uPress.value += ((pressed ? 1 : 0) - uniforms.uPress.value) * ease;
                 // Rasterize only the cursor region, even on large desktop displays.
-                const reachX = Math.max(size.x, size.y) * 1.8 + 90;
-                const reachY = Math.max(size.x, size.y) * 1.8 + 90;
+                const trailLength = 2 * cursorConfig.maxExtension * uniforms.uStretch.value * (1 - uniforms.uMorph.value);
+                const reachX = Math.max(size.x, size.y) * 1.8 + trailLength;
+                const reachY = Math.max(size.x, size.y) * 1.8 + trailLength;
                 const left = Math.max(0, center.x - reachX);
                 const bottom = Math.max(0, height - center.y - reachY);
                 renderers.forEach((renderer, layer) => {
@@ -133,7 +168,7 @@ export const Cursor = () => {
                     material.uniformsNeedUpdate = true;
                     renderer.render(scene, camera);
                 });
-                const unsettled = Math.abs(angularDistance) > 0.001 || distance > 0.05 || size.distanceTo(targetSize) > 0.05 ||
+                const unsettled = Math.abs(angularDistance) > 0.001 || distance > 0.05 || center.distanceTo(target) > 0.05 || size.distanceTo(targetSize) > 0.05 ||
                     Math.abs(uniforms.uStretch.value - stretch) > 0.001 ||
                     Math.abs(uniforms.uMorph.value - morph) > 0.001 ||
                     Math.abs(uniforms.uOpacity.value - (visible ? 1 : 0)) > 0.001 ||
@@ -148,10 +183,14 @@ export const Cursor = () => {
             };
             const move = (event: PointerEvent) => {
                 if (event.pointerType === 'touch' || !contextAvailable) { hide(); return; }
-                radius = event.target instanceof Element && event.target.closest('#Hero') ? 28 : 22;
+                radius = event.target instanceof Element && event.target.closest('#Hero') ? cursorConfig.heroRadius : cursorConfig.radius;
                 point.set(event.clientX, event.clientY);
                 hovered = event.target instanceof Element ? event.target.closest(INTERACTIVE) : null;
-                if (!initialized) { center.copy(point).sub(origin); initialized = true; }
+                if (!initialized || !visible) {
+                    center.copy(point).sub(origin);
+                    trail.copy(center);
+                    initialized = true;
+                }
                 if (!visible) document.documentElement.dataset.shaderCursor = 'active';
                 visible = true;
                 wake();
@@ -172,14 +211,14 @@ export const Cursor = () => {
             const scroll = () => {
                 const element = document.elementFromPoint(point.x, point.y);
                 hovered = element?.closest(INTERACTIVE) || null;
-                radius = element?.closest('#Hero') ? 28 : 22;
+                radius = element?.closest('#Hero') ? cursorConfig.heroRadius : cursorConfig.radius;
                 wake();
             };
             const resize = () => {
                 const bounds = canvas.getBoundingClientRect();
                 width = bounds.width; height = bounds.height;
                 origin.set(bounds.left, bounds.top);
-                const ratio = Math.min(window.devicePixelRatio || 1, 1.5);
+                const ratio = Math.min(window.devicePixelRatio || 1, cursorConfig.maxPixelRatio);
                 renderers.forEach(renderer => {
                     renderer.setPixelRatio(ratio);
                     renderer.setSize(width, height, false);

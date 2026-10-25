@@ -1,5 +1,14 @@
 # GPU cursor
 
+## Tuning
+
+`src/components/cursorConfig.ts` is the shared configuration for circle sizes,
+follow speed, stretch, press shrink, hover corner radius, pixel ratio cap,
+colors and opacity. Sizes use CSS pixels; follow speed is an exponential rate
+per second. Colors are passed to GLSL as Three.js color uniforms. The three
+canvas layers remain separate because they use different CSS blend modes.
+
+
 `Cursor.tsx` owns three transparent Three.js layers sharing shape uniforms. `cursorShader.ts`
 contains the GLSL signed-distance shape: circle, a round-ended motion capsule, and a rounded
 rectangle fitted to interactive elements. The original blue-to-green accent and
@@ -15,7 +24,7 @@ in below the hue layer to invert colors, including outside interactive elements.
 The hue layer remains visible and strengthens from 70% to 100% to recolor the
 inverted reds to pink. Releasing restores the normal hue-only appearance.
 A separate, normally composited layer draws a 1.5px outline at 90% opacity
-with the exact `#00a3ff` to `#00ffa3` gradient. Keeping the outline outside
+with the exact `#00a3ff` to `#00ffa3` gradient. The gradient stays horizontal in screen space: blue on the left, green on the right, including vertical movement and link hover. Its span follows the rotated shape bounds and trailing extension, so colors do not rotate as the cursor aligns with a button. Keeping the outline outside
 difference blending preserves its original colors over any background. The resting circle is 44px across (56px
 in the hero); motion extends a line segment with fully rounded ends rather than
 scaling a circle into an ellipse. The original native `/cursor.png` cursor
@@ -32,8 +41,14 @@ that would require providing its content as a GPU texture.
 
 - Pointer events update coordinates without React state or per-frame DOM styling.
 - Time-based interpolation keeps movement consistent across display refresh rates.
-- Capsule rotation is bounded modulo PI. Link hover eases toward zero rotation;
+- The head follows quickly while a slower history point determines trail direction.
+  Stretch has a dead zone and 1.5 gain, capped at 200px and the distance to its history point.
+  Direction follows that point directly to avoid swinging past the path on reversals.
+  Extension goes behind the head cap; rotation is bounded modulo 2 PI.
+  Link hover eases toward zero rotation;
   morph progress never multiplies an accumulated angle.
+- Changes of hover target briefly reduce position, size and morph interpolation speed
+  to 12/s, recovering smoothly to the normal 38/s over 320ms.
 - Links, buttons, form controls, and `[data-cursor="link"]` morph into a box matching the element bounds.
 - Scrolling refreshes the hovered element; box bounds are read during interpolation.
 - Two draw calls render hue and outline during ordinary movement. The inversion pass runs only while a press fades in/out (three draws), and clears once after release. Scissoring limits fragment work to their region;

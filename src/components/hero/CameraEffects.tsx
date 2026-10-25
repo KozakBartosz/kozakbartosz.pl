@@ -1,7 +1,7 @@
 import { useFrame, useThree } from '@react-three/fiber';
 import { useEffect, useRef } from 'react';
 import { useReducedMotion } from '../useReducedMotion';
-import { HERO_DEPHTH } from './consts';
+import { HERO_DEPHTH, getHeroScrollOffset } from './consts';
 
 export const CameraEffects = () => {
     const { camera, gl } = useThree();
@@ -17,6 +17,7 @@ export const CameraEffects = () => {
     }, []);
     useFrame((_, delta) => {
         let delay = delta * 3;
+        const scrollOffset = getHeroScrollOffset(window.scrollY, window.innerHeight);
         if (reducedMotion) camera.position.z = 155;
         if (!reducedMotion) camera.position.z += (150 - camera.position.z) * (delay * 0.2);
         // if (window.innerWidth > window.innerHeight) {
@@ -31,11 +32,10 @@ export const CameraEffects = () => {
         //     delay *
         //     5;
 
-        camera.position.y = move.current.y - window.scrollY / HERO_DEPHTH;
+        camera.position.y = move.current.y - scrollOffset;
 
         // if (camera.position.y < -12) camera.position.y = -12;
-        camera.lookAt(0, window.scrollY / -HERO_DEPHTH, 0);
-        // camera.lookAt(0, window.scrollY / HERO_DEPHTH, 0);
+        camera.lookAt(0, -scrollOffset, 0);
     });
     return null;
 };

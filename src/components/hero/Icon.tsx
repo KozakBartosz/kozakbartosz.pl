@@ -4,7 +4,7 @@ import { useFrame, useThree } from '@react-three/fiber';
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { Vector3, Camera, PerspectiveCamera, Mesh, Material } from 'three';
 import { useReducedMotion } from '../useReducedMotion';
-import { HERO_DEPHTH } from './consts';
+import { HERO_DEPHTH, getHeroScrollOffset } from './consts';
 import { ShadowDrop } from './ShadowDrop';
 
 export function Icon({ material, element, url }: any) {
@@ -55,13 +55,14 @@ export function Icon({ material, element, url }: any) {
             bounds.current.dirty = false;
         }
         const { top, left } = bounds.current;
+        const scrollOffset = getHeroScrollOffset(window.scrollY, window.innerHeight);
 
-        const position = [left, top - window.scrollY / HERO_DEPHTH, 0];
+        const position = [left, top - scrollOffset, 0];
 
 
         projectCamera.aspect = window.innerWidth / window.innerHeight;
         projectCamera.position.x = 0;
-        projectCamera.position.y = window.scrollY / -HERO_DEPHTH;
+        projectCamera.position.y = -scrollOffset;
         projectCamera.position.z = 125;
         projectCamera.updateProjectionMatrix();
         projectCamera.updateMatrixWorld();

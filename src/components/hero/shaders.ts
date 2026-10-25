@@ -13,6 +13,9 @@ export const fragmentShader = `
   uniform mat4 modelMatrix;
   uniform bool useGradientMatrix;
   uniform mat4 gradientMatrix;
+  uniform bool useGroupGradient;
+  uniform vec3 gradientCenter;
+  uniform float gradientWidth;
 
   vec3 phong() {
     vec3 n = normalize(Normal);
@@ -32,7 +35,11 @@ export const fragmentShader = `
   // }
   
   void main() {
-    float ramp = (Position.x + 13.0) / 25.0 + myPosition.x;
+    // All meshes in an icon use the same view-space center and world-unit
+    // width. Keep the horizontal ramp aligned with the screen during rotation.
+    float ramp = useGroupGradient
+      ? 0.5 + (Position.x - gradientCenter.x) / max(gradientWidth, 0.001)
+      : (Position.x + 13.0) / 25.0 + myPosition.x;
     
     vec4 localPosition = (useGradientMatrix ? gradientMatrix : modelMatrix) * vec4(Position, 1.0);
     float AlphaRamp = (localPosition.y + 10.0) / 100.0;

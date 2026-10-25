@@ -2,7 +2,7 @@ import { useCylinder } from '@react-three/cannon';
 import { Shadow, useGLTF } from '@react-three/drei';
 import { useFrame, useThree } from '@react-three/fiber';
 import { useEffect, useMemo, useRef, useState } from 'react';
-import { Vector3, Camera, PerspectiveCamera, Mesh, Material } from 'three';
+import { Vector3, PerspectiveCamera, Group } from 'three';
 import { useReducedMotion } from '../useReducedMotion';
 import { HERO_DEPHTH, getHeroScrollOffset } from './consts';
 import { ShadowDrop } from './ShadowDrop';
@@ -10,18 +10,28 @@ import { InteractiveAccessories } from './InteractiveAccessories';
 import { BrowserModel } from './BrowserModel';
 import { FrontendAccessories } from './FrontendAccessories';
 
-export function Icon({ material, element, url, browser = false, frontend = false, interactive = false }: any) {
+export function Icon({ material, element, url, browser = false, frontend = false, interactive = false, gradientWidth = 40 }: any) {
     const { camera } = useThree();
     const reducedMotion = useReducedMotion();
 
 
-    const [myPosition, setMyPosition] = useState(new Vector3(10.0, 0.0, 0.0));
+    // Share the uniform objects across every contour in this icon, including
+    // independently animated accessories. Each icon owns its own center.
+    const groupMaterial = useMemo(() => ({
+        ...material,
+        uniforms: {
+            ...material.uniforms,
+            useGroupGradient: { value: true },
+            gradientCenter: { value: new Vector3() },
+            gradientWidth: { value: gradientWidth }
+        }
+    }), [material, gradientWidth]);
 
     // const icon = useGLTF('/models/icon1.glb');
 
     // const nodes2 = icon.nodes;
 
-    const meshRef = useRef<Mesh>(null!);
+    const meshRef = useRef<Group>(null!);
     const materialRef = useRef<any>(null!);
 
     const projectCamera = useMemo(() => new PerspectiveCamera(
@@ -116,6 +126,12 @@ export function Icon({ material, element, url, browser = false, frontend = false
         meshRef.current.rotation.y =
             (linear * 4) / HERO_DEPHTH - 50 + rotationAdd;
 
+        meshRef.current.updateWorldMatrix(true, false);
+        camera.updateMatrixWorld();
+        groupMaterial.uniforms.gradientCenter.value
+            .setFromMatrixPosition(meshRef.current.matrixWorld)
+            .applyMatrix4(camera.matrixWorldInverse);
+
         // if (materialRef.current) {
         //     let valueTest: number = newPosition[0] / -3;
         //     // console.log('materialRef', valueTest);
@@ -135,9 +151,9 @@ export function Icon({ material, element, url, browser = false, frontend = false
 
     return (
         <group dispose={null} scale={[20, 20, 20]} ref={meshRef}>
-            {browser ? <BrowserModel material={material} /> : <GltfModel url={url} material={material} />}
-            {interactive && <InteractiveAccessories material={material} />}
-            {frontend && <FrontendAccessories material={material} />}
+            {browser ? <BrowserModel material={groupMaterial} /> : <GltfModel url={url} material={groupMaterial} />}
+            {interactive && <InteractiveAccessories material={groupMaterial} />}
+            {frontend && <FrontendAccessories material={groupMaterial} />}
             <ShadowDrop />
         </group>
     );

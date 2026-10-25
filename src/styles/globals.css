@@ -26,9 +26,7 @@ body {
     line-height: 2em;
     font-size: 20px;
     font-size: 2rem;
-    cursor: none;
-    /* public/cursor (1).svg */
-    cursor: url('/cursor.png'), auto;
+    cursor: url('/cursor.png') 3 3, auto;
 }
 
 #Hero,
@@ -95,6 +93,7 @@ section:focus { outline: none; }
 section:focus-visible { outline: 2px solid #65e8d4; }
 @media (prefers-reduced-motion: reduce) {
     *, *::before, *::after { animation: none !important; transition: none !important; scroll-behavior: auto !important; }
+    .shader-cursor { display: none; }
 }
 
 a {
@@ -112,11 +111,6 @@ a {
     pointer-events: painted;
     cursor: pointer;
 }
-/* body:has(a:hover) :is(.cursor-inner) {
-    transform: scale(2) !important;
-    backdrop-filter: invert(1) !important;
-} */
-
 a:hover {
     text-shadow: -2rem 0.5rem 3rem rgba(0, 163, 255, 1),
         1rem -0.5rem 3rem rgba(0, 255, 163, 1);
@@ -188,4 +182,24 @@ a:hover {
 ::selection {
     background: rgba(1, 195, 225, 0.455);
     color: #fff;
+}
+
+/* GPU inversion, hue and outline share shape uniforms; no per-frame DOM sizing. */
+.shader-cursor {
+    position: fixed;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 99999999;
+    pointer-events: none;
+    mix-blend-mode: hue;
+}
+.shader-cursor-inversion {
+    mix-blend-mode: difference;
+}
+.shader-cursor-outline {
+    mix-blend-mode: normal;
+}
+@media (any-hover: none) {
+    .shader-cursor { display: none; }
 }

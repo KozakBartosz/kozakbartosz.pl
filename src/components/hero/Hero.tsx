@@ -15,6 +15,7 @@ import { Icon } from './Icon';
 import { Gradient } from './Gradinet';
 import { Playground } from './Playground';
 import Link from 'next/link';
+import { CursorLight } from './CursorLight';
 
 const iconNames = ['1', '3', '4'];
 
@@ -82,6 +83,7 @@ export const Hero = ({
                     <CameraEffects />
                 )}
 
+                <CursorLight />
                 <fog attach="fog" color={0x090f0e} near={50} far={350} />
                 <Playground />
                 {iconRef.current &&

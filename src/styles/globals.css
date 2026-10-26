@@ -180,8 +180,10 @@ a:hover {
 }
 
 ::selection {
-    background: rgba(0, 163, 255, 0.455);
-    color: #fff;
+    background: #74e8bc;
+    color: #090f0e;
+    -webkit-text-fill-color: #090f0e;
+    text-shadow: none;
 }
 
 /* GPU inversion, hue and outline share shape uniforms; no per-frame DOM sizing. */

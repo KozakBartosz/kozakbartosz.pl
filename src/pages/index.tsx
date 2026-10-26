@@ -7,6 +7,7 @@ import { Sections } from '../components/Section';
 import { Cursor } from '../components/Cursor';
 import { Loading } from '../components/Loading';
 import { Footer } from '../components/Footer';
+import { Arrow } from '../components/Arrow';
 const Hero = dynamic(() => import('../components/hero'), { ssr: false });
 
 const Home: NextPage = () => {
@@ -153,10 +154,7 @@ const Explore = styled.a`
     text-transform: uppercase;
     white-space: nowrap;
     span {
-        background: linear-gradient(40deg, #00a3ff, #00ffa3);
-        background-clip: text;
-        -webkit-background-clip: text;
-        color: transparent;
+        color: #00cdbd;
         font-size: 2rem;
         margin-left: .8rem;
     }
@@ -194,7 +192,7 @@ const ExploreControl = () => {
                         });
                     }}>
                     {explored ? 'Back to home' : 'Scroll to explore'}
-                    <span aria-hidden="true">{explored ? '↑' : '↓'}</span>
+                    <span aria-hidden="true"><Arrow direction={explored ? 'up' : 'down'} /></span>
                 </Explore>
     );
 };

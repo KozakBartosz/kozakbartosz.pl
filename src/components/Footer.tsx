@@ -1,5 +1,6 @@
 import styled from '@emotion/styled';
 import { MouseEvent } from 'react';
+import { Arrow } from './Arrow';
 
 const links = [
     { id: 'home', label: 'Home' },
@@ -31,14 +32,14 @@ export const Footer = () => (
                         <a key={id} href={`#${id}`} onClick={event => navigate(event, id)}>
                             <span className="link-number">0{index}</span>
                             <span className="link-name">{label}</span>
-                            <span className="link-arrow" aria-hidden="true">↗</span>
+                            <span className="link-arrow" aria-hidden="true"><Arrow /></span>
                         </a>
                     ))}
                 </nav>
         </div>
         <div className="footer-bottom">
             <small>© {new Date().getFullYear()} Bartosz Kozak</small>
-            <a href="#home" onClick={event => navigate(event, 'home')}>Back to top <span aria-hidden="true">↑</span></a>
+            <a href="#home" onClick={event => navigate(event, 'home')}>Back to top <span aria-hidden="true"><Arrow direction="up" /></span></a>
         </div>
     </Root>
 );
@@ -82,8 +83,10 @@ const Root = styled.footer`
     .footer-bottom a { display: flex; align-items: center; gap: 2rem; padding: 1.4rem 0 1.4rem 1.4rem; color: #bacfca; font-size: 1.1rem; letter-spacing: .14em; text-transform: uppercase; line-height: 1.5; }
     .footer-bottom a span { color: #00a3ff; font-size: 2rem; }
     @media (min-width: 1000px) {
-        --footer-left: clamp(12rem, 10vw, 20rem);
+        --footer-right: clamp(4.8rem, 5vw, 12rem);
+        --footer-left: max(12rem, calc(50vw - var(--footer-right) - 68rem));
         padding-left: var(--footer-left);
+        padding-right: var(--footer-right);
     }
     @media (max-width: 700px) {
         .footer-composition { grid-template-columns: 1fr; min-height: auto; }

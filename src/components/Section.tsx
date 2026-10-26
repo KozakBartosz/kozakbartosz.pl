@@ -1,6 +1,7 @@
 import styled from '@emotion/styled';
 import { MutableRefObject, useEffect, useRef } from 'react';
 import { SectionSymbol } from './SectionSymbol';
+import { Arrow } from './Arrow';
 import { SectionNavigation } from './SectionNavigation';
 
 export const Sections = ({
@@ -90,7 +91,7 @@ export const Sections = ({
                 <ContactGrid>
                     {contacts.map(({ label, value, href }) => (
                         <a key={label} href={href}>
-                            <span className="contact-label">{label}<span aria-hidden="true">↗</span></span>
+                            <span className="contact-label">{label}<span aria-hidden="true"><Arrow /></span></span>
                             <span className="contact-value">{value}</span>
                         </a>
                     ))}

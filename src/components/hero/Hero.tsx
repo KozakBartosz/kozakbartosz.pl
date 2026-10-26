@@ -57,7 +57,8 @@ export const Hero = ({
                 }}
                 camera={{
                     fov: 30,
-                    near: 0.1,
+                    // Keep depth precision at the icons, ~150 world units away.
+                    near: 5,
                     far: 1000,
                     position: [0, 15, 150]
                 }}

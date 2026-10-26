@@ -48,6 +48,22 @@ if (hash != undefined && hash > 0) {
 // const rubbish = createArray(61, -30);
 
 export const Playground = () => {
+    const [isPaused, setIsPaused] = useState(false);
+
+    useEffect(() => {
+        const updatePaused = () => {
+            setIsPaused(window.scrollY >= window.innerHeight);
+        };
+
+        updatePaused();
+        window.addEventListener('scroll', updatePaused, { passive: true });
+        window.addEventListener('resize', updatePaused);
+        return () => {
+            window.removeEventListener('scroll', updatePaused);
+            window.removeEventListener('resize', updatePaused);
+        };
+    }, []);
+
     const material = useMemo(
         () => ({
             uniforms: {
@@ -231,7 +247,7 @@ export const Playground = () => {
     // }, [gravityOnOff]);
 
     return (
-        <Physics gravity={gravity}>
+        <Physics gravity={gravity} isPaused={isPaused}>
             <GrabPointerProvider>
             {/* <Physics gravity={gravity}>
             <GrabPointerProvider> */}

@@ -2,20 +2,17 @@ import { useFrame, useThree } from '@react-three/fiber';
 import { useContext, useMemo } from 'react';
 import { Vector2 } from 'three';
 import { getSceneRenderSize } from './renderResolution';
+import { SmoothBloom } from './SmoothBloom';
 
 
 import {
     EffectComposer,
     EffectComposerContext,
-    Bloom,
     DepthOfField
 } from '@react-three/postprocessing';
 
 // Cap the scene near 1080p on large screens; 0 explicitly disables scaling.
 const pixelBudget = Number(process.env.NEXT_PUBLIC_SCENE_PIXEL_BUDGET || 2073600);
-// Supported by the installed BloomEffect constructor, omitted from wrapper types.
-// Match the capped scene resolution instead of downsampling bloom blur again.
-const bloomResolution = { resolutionScale: 1 };
 const SceneResolution = () => {
     const { composer } = useContext(EffectComposerContext);
     const currentSize = useMemo(() => new Vector2(), []);
@@ -38,22 +35,23 @@ const SceneResolution = () => {
 };
 
 export const PostEffects = () => {
+    const { camera } = useThree();
+    // Preserve the original world-space focus plane and transition width when
+    // changing clipping planes. DOF takes distances normalized to near/far.
+    const focusDepth = 160.084;
+    const focusRange = 79.992;
+    const cameraRange = camera.far - camera.near;
     return (
         <EffectComposer disableNormalPass depthBuffer={true} autoClear={false}>
             {pixelBudget > 0 && Number.isFinite(pixelBudget) ? <SceneResolution /> : <></>}
+            {/* Keep DOF subtle; bloom supplies the halo without sparse bokeh lobes. */}
             <DepthOfField
-                focusDistance={0.16}
-                focalLength={0.08}
-                bokehScale={3}
+                focusDistance={(focusDepth - camera.near) / cameraRange}
+                focalLength={focusRange / cameraRange}
+                bokehScale={1}
                 blur={5}
             />
-            <Bloom
-                {...bloomResolution}
-                intensity={15}
-                luminanceThreshold={0.005}
-                luminanceSmoothing={10}
-                kernelSize={5}
-            />
+            <SmoothBloom />
         </EffectComposer>
     );
 };

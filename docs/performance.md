@@ -457,3 +457,84 @@ intensity compensation, tests, profiling or build were performed.
 Set the remaining Bloom kernelSize to 5 (HUGE in the installed version), up from
 the default LARGE (3), for wider/softer glow at the current scene resolution.
 Intensity, luminance settings and resolution remain unchanged. No tests or build.
+
+## Bloom input smoothing (2026-10-26)
+
+`SmoothBloom` applies a one-pixel 3x3 tent prefilter before bloom luminance
+extraction, using four bilinear reads in the existing luminance pass (previously
+one). No additional render targets or fullscreen passes. Bloom intensity,
+threshold, smoothing, kernel, resolution, MSAA and scene pixel budget are retained.
+This reduces subpixel contour variation entering the nonlinear threshold; visual
+improvement is subtle and does not eliminate every broad glow irregularity.
+
+Compared original and filtered shaders on the same frozen frontend scene in
+Chromium 140 / ANGLE Metal / M1 Pro at 1440x1000. No browser or shader errors.
+Four alternating GPU query batches per variant (12 full composer renders each)
+measured baseline 24.94/23.44/26.31/22.33 ms and filtered
+22.71/25.32/23.90/23.85 ms. These noisy development-mode samples show no clear
+regression, not a proven speedup or a universal performance guarantee.
+A separate live resize check at browser DPR 2 verified source texel sizes at
+1440x1000, 2560x1440 (scene capped to 1920x1080), 390x844 and back.
+Temporary diagnostic composer exposure was removed. TypeScript passes; lint
+passes with the existing CameraEffects hook-dependency warning.
+
+## Depth precision verified and corrected (2026-10-26)
+
+The user's z-fighting hypothesis is supported by a same-frame differential test:
+raising the main camera near plane from 0.1 to 5 removes broken/dotted sections
+of the monitor contours, including with both DOF and bloom contributions set to
+zero. Thus those contour defects originate before postprocessing. DOF adds
+visible blur/halos, but changing bloom alone cannot correct these defects.
+
+The actual composer scene framebuffer has 24 depth bits on ANGLE Metal / M1 Pro.
+At view depth 150, the estimated fixed-depth quantization step is 0.0134097 world
+units for near=0.1/far=1000, versus 0.00026688 for near=5/far=1000 (~50x finer).
+Changing far to 500 alone provides almost no precision benefit in this range,
+and can clip scene content. Keep far=1000. Uniform scene scaling with matching
+camera planes would not improve relative depth precision.
+
+`Hero` now uses near=5. `PostEffects` retains the world-space DOF focus plane
+160.084 and transition width 79.992, normalizing them against the camera's actual
+planes. DOF bokeh scale/resolution and bloom intensity are unchanged by this fix.
+Changing clipping planes introduces no new GPU work. Near=5 can clip geometry
+closer than five units, relevant if manually orbiting the camera into a model;
+the normal camera travel is much farther away.
+
+Also fixed a lifecycle flaw in the initial `SmoothBloom`: the installed React
+wrapper recreates BloomEffect on rerender; a mount-only layout effect failed to
+configure replacement instances. A stable ref callback now configures every
+instance. Live resize reproduces the old missing uniform and passes after the
+fix (1440x1000 -> 2560x1440 -> 390x844 -> 1440x1000). This explains why initial
+smoothing could disappear outside the original frozen-frame test.
+
+Evidence: `performance-data/depth-precision-20261026/` contains same-frame before
+and after screenshots with effects on and with both contributions off, plus
+framebuffer/camera/mesh bounds measurements. Tests covered near=0.1/1/5/10 and
+far=500/1000, preserving the DOF plane/range via the actual runtime shader
+uniforms. Live scrolling through all five sections verified near/far=5/1000 and
+unchanged world-space focus values; resize checks verified the filter uniform
+against actual capped buffer dimensions. No browser errors. TypeScript passes;
+lint has the existing CameraEffects hook-dependency warning. Temporary diagnostic
+hooks were removed. This does not claim every remaining glow ripple is fixed.
+
+## Remaining scalloped glow: DOF/bloom balance (2026-10-26)
+
+The depth correction improves broken contours but does not remove the user's
+reported scalloped halo. Earlier language overstated the visible overall fix.
+Same-frame closeups reproduce that remaining halo with the corrected near plane.
+
+Lowered DOF bokehScale 3 -> 1, retaining its focus distances and buffer resolution.
+Bloom now uses intensity 45 (previously 15) and kernel LARGE/3 (previously HUGE/5).
+This shifts halo generation toward a tighter bloom, reducing the conspicuous
+DOF lobes. It intentionally changes glow shape: stronger, tighter bloom and
+less defocus. It is not a claim of identical artwork or zero residual aliasing.
+The bloom blur now uses 5 fullscreen draws instead of 10, without additional
+buffers. A full-resolution DOF variant was also compared but not selected.
+
+Closeups and full screenshots in `performance-data/glow-balance-20261026/` were
+captured from a single frozen frontend frame, changing only bokeh scale, bloom
+intensity and kernel. Chromium / ANGLE Metal / M1 Pro at 1440x1000; no shader or
+page errors. Four alternating GPU query batches (10 complete composer renders
+per batch) measured before 23.39/25.93/23.96/19.94 ms, after
+20.10/21.20/18.89/23.15 ms. These noisy development samples suggest lower work,
+not a guaranteed speedup. TypeScript passes; lint retains its existing warning.

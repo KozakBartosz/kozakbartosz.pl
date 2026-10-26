@@ -122,7 +122,7 @@ const ContactGrid = styled.div`
     display: grid;
     grid-template-columns: minmax(0, 1fr);
     width: 100%;
-    max-width: 64rem;
+    max-width: 68rem;
     margin-top: 2.4rem;
     a {
         display: flex;
@@ -282,7 +282,7 @@ const Section = styled.section`
         &:nth-of-type(odd) { margin-left: 50%; }
         &:nth-of-type(even) {
             padding-left: 12rem;
-            > p, > .section-title, > .skills {
+            > p, > .section-title, > .skills, > ${ContactGrid} {
                 width: min(100%, 68rem);
                 align-self: flex-end;
             }

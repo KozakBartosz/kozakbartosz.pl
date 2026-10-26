@@ -7,10 +7,11 @@ import { useReducedMotion } from '../useReducedMotion';
 import { HERO_DEPHTH, getHeroScrollOffset } from './consts';
 import { ShadowDrop } from './ShadowDrop';
 import { InteractiveAccessories } from './InteractiveAccessories';
+import { CoffeeModel } from './CoffeeModel';
 import { BrowserModel } from './BrowserModel';
 import { FrontendAccessories } from './FrontendAccessories';
 
-export function Icon({ material, element, url, browser = false, frontend = false, interactive = false, gradientWidth = 40 }: any) {
+export function Icon({ material, element, url, browser = false, coffee = false, frontend = false, interactive = false, gradientWidth = 40 }: any) {
     const { camera } = useThree();
     const reducedMotion = useReducedMotion();
 
@@ -151,7 +152,7 @@ export function Icon({ material, element, url, browser = false, frontend = false
 
     return (
         <group dispose={null} scale={[20, 20, 20]} ref={meshRef}>
-            {browser ? <BrowserModel material={groupMaterial} /> : <GltfModel url={url} material={groupMaterial} />}
+            {coffee ? <CoffeeModel material={groupMaterial} /> : browser ? <BrowserModel material={groupMaterial} /> : <GltfModel url={url} material={groupMaterial} />}
             {interactive && <InteractiveAccessories material={groupMaterial} />}
             {frontend && <FrontendAccessories material={groupMaterial} />}
             <ShadowDrop />

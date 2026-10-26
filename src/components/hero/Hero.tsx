@@ -93,6 +93,7 @@ export const Hero = ({
                             <Icon
                                 material={material}
                                 browser={i === 2}
+                                coffee={i === 3}
                                 frontend={i === 0}
                                 interactive={i === 1}
                                 element={el}

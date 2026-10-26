@@ -230,6 +230,7 @@ const SectionPoint = styled.div`
 
 const Section = styled.section`
     --model-space: clamp(44rem, 100vw, 64rem);
+    container-type: inline-size;
     position: relative;
     display: flex;
     flex-direction: column;
@@ -274,7 +275,6 @@ const Section = styled.section`
         padding-inline: 8rem;
     }
     @media (min-width: 1000px) {
-        container-type: inline-size;
         width: 50%;
         min-height: 80rem;
         padding: clamp(6rem, 6vw, 12rem) clamp(4.8rem, 5vw, 12rem);
@@ -293,6 +293,8 @@ const Section = styled.section`
         &:nth-of-type(odd) ${Icon} { left: -50%; top: 50%; }
         &:nth-of-type(even) ${Icon} { left: 150%; top: 50%; }
     }
+    /* Keep both lines within the text column, including its 68rem desktop cap. */
+    &#interactive .section-title { font-size: min(17cqw, 12rem); }
 `;
 const Container = styled.div`
     position: relative;

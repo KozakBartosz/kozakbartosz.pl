@@ -110,7 +110,11 @@ export const Hero = ({
                     Bartosz <span>Kozak</span>
                     {/* <Link href="https://kozakbartosz.pl/">Kozak Bartosz</Link> */}
                 </Logo>
-                <Aside><span>Front-end</span><b>/</b><span>Interactive 3D</span><b>/</b><span>UX/UI Design</span></Aside>
+                <Aside>
+                    <span>Front-end</span><b>/</b>
+                    <span><span className="extended-label">Interactive </span>3D</span><b>/</b>
+                    <span>UX/UI<span className="extended-label"> Design</span></span>
+                </Aside>
             </Top>
             <Info>
                 <span>LMB / Grab objects</span>
@@ -186,6 +190,12 @@ const Aside = styled.span`
     text-transform: uppercase;
     color: #d5eaed;
     b { color: #00a3ff; margin-inline: 1.8rem; font-weight: 300; }
+    @media (max-width: 999px) {
+        flex-wrap: nowrap;
+        letter-spacing: .2em;
+        b { margin-inline: 1rem; }
+        .extended-label { display: none; }
+    }
 `;
 
 const Info = styled.div`

@@ -16,6 +16,7 @@ import { Gradient } from './Gradinet';
 import { Playground } from './Playground';
 import Link from 'next/link';
 import { CursorLight } from './CursorLight';
+import { Dust } from './Dust';
 
 // UX/UI uses a procedural browser model; other sections keep their GLTF assets.
 const iconNames = ['1', '3', '3', '4'];
@@ -86,6 +87,7 @@ export const Hero = ({
                 )}
 
                 <CursorLight />
+                <Dust />
                 <fog attach="fog" color={0x090f0e} near={50} far={350} />
                 <Playground />
                 {iconRef.current &&

@@ -3,6 +3,7 @@ import { useContext, useMemo } from 'react';
 import { Vector2 } from 'three';
 import { getSceneRenderSize } from './renderResolution';
 import { SmoothBloom } from './SmoothBloom';
+import { FOCUS_DEPTH, FOCUS_RANGE } from './depthOfField';
 
 
 import {
@@ -38,16 +39,14 @@ export const PostEffects = () => {
     const { camera } = useThree();
     // Preserve the original world-space focus plane and transition width when
     // changing clipping planes. DOF takes distances normalized to near/far.
-    const focusDepth = 160.084;
-    const focusRange = 79.992;
     const cameraRange = camera.far - camera.near;
     return (
         <EffectComposer disableNormalPass depthBuffer={true} autoClear={false}>
             {pixelBudget > 0 && Number.isFinite(pixelBudget) ? <SceneResolution /> : <></>}
             {/* Keep DOF subtle; bloom supplies the halo without sparse bokeh lobes. */}
             <DepthOfField
-                focusDistance={(focusDepth - camera.near) / cameraRange}
-                focalLength={focusRange / cameraRange}
+                focusDistance={(FOCUS_DEPTH - camera.near) / cameraRange}
+                focalLength={FOCUS_RANGE / cameraRange}
                 bokehScale={1}
                 blur={5}
             />

@@ -271,6 +271,9 @@ const Section = styled.section`
         font-size: 1.5rem;
         line-height: 1.5;
     }
+    @media (max-width: 999px) {
+        &#contact ${Icon} { top: -19.2rem; }
+    }
     @media (min-width: 700px) and (max-width: 999px) {
         padding-inline: 8rem;
     }

@@ -85,7 +85,11 @@ export function WorkModel({ reloadY, elementRef, project, carouselRef, material,
                 : carousel.position + difference * (1 - Math.exp(-16 * Math.min(delta, .05)));
         }
         const element = elementRef.current;
-        if (!element || !root.current) return;
+        if (!root.current) return;
+        if (!element) {
+            root.current.visible = false;
+            return;
+        }
         const box = bounds.current;
         if (box.dirty || showcase) {
             const rect = element.getBoundingClientRect();
@@ -96,7 +100,9 @@ export function WorkModel({ reloadY, elementRef, project, carouselRef, material,
             checkedReload.current = true;
             finishReloadSetup(reloadRevealStart(box.top, box.top + box.height, size.height, reloadY.current) !== null);
         }
-        root.current.visible = box.width > 0 && box.top < size.height + 100 && box.top + box.height > -100;
+        const overscan = showcase ? 0 : 100;
+        root.current.visible = box.width > 0 && box.height > 0 &&
+            box.top < size.height + overscan && box.top + box.height > -overscan;
         if (!root.current.visible) return;
         camera.updateMatrixWorld();
         const x = (box.left + box.width / 2) / size.width * 2 - 1;

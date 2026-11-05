@@ -78,6 +78,12 @@ export async function projectViewTransition(navigate: () => Promise<boolean>, di
     const root = page.documentElement;
     window.clearTimeout(lineTimer);
     root.dataset.projectTransition = direction;
+    const preventScroll = (event: Event) => event.preventDefault();
+    if (direction === 'open') {
+        // Wheel and touch momentum from the old view can reach the incoming page.
+        window.addEventListener('wheel', preventScroll, { passive: false });
+        window.addEventListener('touchmove', preventScroll, { passive: false });
+    }
     try {
         // This visible exit runs before the browser freezes the old snapshot.
         const now = performance.now();
@@ -111,6 +117,8 @@ export async function projectViewTransition(navigate: () => Promise<boolean>, di
             delete root.dataset.projectLines;
             root.style.removeProperty('--project-reveal-duration');
         }
+        window.removeEventListener('wheel', preventScroll);
+        window.removeEventListener('touchmove', preventScroll);
         root.style.removeProperty('--project-line-exit-offset');
         delete page.documentElement.dataset.projectTransition;
         navigating = false;

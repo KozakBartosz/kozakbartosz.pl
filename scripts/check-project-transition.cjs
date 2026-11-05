@@ -15,10 +15,20 @@ async function scenario({ supported = true, reducedMotion = false, skipped = fal
         const done = Promise.resolve().then(update);
         return { ready: skipped ? Promise.reject(new Error('Animation skipped')) : done, finished: done };
     };
-    const context = { exports: {}, setTimeout, performance: require('node:perf_hooks').performance, document, window: { clearTimeout() {}, setTimeout() {}, matchMedia: () => ({ matches: reducedMotion }) },
+    const input = new EventTarget();
+    const context = { exports: {}, setTimeout, performance: require('node:perf_hooks').performance, document, window: {
+        clearTimeout() {}, setTimeout() {}, matchMedia: () => ({ matches: reducedMotion }),
+        addEventListener: input.addEventListener.bind(input), removeEventListener: input.removeEventListener.bind(input),
+    },
         requestAnimationFrame: () => { throw new Error('View transition update must not wait for a rendered frame'); } };
     vm.runInNewContext(source, context);
-    await context.exports.projectViewTransition(async () => { navigations++; return true; }, 'open');
+    const wheel = () => input.dispatchEvent(new Event('wheel', { cancelable: true }));
+    await context.exports.projectViewTransition(async () => {
+        navigations++;
+        assert.equal(wheel(), !supported || reducedMotion);
+        return true;
+    }, 'open');
+    assert.equal(wheel(), true, 'wheel scroll resumes after the transition');
     assert.equal(navigations, 1);
     assert.equal(transitions, supported && !reducedMotion ? 1 : 0);
     assert.equal(document.documentElement.dataset.projectTransition, undefined);
@@ -33,7 +43,7 @@ async function hologramTiming() {
         return { ready: done, finished: done };
     } };
     const context = { exports: {}, document, performance: { now: () => now },
-        window: { clearTimeout() {}, setTimeout() {}, matchMedia: () => ({ matches: false }) },
+        window: { clearTimeout() {}, setTimeout() {}, addEventListener() {}, removeEventListener() {}, matchMedia: () => ({ matches: false }) },
         setTimeout(resolve, duration) { now += duration; resolve(); } };
     vm.runInNewContext(source, context);
     await context.exports.projectViewTransition(async () => { navigatedAt = now; return true; }, 'open');

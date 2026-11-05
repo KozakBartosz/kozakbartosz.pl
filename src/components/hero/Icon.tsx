@@ -2,18 +2,28 @@ import { useCylinder } from '@react-three/cannon';
 import { Shadow, useGLTF } from '@react-three/drei';
 import { useFrame, useThree } from '@react-three/fiber';
 import { useEffect, useMemo, useRef, useState } from 'react';
-import { Vector3, PerspectiveCamera, Group } from 'three';
+import { Vector3, PerspectiveCamera, Group, Matrix4, Vector4 } from 'three';
 import { useReducedMotion } from '../useReducedMotion';
 import { HERO_DEPHTH, getHeroScrollOffset } from './consts';
+import { initialModelReveal, reloadRevealStart } from '../projectViewTransition';
+import { WorkPreviewFade } from './WorkPreviewFade';
 import { ShadowDrop } from './ShadowDrop';
 import { InteractiveAccessories } from './InteractiveAccessories';
 import { CoffeeModel } from './CoffeeModel';
 import { BrowserModel } from './BrowserModel';
 import { FrontendAccessories } from './FrontendAccessories';
+import { IconSurfaceFadeContext, useFadedIconSurface } from './useIconSurfaceMaterial';
 
-export function Icon({ material, element, url, browser = false, coffee = false, frontend = false, interactive = false, gradientWidth = 40 }: any) {
+export function Icon({ material, element, reloadY, url, browser = false, coffee = false, frontend = false, interactive = false, gradientWidth = 40, active = true }: any) {
     const { camera } = useThree();
     const reducedMotion = useReducedMotion();
+    const revealStarted = useRef<number | null>();
+    const reveal = useMemo(() => ({
+        bounds: { value: new Vector4(-1, -1, 2, 2) },
+        revealBounds: { value: new Vector4() },
+        reveal: { value: 1 }
+    }), []);
+    const fadeMatrix = useMemo(() => ({ value: new Matrix4() }), []);
 
 
     // Share the uniform objects across every contour in this icon, including
@@ -22,11 +32,13 @@ export function Icon({ material, element, url, browser = false, coffee = false, 
         ...material,
         uniforms: {
             ...material.uniforms,
+            useGradientMatrix: { value: true },
+            gradientMatrix: fadeMatrix,
             useGroupGradient: { value: true },
             gradientCenter: { value: new Vector3() },
             gradientWidth: { value: gradientWidth }
         }
-    }), [material, gradientWidth]);
+    }), [material, gradientWidth, fadeMatrix]);
 
     // const icon = useGLTF('/models/icon1.glb');
 
@@ -60,7 +72,8 @@ export function Icon({ material, element, url, browser = false, coffee = false, 
         };
     }, [element]);
 
-    useFrame((state, delta) => {
+    useFrame(state => {
+        if (!active) return;
         if (bounds.current.dirty) {
             const rect = element.getBoundingClientRect();
             bounds.current.top = rect.top;
@@ -68,9 +81,21 @@ export function Icon({ material, element, url, browser = false, coffee = false, 
             bounds.current.dirty = false;
         }
         const { top, left } = bounds.current;
+        if (revealStarted.current === undefined) {
+            revealStarted.current = reloadRevealStart(top, top + 1, state.size.height, reloadY.current);
+        }
+        const start = revealStarted.current;
+        if (start != null) {
+            reveal.reveal.value = reducedMotion ? 1 : initialModelReveal(performance.now(), start);
+            if (reveal.reveal.value === 1) revealStarted.current = null;
+            else {
+                const scanRadius = Math.min(300, state.size.height * .45);
+                reveal.revealBounds.value.set(0, 1 - (top + scanRadius) / state.size.height, 1, 1 - (top - scanRadius) / state.size.height);
+            }
+        }
+        meshRef.current.visible = reveal.reveal.value > .0001;
         const scrollOffset = getHeroScrollOffset(window.scrollY, window.innerHeight);
 
-        const position = [left, top - scrollOffset, 0];
 
 
         projectCamera.aspect = window.innerWidth / window.innerHeight;
@@ -84,10 +109,10 @@ export function Icon({ material, element, url, browser = false, coffee = false, 
 
         // let x = -1.0 + (2.0 * nMouseX) / window.innerWidth;
         // let y = -1.0 + (2.0 * nMouseY) / window.innerHeight;
-        let x = (position[0] / window.innerWidth) * 2 - 1;
-        let y = -(position[1] / window.innerHeight) * 2 + 1;
+        let x = (left / window.innerWidth) * 2 - 1;
+        let y = -((top - scrollOffset) / window.innerHeight) * 2 + 1;
 
-        vector.set(x, y, position[2]);
+        vector.set(x, y, 0);
 
         vector.unproject(projectCamera);
 
@@ -97,12 +122,10 @@ export function Icon({ material, element, url, browser = false, coffee = false, 
             scaled = vector.multiplyScalar(distance),
             projected = coords.copy(projectCamera.position).add(scaled);
 
-        const newPosition = [projected.x, projected.y, 0];
-
         const linear = (top - window.innerHeight / 2) / 100;
 
-        meshRef.current.position.x = newPosition[0];
-        meshRef.current.position.y = newPosition[1] - 2.5;
+        meshRef.current.position.x = projected.x;
+        meshRef.current.position.y = projected.y - 2.5;
         meshRef.current.position.z = (linear * linear) / -2.5 + 10;
 
         if (window.innerWidth < 1000) {
@@ -128,13 +151,14 @@ export function Icon({ material, element, url, browser = false, coffee = false, 
             (linear * 4) / HERO_DEPHTH - 50 + rotationAdd;
 
         meshRef.current.updateWorldMatrix(true, false);
+        fadeMatrix.value.copy(meshRef.current.matrixWorld);
         camera.updateMatrixWorld();
         groupMaterial.uniforms.gradientCenter.value
             .setFromMatrixPosition(meshRef.current.matrixWorld)
             .applyMatrix4(camera.matrixWorldInverse);
 
         // if (materialRef.current) {
-        //     let valueTest: number = newPosition[0] / -3;
+        //     let valueTest: number = projected.x / -3;
         //     // console.log('materialRef', valueTest);
         //     setMyPosition(new Vector3(8.0, 0.0, 0.0));
         //     materialRef.current.uniforms.myPosition.value = new Vector3(
@@ -151,19 +175,24 @@ export function Icon({ material, element, url, browser = false, coffee = false, 
     // position = [20, 0, 0];
 
     return (
-        <group dispose={null} scale={[20, 20, 20]} ref={meshRef}>
-            {coffee ? <CoffeeModel material={groupMaterial} /> : browser ? <BrowserModel material={groupMaterial} /> : <GltfModel url={url} material={groupMaterial} />}
-            {interactive && <InteractiveAccessories material={groupMaterial} />}
-            {frontend && <FrontendAccessories material={groupMaterial} />}
-            <ShadowDrop />
-        </group>
+        <IconSurfaceFadeContext.Provider value={fadeMatrix}>
+            <group visible={active} scale={[20, 20, 20]} ref={meshRef}>
+                <WorkPreviewFade uniforms={reveal} edgeFade={false}>
+                {coffee ? <CoffeeModel material={groupMaterial} /> : browser ? <BrowserModel material={groupMaterial} active={active} /> : <GltfModel url={url} material={groupMaterial} />}
+                {interactive && <InteractiveAccessories material={groupMaterial} />}
+                {frontend && <FrontendAccessories material={groupMaterial} />}
+                </WorkPreviewFade>
+                <ShadowDrop />
+            </group>
+        </IconSurfaceFadeContext.Provider>
     );
 }
 
-function GltfModel({ url, material }: any) {
+export function GltfModel({ url, material }: any) {
     const { nodes, materials } = useGLTF(url) as { nodes: any; materials: any };
+    const surface = useFadedIconSurface(materials.normal);
     return <>
-        <mesh geometry={nodes.model.geometry} material={materials.normal} castShadow receiveShadow />
+        <mesh geometry={nodes.model.geometry} material={surface} castShadow receiveShadow />
         <mesh geometry={nodes.edge.geometry} castShadow receiveShadow>
             <shaderMaterial {...material} uniforms={{ ...material.uniforms, myPosition: { value: new Vector3(10, 0, 0) } }} />
         </mesh>

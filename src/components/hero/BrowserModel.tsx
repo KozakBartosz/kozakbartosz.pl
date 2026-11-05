@@ -7,10 +7,12 @@ import { mergeBufferGeometries } from 'three/examples/jsm/utils/BufferGeometryUt
 
 // Flat panels at distinct depths. Contours are filled strips, so their width
 // works consistently in WebGL without relying on unsupported wide GL lines.
-export function BrowserModel({ material }: { material: any }) {
+export function BrowserModel({ material, active = true }: { material: any; active?: boolean }) {
     const groups = useRef<(Group | null)[]>([]);
+    const lastBlend = useRef(0);
     const reducedMotion = useReducedMotion();
     const surfaceMaterial = useIconSurfaceMaterial();
+    const uniforms = useMemo(() => ({ ...material.uniforms, myPosition: { value: new Vector3(10, 0, 0) } }), [material]);
     const parts = useMemo(() => {
         const panels: PlaneGeometry[] = [];
         const strokes: BufferGeometry[] = [];
@@ -93,6 +95,13 @@ export function BrowserModel({ material }: { material: any }) {
         const alternateCurve = parts.pop()!;
         const position = curvePart.outline.getAttribute('position') as BufferAttribute;
         position.setUsage(DynamicDrawUsage);
+        // The renderer caches this bound. Include both poses so a moving
+        // handle cannot leave it near the edge of the camera frustum.
+        curvePart.outline.computeBoundingBox();
+        alternateCurve.outline.computeBoundingBox();
+        curvePart.outline.boundingBox!.union(alternateCurve.outline.boundingBox!);
+        curvePart.outline.computeBoundingSphere();
+        curvePart.outline.boundingBox!.getBoundingSphere(curvePart.outline.boundingSphere!);
         curvePart.deformation = {
             base: new Float32Array(position.array),
             target: new Float32Array(alternateCurve.outline.getAttribute('position').array)
@@ -138,6 +147,7 @@ export function BrowserModel({ material }: { material: any }) {
     }, [parts]);
 
     useFrame(({ clock }) => {
+        if (!active) return;
         parts.forEach((part, index) => {
             if (part.deformation) {
                 // Two-second moves alternate with 1.2-second holds.
@@ -147,6 +157,8 @@ export function BrowserModel({ material }: { material: any }) {
                     : phase < 5.2 ? 1 - (phase - 3.2) / 2
                     : 0;
                 const blend = reducedMotion ? 0 : progress * progress * (3 - 2 * progress);
+                if (blend === lastBlend.current) return;
+                lastBlend.current = blend;
                 const position = part.outline.getAttribute('position') as BufferAttribute;
                 const { base, target } = part.deformation;
                 const vertices = position.array as Float32Array;
@@ -162,10 +174,10 @@ export function BrowserModel({ material }: { material: any }) {
     });
 
     return <group rotation={[-.12, -.55, -.08]}>
-        {parts.map(({ surface, outline }, index) => <group key={index} ref={group => { groups.current[index] = group; }}>
+        {parts.map(({ surface, outline, deformation }, index) => <group key={index} ref={group => { groups.current[index] = group; }}>
             {surface && <mesh geometry={surface} material={surfaceMaterial} />}
             <mesh geometry={outline}>
-                <shaderMaterial {...material} side={DoubleSide} uniforms={{ ...material.uniforms, myPosition: { value: new Vector3(10, 0, 0) } }} />
+                <shaderMaterial {...material} side={DoubleSide} depthWrite={!!deformation} uniforms={uniforms} />
             </mesh>
         </group>)}
     </group>;

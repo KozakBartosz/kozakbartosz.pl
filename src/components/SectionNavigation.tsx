@@ -4,6 +4,7 @@ import { SectionId, SectionSymbol } from './SectionSymbol';
 
 const entries: { id: SectionId; name: string }[] = [
     { id: 'home', name: 'Home' },
+    { id: 'work', name: 'Work' },
     { id: 'frontend', name: 'Development' },
     { id: 'interactive', name: 'Interactive 3D' },
     { id: 'design', name: 'UX/UI Design' },

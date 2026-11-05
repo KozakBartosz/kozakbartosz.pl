@@ -2,16 +2,65 @@ import styled from '@emotion/styled';
 import type { NextPage } from 'next';
 import dynamic from 'next/dynamic';
 import Head from 'next/head';
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useLayoutEffect, useRef, useState } from 'react';
 import { Sections } from '../components/Section';
 import { Cursor } from '../components/Cursor';
 import { Loading } from '../components/Loading';
 import { Footer } from '../components/Footer';
 import { Arrow } from '../components/Arrow';
+import { WorkCarousel } from '../components/workCarousel';
+import { WorkProject } from '../components/WorkProject';
+import { useRouter } from 'next/router';
+const useRouteLayout = typeof window === 'undefined' ? useEffect : useLayoutEffect;
 const Hero = dynamic(() => import('../components/hero'), { ssr: false });
 
 const Home: NextPage = () => {
-    const iconEl = useRef([]);
+    const router = useRouter();
+    const projectKey = router.query.project === 'braniborska' ? 'braniborska' : 'vescape';
+    const projectView = router.query.project === 'vescape' || router.query.project === 'braniborska';
+    const projectIndex = projectKey === 'braniborska' ? 1 : 0;
+    const reloadY = useRef<number | null>(null);
+    const initialRoute = useRef(true);
+    const iconEl = useRef<HTMLDivElement[]>([]);
+    const projectPreviewRef = useRef<HTMLDivElement>(null);
+    const inspectRotation = useRef(0);
+    const workPreviewRef = useRef<HTMLDivElement>(null);
+    const workCarousel = useRef<WorkCarousel>({ position: 0, target: 0, dragging: false });
+    const [workProject, setWorkProject] = useState(0);
+
+    useEffect(() => {
+        const selected = ['vescape', 'braniborska', 'wyciszamy', 'rts'].indexOf(String(router.query.selected));
+        if (selected >= 0) {
+            setWorkProject(selected);
+            workCarousel.current.position = selected;
+            workCarousel.current.target = selected;
+        }
+    }, [router.query.selected]);
+
+    useRouteLayout(() => {
+        if (!router.isReady) return;
+        if (projectView) window.scrollTo(0, 0);
+        else if (router.asPath.includes('#work')) {
+            const section = document.getElementById('work');
+            if (section) {
+                const bounds = section.getBoundingClientRect();
+                window.scrollTo(0, window.scrollY + bounds.top - Math.max(0, (window.innerHeight - bounds.height) / 2));
+            }
+        }
+        if (initialRoute.current) {
+            initialRoute.current = false;
+            const navigation = performance.getEntriesByType('navigation')[0] as PerformanceNavigationTiming | undefined;
+            if (navigation?.type === 'reload') {
+                reloadY.current = window.scrollY;
+                const anchor = (projectView ? projectPreviewRef : workPreviewRef).current;
+                const rect = anchor?.getBoundingClientRect();
+                if (rect && rect.bottom > 0 && rect.top < window.innerHeight &&
+                    !window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+                    document.documentElement.dataset.projectLines = 'waiting';
+                }
+            }
+        }
+    }, [projectView, router.asPath, router.isReady]);
 
     return (
         <>
@@ -23,28 +72,30 @@ const Home: NextPage = () => {
                 />
                 <link rel="icon" href="/favicon.ico" />
             </Head>
-            <Container id="home" tabIndex={-1} aria-label="Home">
-                <Loading>Loading</Loading>
-                <Hero iconRef={iconEl} />
-                <HomeLabel><span>00</span><i />Home</HomeLabel>
-                <ExploreControl />
+            <Container id={projectView ? 'scene-shell' : 'home'} data-project-view={projectView} tabIndex={-1} aria-label={projectView ? undefined : 'Home'}>
+                {!projectView && <Loading>Loading</Loading>}
+                <Hero iconRef={iconEl} reloadY={reloadY} workPreviewRef={projectView ? projectPreviewRef : workPreviewRef}
+                    workProject={projectView ? projectIndex : workProject} workCarousel={workCarousel}
+                    projectView={projectView} inspectRotation={inspectRotation} />
+                {!projectView && <HomeLabel><span>00</span><i />Home</HomeLabel>}
+                {!projectView && <ExploreControl />}
             </Container>
-            <main>
+            {projectView && <WorkProject key={projectKey} projectKey={projectKey} anchor={projectPreviewRef} rotation={inspectRotation} />}
+            <main hidden={projectView}>
                 {/* <Suspense fallback=""> */}
                 {/* </Suspense> */}
 
-                <Sections iconRef={iconEl} />
-                <Cursor />
+                <Sections visible={!projectView} iconRef={iconEl} work={{ active: workProject, setActive: setWorkProject, previewRef: workPreviewRef, carouselRef: workCarousel }} />
             </main>
 
-            <Footer />
-            <MargeGradientTop />
-            <MargeGradientBottom />
+            <Cursor />
+            {!projectView && <><Footer /><MargeGradientTop /><MargeGradientBottom /></>}
         </>
     );
 };
 
 const Container = styled.div`
+    &[data-project-view='true'] { height: 0; min-height: 0; background: none; }
     background-image: url(/bg.png);
     background-position: center;
     background-size: cover;
@@ -165,7 +216,7 @@ const ExploreControl = () => {
 
     useEffect(() => {
         const update = () => {
-            const section = document.getElementById('frontend');
+            const section = document.getElementById('work');
             setExplored(!!section && section.getBoundingClientRect().top <= window.innerHeight / 2);
         };
         update();
@@ -178,12 +229,12 @@ const ExploreControl = () => {
     }, []);
 
     return (
-        <Explore id="explore-more" href={explored ? '#home' : '#frontend'}
+        <Explore id="explore-more" href={explored ? '#home' : '#work'}
                     onClick={event => {
-                        const target = document.getElementById(explored ? 'home' : 'frontend');
+                        const target = document.getElementById(explored ? 'home' : 'work');
                         if (!target) return;
                         event.preventDefault();
-                        history.pushState(null, '', explored ? '#home' : '#frontend');
+                        history.pushState(null, '', explored ? '#home' : '#work');
                         target.focus({ preventScroll: true });
                         const bounds = target.getBoundingClientRect();
                         window.scrollTo({

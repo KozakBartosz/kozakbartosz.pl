@@ -1,7 +1,7 @@
 import { Canvas } from '@react-three/fiber';
 import { Physics, Debug, Triplet } from '@react-three/cannon';
 import { OrbitControls } from '@react-three/drei';
-import { MutableRefObject, useEffect, useMemo, useState } from 'react';
+import { MutableRefObject, RefObject, Suspense, useEffect, useMemo, useState } from 'react';
 import { Plane } from './Plane';
 import { Cone } from './Cone';
 import { Bydlak } from './Bydlak';
@@ -9,7 +9,7 @@ import { Matrix4, Vector3, Vector4 } from 'three';
 import { PostEffects } from './PostEffects';
 import { CameraEffects } from './CameraEffects';
 import { Mirror } from './Mirror';
-import { fragmentShader, vertexShader } from './shaders';
+import { contourMaterial } from './shaders';
 import styled from '@emotion/styled';
 import { Icon } from './Icon';
 import { Gradient } from './Gradinet';
@@ -17,14 +17,22 @@ import { Playground } from './Playground';
 import Link from 'next/link';
 import { CursorLight } from './CursorLight';
 import { Dust } from './Dust';
+import { WorkModel } from './WorkModel';
+import { WorkCarousel } from '../workCarousel';
 
 // UX/UI uses a procedural browser model; other sections keep their GLTF assets.
 const iconNames = ['1', '3', '3', '4'];
 
 export const Hero = ({
-    iconRef
+    iconRef, reloadY, workPreviewRef, workProject, workCarousel, projectView = false, inspectRotation
 }: {
+    projectView?: boolean;
+    inspectRotation?: MutableRefObject<number>;
     iconRef: MutableRefObject<HTMLDivElement[]>;
+    reloadY: MutableRefObject<number | null>;
+    workPreviewRef: RefObject<HTMLDivElement>;
+    workProject: number;
+    workCarousel: MutableRefObject<WorkCarousel>;
 }) => {
     const [gravity, setGravity] = useState(false);
 
@@ -40,15 +48,14 @@ export const Hero = ({
                 myColor: { value: new Vector3(1, 0, 0) },
                 myPosition: { value: new Vector3(0.0, 0.0, 0.0) }
             },
-            fragmentShader,
-            vertexShader
+            ...contourMaterial
         }),
         []
     );
 
 
     return (
-        <Container id="Hero">
+        <Container id="Hero" data-project-view={projectView}>
             <Canvas
                 style={{
                     height: '100%',
@@ -71,14 +78,13 @@ export const Hero = ({
                     autoClear: false
                 }}
             >
-                <PostEffects />
+                <PostEffects workPreviewRef={workPreviewRef} />
                 <pointLight
                     position={[0, 20, -120]}
                     intensity={0.6}
                     color={0x4dffe1}
                 />
-                <Mirror />
-                <Gradient />
+                {!projectView && <><Mirror /><Gradient /></>}
 
                 {window.location.hash.includes('orbit') ? (
                     <OrbitControls makeDefault />
@@ -88,8 +94,9 @@ export const Hero = ({
 
                 <CursorLight />
                 <Dust />
+                <Suspense fallback={null}><WorkModel reloadY={reloadY} elementRef={workPreviewRef} project={workProject} carouselRef={workCarousel} material={material} showcase={projectView} inspectRotation={inspectRotation} /></Suspense>
                 <fog attach="fog" color={0x090f0e} near={50} far={350} />
-                <Playground />
+                {!projectView && <Playground />}
                 {iconRef.current &&
                     iconRef.current.map((el, i) => {
                         return (
@@ -100,6 +107,8 @@ export const Hero = ({
                                 frontend={i === 0}
                                 interactive={i === 1}
                                 element={el}
+                                reloadY={reloadY}
+                                active={!projectView}
                                 scale={[15, 15, 15]}
                                 url={`/models/icon${iconNames[i]}.glb`}
                                 key={i}
@@ -107,7 +116,7 @@ export const Hero = ({
                         );
                     })}
             </Canvas>
-            <Top>
+            {!projectView && <><Top>
                 <Logo id="Logo">
                     Bartosz <span>Kozak</span>
                     {/* <Link href="https://kozakbartosz.pl/">Kozak Bartosz</Link> */}
@@ -124,12 +133,13 @@ export const Hero = ({
             </Info>
             <InfoMobile>
                 <span>Rotate your device to change gravity</span>
-            </InfoMobile>
+            </InfoMobile></>}
         </Container>
     );
 };
 
 const Container = styled.div`
+    &#Hero[data-project-view="true"] { height: 0; min-height: 0; animation: none; }
     position: relative;
     height: 100%;
     height: 100lvh;

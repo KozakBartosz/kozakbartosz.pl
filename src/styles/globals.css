@@ -1,4 +1,11 @@
 @import url('https://fonts.googleapis.com/css2?family=Raleway:wght@100;300;400&display=swap');
+:root {
+    --accent-gradient: linear-gradient(40deg, #00a3ff, #00ffa3);
+    --accent-line-gradient: linear-gradient(90deg, #00a3ff, #00ffa3);
+    --section-column-width: 76rem;
+    --section-gutter: clamp(4.8rem, 5vw, 12rem);
+}
+
 html {
     font-size: 10px;
 }
@@ -46,7 +53,7 @@ h1, .section-title {
     letter-spacing: -.045em;
     font-weight: 300;
     color: #00a3ff;
-    background: linear-gradient(40deg, #00a3ff, #00ffa3);
+    background: var(--accent-gradient);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     margin: 0 0 3.2rem;
@@ -67,7 +74,7 @@ h1, .section-title {
     display: block;
     padding-bottom: .2em;
     margin-bottom: -.2em;
-    background: linear-gradient(40deg, #00a3ff, #00ffa3);
+    background: var(--accent-gradient);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
 }
@@ -78,7 +85,7 @@ h1, .section-title {
     height: .035em;
     min-height: 2px;
     margin-left: .12em;
-    background: linear-gradient(90deg, #00a3ff, #00ffa3);
+    background: var(--accent-line-gradient);
     animation: terminal-cursor 1.2s linear infinite;
 }
 @keyframes terminal-cursor {
@@ -204,4 +211,74 @@ a:hover {
 }
 @media (any-hover: none) {
     .shader-cursor { display: none; }
+}
+
+
+/* The shader and the Work rail animate while the rest of the view swaps immediately. */
+#Hero canvas { view-transition-name: portfolio-scene; }
+html[data-project-transition] .shader-cursor { visibility: hidden; }
+html[data-project-transition]::view-transition-group(root),
+html[data-project-transition]::view-transition-group(portfolio-scene),
+html[data-project-transition]::view-transition-new(root),
+html[data-project-transition]::view-transition-new(portfolio-scene) {
+    animation: none;
+    mix-blend-mode: normal;
+}
+html[data-project-transition]::view-transition-old(root),
+html[data-project-transition]::view-transition-old(portfolio-scene) {
+    display: none;
+}
+
+/* The Work marker travels from the home timeline to the project edge rail. */
+html[data-project-transition] .work-marker,
+html[data-project-transition] .edge-marker { view-transition-name: work-section-marker; }
+html[data-project-transition]::view-transition-group(work-section-marker) {
+    animation-duration: 650ms;
+    animation-timing-function: cubic-bezier(.16, 1, .3, 1);
+}
+
+@media (min-width: 1000px) {
+    html[data-project-transition] .work-track-before { view-transition-name: work-track-before; }
+    html[data-project-transition] .work-track-after { view-transition-name: work-track-after; }
+    html[data-project-transition]::view-transition-group(work-track-before),
+    html[data-project-transition]::view-transition-group(work-track-after) {
+        animation-duration: 650ms;
+        animation-timing-function: cubic-bezier(.16, 1, .3, 1);
+    }
+}
+
+html[data-project-transition]::view-transition-old(work-section-marker),
+html[data-project-transition]::view-transition-old(work-track-before),
+html[data-project-transition]::view-transition-old(work-track-after) {
+    display: none;
+}
+html[data-project-transition]::view-transition-new(work-section-marker),
+html[data-project-transition]::view-transition-new(work-track-before),
+html[data-project-transition]::view-transition-new(work-track-after) {
+    animation: none;
+    mix-blend-mode: normal;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+    html[data-project-lines] :is(.project-route, .epic-connections) > path {
+        stroke-dasharray: 1;
+        stroke-dashoffset: 1;
+    }
+
+    html[data-project-lines='drawing'] :is(.project-route, .epic-connections) > path {
+        animation: draw-project-line var(--project-reveal-duration) cubic-bezier(.33, 0, .67, 1) both;
+    }
+
+    html[data-project-lines='erasing'] :is(.project-route, .epic-connections) > path {
+        animation: erase-project-line var(--project-reveal-duration) cubic-bezier(.33, 0, .67, 1) both;
+    }
+}
+
+@keyframes draw-project-line {
+    to { stroke-dashoffset: 0; }
+}
+
+@keyframes erase-project-line {
+    from { stroke-dashoffset: var(--project-line-exit-offset, 0); }
+    to { stroke-dashoffset: 1; }
 }

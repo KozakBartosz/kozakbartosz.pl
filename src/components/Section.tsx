@@ -1,20 +1,24 @@
 import styled from '@emotion/styled';
-import { MutableRefObject, useEffect, useRef } from 'react';
+import { MutableRefObject, useEffect, useLayoutEffect, useRef } from 'react';
 import { SectionSymbol } from './SectionSymbol';
 import { Arrow } from './Arrow';
 import { SectionNavigation } from './SectionNavigation';
+import { Work, WorkProps } from './Work';
 
 export const Sections = ({
-    iconRef
+    iconRef, work, visible
 }: {
     iconRef: MutableRefObject<HTMLDivElement[]>;
+    work: WorkProps;
+    visible: boolean;
 }) => {
     return (
         <>
         <SectionNavigation />
         <Container>
+            <Work {...work} />
             <Section id="frontend" aria-labelledby="frontend-title" tabIndex={-1}>
-                <Label><span>01</span> Development</Label>
+                <Label><span>02</span> Development</Label>
                 <h2 id="frontend-title" className="section-title">Front-end <span className="heading-accent">developer</span></h2>
                 <SectionPoint data-section-marker aria-hidden="true"><SectionSymbol section="frontend" /></SectionPoint>
                 <p>
@@ -36,7 +40,7 @@ export const Sections = ({
                 />
             </Section>
             <Section id="interactive" aria-labelledby="interactive-title" tabIndex={-1}>
-                <Label><span>02</span> Interactive 3D</Label>
+                <Label><span>03</span> Interactive 3D</Label>
                 <h2 id="interactive-title" className="section-title">3D modeling <span className="heading-accent">&amp; shaders</span></h2>
                 <SectionPoint data-section-marker aria-hidden="true"><SectionSymbol section="interactive" /></SectionPoint>
                 <p>
@@ -60,7 +64,7 @@ export const Sections = ({
                 />
             </Section>
             <Section id="design" aria-labelledby="design-title" tabIndex={-1}>
-                <Label><span>03</span> UX/UI Design</Label>
+                <Label><span>04</span> UX/UI Design</Label>
                 <h2 id="design-title" className="section-title">Interface <span className="heading-accent">design</span></h2>
                 <SectionPoint data-section-marker aria-hidden="true"><SectionSymbol section="design" /></SectionPoint>
                 <p>
@@ -84,7 +88,7 @@ export const Sections = ({
                 />
             </Section>
             <Section id="contact" aria-labelledby="contact-title" tabIndex={-1}>
-                <Label><span>04</span> Contact</Label>
+                <Label><span>05</span> Contact</Label>
                 <h2 id="contact-title" className="section-title">Say <span className="heading-accent">hello</span></h2>
                 <SectionPoint data-section-marker aria-hidden="true"><SectionSymbol section="contact" /></SectionPoint>
                 <p className="contact-intro">Have an idea? Let’s make it real.</p>
@@ -103,7 +107,7 @@ export const Sections = ({
                     }}
                 />
             </Section>
-            <SectionTimeline />
+            {visible && <SectionTimeline />}
         </Container>
         </>
     );
@@ -123,7 +127,7 @@ const ContactGrid = styled.div`
     display: grid;
     grid-template-columns: minmax(0, 1fr);
     width: 100%;
-    max-width: 68rem;
+    max-width: var(--section-column-width);
     margin-top: 2.4rem;
     a {
         display: flex;
@@ -241,7 +245,7 @@ const Section = styled.section`
     scroll-margin-top: 3rem;
     min-height: 50rem;
     p:not(:first-of-type) {
-        max-width: 68rem;
+        max-width: var(--section-column-width);
         margin: 0 0 2rem;
         color: #dce5e3;
         font-size: clamp(1.7rem, 1.3vw, 2rem);
@@ -252,7 +256,7 @@ const Section = styled.section`
     &#contact .contact-intro { font-size: clamp(1.9rem, 1.6vw, 2.4rem); color: #b8cbc7; }
 
     a { overflow-wrap: anywhere; }
-    .skills { margin-top: 1.8rem; max-width: 68rem; }
+    .skills { margin-top: 1.8rem; max-width: var(--section-column-width); }
     .skills h3 {
         margin: 0 0 1.4rem;
         font-size: 1.2rem;
@@ -280,14 +284,16 @@ const Section = styled.section`
     @media (min-width: 1000px) {
         width: 50%;
         min-height: 80rem;
-        padding: clamp(6rem, 6vw, 12rem) clamp(4.8rem, 5vw, 12rem);
+        padding: clamp(6rem, 6vw, 12rem) var(--section-gutter);
         margin: 8rem 0;
         .section-title { font-size: clamp(4.6rem, 17cqw, 14rem); }
+        > p, > .section-title, > .skills, > ${ContactGrid} {
+            width: min(100%, var(--section-column-width));
+        }
         &:nth-of-type(odd) { margin-left: 50%; }
         &:nth-of-type(even) {
             padding-left: 12rem;
             > p, > .section-title, > .skills, > ${ContactGrid} {
-                width: min(100%, 68rem);
                 align-self: flex-end;
             }
         }
@@ -296,7 +302,7 @@ const Section = styled.section`
         &:nth-of-type(odd) ${Icon} { left: -50%; top: 50%; }
         &:nth-of-type(even) ${Icon} { left: 150%; top: 50%; }
     }
-    /* Keep both lines within the text column, including its 68rem desktop cap. */
+    /* Keep both lines within the shared text column. */
     &#interactive .section-title { font-size: min(17cqw, 12rem); }
 `;
 const Container = styled.div`
@@ -306,10 +312,12 @@ const Container = styled.div`
     width: 100%;
     @media (min-width: 1000px) { margin-top: 10rem; }
 `;
+const useTimelineLayout = typeof window === 'undefined' ? useEffect : useLayoutEffect;
+
 const SectionTimeline = () => {
     const timelineRef = useRef<HTMLDivElement>(null);
 
-    useEffect(() => {
+    useTimelineLayout(() => {
         const timeline = timelineRef.current;
         const container = timeline?.parentElement;
         if (!timeline || !container) return;
@@ -318,7 +326,7 @@ const SectionTimeline = () => {
         let frame = 0;
         const update = () => {
             frame = 0;
-            if (window.innerWidth < 1000) return;
+            if (window.innerWidth < 1000 || !timeline.getClientRects().length) return;
             const origin = timeline.getBoundingClientRect().top;
             const scrollMarker = window.innerHeight / 2;
             const centers = markers.map(marker => {
@@ -327,9 +335,10 @@ const SectionTimeline = () => {
             });
             const explore = document.getElementById('explore-more');
             const contact = document.getElementById('contact');
-            if (!explore || !contact) return;
+            const home = document.getElementById('home');
+            if (!explore || !contact || !home) return;
             const radii = markers.map(marker => (marker.querySelector('svg')?.getBoundingClientRect().height || 32) / 2 + 12);
-            const starts = [explore.getBoundingClientRect().bottom + 12, ...centers.map((center, index) => center + radii[index])];
+            const starts = [Math.max(home.getBoundingClientRect().bottom, explore.getBoundingClientRect().bottom + 12), ...centers.map((center, index) => center + radii[index])];
             const ends = [...centers.map((center, index) => center - radii[index]), contact.getBoundingClientRect().bottom];
             const atBottom = window.scrollY + window.innerHeight >= document.documentElement.scrollHeight - 2;
             tracks.forEach((track, index) => {
@@ -363,7 +372,7 @@ const SectionTimeline = () => {
     }, []);
 
     return <Timeline ref={timelineRef} aria-hidden="true">
-        {[0, 1, 2, 3, 4].map(index => <TimelineTrack key={index}><span /></TimelineTrack>)}
+        {[0, 1, 2, 3, 4, 5].map(index => <TimelineTrack key={index} className={index === 0 ? 'work-track-before' : index === 1 ? 'work-track-after' : undefined}><span /></TimelineTrack>)}
     </Timeline>;
 };
 

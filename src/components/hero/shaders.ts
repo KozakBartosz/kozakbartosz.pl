@@ -58,8 +58,11 @@ export const fragmentShader = `
 
     vec3 blink = vec3(1.0, 0.0, 0.6392) * AlphaRamp * 1.5;
     vec3 blink2 = vec3(0.0, 1.0, 0.0) * AlphaRamp2 * 2.0;
-    vec3 dark = vec3(1.0, 1.0, 1.0) / clamp(AlphaRamp3 * 0.5 + 4.5, 0.0, 1.0);
-    gl_FragColor = vec4((gradient + blink + blink2 ) / dark, 1.0);
+    // Fade coverage rather than RGB: black opaque contours cut into the
+    // page background. Discard fully faded fragments, including their depth.
+    float opacity = clamp(AlphaRamp3 * 0.5 + 4.5, 0.0, 1.0);
+    if (opacity <= 0.0) discard;
+    gl_FragColor = vec4(gradient + blink + blink2, opacity);
 
     // gl_FragColor = vec4(ramp, ramp, ramp, 1.0);
   }
@@ -90,3 +93,10 @@ export const vertexShader = `
     gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
   }
 `;
+
+export const contourMaterial = {
+  fragmentShader,
+  vertexShader,
+  transparent: true,
+  depthWrite: false
+};

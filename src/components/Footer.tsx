@@ -4,6 +4,7 @@ import { Arrow } from './Arrow';
 
 const links = [
     { id: 'home', label: 'Home' },
+    { id: 'work', label: 'Work' },
     { id: 'frontend', label: 'Front-end' },
     { id: 'interactive', label: '3D / Interactive' },
     { id: 'design', label: 'UX/UI Design' },
@@ -23,13 +24,13 @@ const navigate = (event: MouseEvent<HTMLAnchorElement>, id: string) => {
     });
 };
 
-export const Footer = () => (
-    <Root id="footer" aria-label="Footer">
+export const Footer = ({ projectPage = false }: { projectPage?: boolean }) => (
+    <Root data-project-page={projectPage || undefined} id="footer" aria-label="Footer">
         <div className="footer-composition">
             <p className="signature">Bartosz<br /><span>Kozak.</span></p>
                 <nav id="footer-grid" aria-label="Footer navigation">
                     {links.map(({ id, label }, index) => (
-                        <a key={id} href={`#${id}`} onClick={event => navigate(event, id)}>
+                        <a key={id} href={projectPage ? `/#${id}` : `#${id}`} onClick={projectPage ? undefined : event => navigate(event, id)}>
                             <span className="link-number">0{index}</span>
                             <span className="link-name">{label}</span>
                             <span className="link-arrow" aria-hidden="true"><Arrow /></span>
@@ -39,7 +40,7 @@ export const Footer = () => (
         </div>
         <div className="footer-bottom">
             <small>© {new Date().getFullYear()} Bartosz Kozak</small>
-            <a href="#home" onClick={event => navigate(event, 'home')}>Back to top <span aria-hidden="true"><Arrow direction="up" /></span></a>
+            <a href={projectPage ? '#project-home' : '#home'} onClick={projectPage ? undefined : event => navigate(event, 'home')}>Back to top <span aria-hidden="true"><Arrow direction="up" /></span></a>
         </div>
     </Root>
 );
@@ -66,9 +67,9 @@ const Root = styled.footer`
         padding: 2.4rem;
         min-height: 12rem;
         border-bottom: 1px solid #24504e;
-        &:last-of-type { grid-column: 1 / -1; border-bottom: 0; }
+        &:nth-last-of-type(-n+2) { border-bottom: 0; }
         transition: background-color 200ms ease;
-        &:nth-of-type(odd):not(:last-of-type) { border-right: 1px solid #24504e; }
+        &:nth-of-type(odd) { border-right: 1px solid #24504e; }
         &:hover, &:focus-visible { background-color: rgba(0, 163, 255, .07); }
         &:focus-visible { outline-offset: -2px; }
         &:hover .link-arrow { transform: translate(3px, -3px); }
@@ -83,10 +84,16 @@ const Root = styled.footer`
     .footer-bottom a { display: flex; align-items: center; gap: 2rem; padding: 1.4rem 0 1.4rem 1.4rem; color: #bacfca; font-size: 1.1rem; letter-spacing: .14em; text-transform: uppercase; line-height: 1.5; }
     .footer-bottom a span { color: #00a3ff; font-size: 2rem; }
     @media (min-width: 1000px) {
-        --footer-right: clamp(4.8rem, 5vw, 12rem);
-        --footer-left: max(12rem, calc(50vw - var(--footer-right) - 68rem));
+        --footer-right: var(--section-gutter);
+        --footer-left: max(12rem, calc(50vw - var(--footer-right) - var(--section-column-width)));
         padding-left: var(--footer-left);
         padding-right: var(--footer-right);
+    }
+    &[data-project-page] {
+        --footer-left: 0px;
+        --footer-right: 0px;
+        padding-inline: 0;
+        .signature { font-size: clamp(5rem, 10.5cqw, 16rem); }
     }
     @media (max-width: 700px) {
         .footer-composition { grid-template-columns: 1fr; min-height: auto; }

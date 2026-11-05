@@ -62,16 +62,27 @@ const Home: NextPage = () => {
 
     useRouteLayout(() => {
         if (!router.isReady) return;
-        if (projectView) window.scrollTo(0, 0);
-        else if (router.asPath.includes('#work')) {
+        let restoreFrame = 0;
+        let restoreOnShow: (() => void) | undefined;
+        const afterRouteScroll = (restore: () => void) => {
+            restoreFrame = requestAnimationFrame(() => {
+                restoreFrame = requestAnimationFrame(restore);
+            });
+        };
+        if (projectView) {
+            if (!window.location.hash) {
+                const scrollToTop = () => window.scrollTo(0, 0);
+                scrollToTop();
+                // History can restore its previous scroll after the route commits.
+                afterRouteScroll(scrollToTop);
+            }
+        } else if (router.asPath.includes('#work')) {
             const section = document.getElementById('work');
             if (section) {
                 const bounds = section.getBoundingClientRect();
                 window.scrollTo(0, window.scrollY + bounds.top - Math.max(0, (window.innerHeight - bounds.height) / 2));
             }
         }
-        let restoreFrame = 0;
-        let restoreOnShow: (() => void) | undefined;
         if (initialRoute.current) {
             initialRoute.current = false;
             const navigation = performance.getEntriesByType('navigation')[0] as PerformanceNavigationTiming | undefined;
@@ -87,9 +98,7 @@ const Home: NextPage = () => {
                             };
                             restore();
                             // Next applies the URL fragment in a timer after hydration.
-                            restoreFrame = requestAnimationFrame(() => {
-                                restoreFrame = requestAnimationFrame(restore);
-                            });
+                            afterRouteScroll(restore);
                             if (document.readyState !== 'complete') {
                                 restoreOnShow = restore;
                                 window.addEventListener('pageshow', restore, { once: true });

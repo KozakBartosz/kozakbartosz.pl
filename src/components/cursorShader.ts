@@ -53,8 +53,8 @@ export const cursorFragmentShader = `
         float radius = mix(min(size.x, size.y), uCornerRadius, uMorph);
         float distance = roundedBox(p, size, radius);
         float fill = 1.0 - smoothstep(-0.8, 0.8, distance);
-        // A crisp 1.5px stroke, independent from the translucent interior.
-        float rim = 1.0 - smoothstep(0.5, 1.25, abs(distance));
+        // A crisp 2px stroke, independent from the translucent interior.
+        float rim = 1.0 - smoothstep(0.625, 1.375, abs(distance));
         float glow = exp(-abs(distance) * 0.3) * uGlowOpacity;
         // Keep colors in screen space while the capsule turns into a link box.
         // Include the trailing extension when finding its horizontal center/span.

@@ -35,17 +35,29 @@ export function ProjectStory({ model, stack, website, projectNavigation, project
     useEffect(() => {
         const root = hero.current, a = left.current, b = center.current, c = right.current;
         if (!root || !a || !b || !c) return;
+        const leftHeading = a.querySelector('[data-panel-heading]')!;
+        const rightHeading = c.querySelector('[data-panel-heading]')!;
+        const leftTick = leftHeading.querySelector('i')!;
+        const leftRule = leftHeading.querySelector('b')!;
+        const rightTick = rightHeading.querySelector('i')!;
+        const rightRule = rightHeading.querySelector('b')!;
+        const rightNumber = rightHeading.querySelector('span')!;
         const update = () => {
-            const origin = root.getBoundingClientRect(), l = a.querySelector('[data-panel-heading]')!.getBoundingClientRect(), m = b.querySelector('.case-model')!.getBoundingClientRect(), r = c.querySelector('[data-panel-heading]')!.getBoundingClientRect();
+            const origin = root.getBoundingClientRect(), l = leftHeading.getBoundingClientRect(), m = b.querySelector('.case-model')!.getBoundingClientRect(), r = rightHeading.getBoundingClientRect();
             const lx = l.right - origin.left, ly = l.top - origin.top + l.height / 2;
             const mx = m.left - origin.left + m.width * (clinic ? .115 : .19), my = m.top - origin.top + m.height * .43;
-            const rx = r.left - origin.left, ry = r.top - origin.top + r.height / 2;
+            const gap = rightTick.getBoundingClientRect().left - rightNumber.getBoundingClientRect().right;
+            const rx = r.left - origin.left - gap, ry = r.top - origin.top + r.height / 2;
             const nx = m.right - origin.left - m.width * .13, ny = m.top - origin.top + m.height * .67;
-            leftPath.current?.setAttribute('d', `M${lx},${ly} H${lx + 24} L${mx - 24},${my} H${mx}`);
-            rightPath.current?.setAttribute('d', `M${rx},${ry} H${rx - 24} L${nx + 24},${ny} H${nx}`);
+            const horizontal = (element: Element, y: number, reverse = false) => {
+                const { left, right } = element.getBoundingClientRect();
+                return `M${(reverse ? right : left) - origin.left},${y} H${(reverse ? left : right) - origin.left}`;
+            };
+            leftPath.current?.setAttribute('d', `${horizontal(leftTick, ly)} ${horizontal(leftRule, ly)} H${lx + 24} L${mx - 24},${my} H${mx}`);
+            rightPath.current?.setAttribute('d', `${horizontal(rightRule, ry, true)} ${horizontal(rightTick, ry, true)} M${rx},${ry} H${rx - 24} L${nx + 24},${ny} H${nx}`);
         };
         const observer = new ResizeObserver(update);
-        [root, a, b, c].forEach(element => observer.observe(element));
+        [root, a, b, c, leftRule, rightRule].forEach(element => observer.observe(element));
         document.fonts.ready.then(update);
         update();
         return () => observer.disconnect();
@@ -113,7 +125,7 @@ const Epic = styled.div`
     .epic-contribution ul { list-style: none; padding: 0; margin: 0 0 3rem; }
     .epic-contribution li { padding: .6rem 0; font-size: 1.6rem; color: #dce5e3; line-height: 1.6; }
     .epic-connections { position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; pointer-events: none; }
-    .epic-connections path { fill: none; stroke-width: 1.5; stroke-linejoin: miter; }
+    .epic-connections path { fill: none; stroke-width: var(--line-width); stroke-linejoin: round; stroke-linecap: round; }
     .epic-action-grid { display: grid; grid-template-columns: 1fr 1fr; border-top: 1px solid #24504e; }
     .epic-action-grid a { display: grid; grid-template-columns: 1fr auto; align-content: space-between; gap: 1rem; min-height: 10rem; padding: 1.6rem 1.2rem; border-bottom: 1px solid #24504e; transition: background-color 200ms ease; color: #dce5e3; }
     .epic-action-grid a:nth-of-type(odd) { border-right: 1px solid #24504e; }
@@ -137,7 +149,7 @@ const Epic = styled.div`
     .device-object { position: relative; margin-inline: auto; }
     .device-phone .device-object { width: min(100%, 28rem); }
     .device-hardware { position: relative; padding: 1rem; border: 1px solid #3b6561; background: #0b1312; box-shadow: 0 2rem 5rem #0004, inset 0 0 0 3px #14201e; }
-    .device-hardware::before { content: ''; position: absolute; inset: -2px; border-radius: inherit; padding: 1px; background: var(--accent-line-gradient); -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0); -webkit-mask-composite: xor; mask-composite: exclude; pointer-events: none; opacity: .7; }
+    .device-hardware::before { content: ''; position: absolute; inset: -2px; border-radius: inherit; padding: var(--line-width); background: var(--accent-line-gradient); -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0); -webkit-mask-composite: xor; mask-composite: exclude; pointer-events: none; opacity: .7; }
     .device-phone .device-hardware { border-radius: 3.4rem; }
     .device-phone .device-hardware::after { content: ''; position: absolute; right: -.45rem; top: 24%; width: .35rem; height: 4rem; border-radius: 0 2px 2px 0; background: #6e9692; }
     .device-hardware video, .device-hardware img { display: block; width: 100%; height: auto; background: #090f0e; }
@@ -214,11 +226,11 @@ const Epic = styled.div`
     .epic-context, .epic-contribution { padding-top: 0; transform: none; }
     .epic-panel-heading { display: flex; align-items: center; gap: 1.2rem; min-height: 4.4rem; margin-bottom: 2.8rem; white-space: nowrap; font-size: 1.1rem; letter-spacing: .12em; text-transform: uppercase; color: #aabfbd; }
     .epic-panel-heading > span:first-of-type { color: #00a3ff; font-size: 1rem; }
-    .epic-panel-heading i { flex-shrink: 0; width: 2.4rem; height: 1px; background: var(--accent-line-gradient); }
-    .epic-panel-heading b { flex: 1; min-width: .8rem; height: 1px; background: var(--accent-line-gradient); }
+    .epic-panel-heading i { flex-shrink: 0; width: 2.4rem; height: var(--line-width); background: var(--accent-line-gradient); }
+    .epic-panel-heading b { flex: 1; min-width: .8rem; height: var(--line-width); background: var(--accent-line-gradient); }
     .project-location { display: flex; justify-content: center; align-items: center; gap: 1.8rem; margin: 0 0 1.8rem; color: #aabfbd; font-size: 1.2rem !important; letter-spacing: .18em; text-transform: uppercase; }
     .project-location > span { color: #00a3ff; }
-    .project-location i { width: 3.2rem; height: 1px; background: var(--accent-line-gradient); }
+    .project-location i { width: 3.2rem; height: var(--line-width); background: var(--accent-line-gradient); }
     &[data-clinic='true'] .epic-title h1 { font-size: clamp(4.5rem, 6vw, 9rem); }
     &[data-clinic='true'] .epic-model .case-model { height: 49rem; }
     .clinic-interface { padding: 5rem 0 7rem; border-block: 1px solid #24504e; scroll-margin-top: 3rem; }
@@ -261,6 +273,7 @@ const Epic = styled.div`
     .epic-platforms { border-bottom: 1px solid #24504e; padding-bottom: 1.6rem; }
     .epic-platforms > p:last-child { margin-bottom: 0; }
     @media (min-width: 1101px) {
+        .epic-panel-heading :is(i, b) { background: none; }
         .epic-layout { grid-template-rows: 4.4rem 1fr auto; row-gap: 2.8rem; align-items: stretch; }
         .epic-context, .epic-contribution { display: grid; grid-template-rows: subgrid; grid-row: 1 / 4; }
         .epic-context { grid-column: 1; }

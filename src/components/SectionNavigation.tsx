@@ -116,7 +116,7 @@ const Rail = styled.nav`
             position: absolute;
             top: 5.8rem;
             left: 1.3rem;
-            width: 2px;
+            width: var(--line-width);
             bottom: 2.2rem;
             opacity: 0;
             pointer-events: none;

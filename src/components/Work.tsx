@@ -152,7 +152,7 @@ export const Work = ({ active, setActive, previewRef, carouselRef }: WorkProps) 
                 <defs><linearGradient id="work-route-gradient" x1="0%" y1="100%" x2="100%" y2="0%">
                     <stop offset="0%" stopColor="#00ffa3" /><stop offset="100%" stopColor="#00a3ff" />
                 </linearGradient></defs>
-                <path pathLength="1" ref={pathRef} fill="none" stroke="url(#work-route-gradient)" strokeWidth="2" strokeLinejoin="round" strokeLinecap="round" />
+                <path pathLength="1" ref={pathRef} fill="none" stroke="url(#work-route-gradient)" strokeLinejoin="round" strokeLinecap="round" />
             </svg>
             <div className="work-copy">
                 <p className="work-label"><span>01</span><i />Work</p>
@@ -248,7 +248,7 @@ const Wrapper = styled.div`
     .work-copy { align-self: stretch; display: flex; flex-direction: column; padding: 0 0 0 12rem; min-width: 0; }
     .work-label { display: flex; align-items: center; gap: 1.8rem; margin: 0 0 1.8rem; color: #aabfbd; font-size: 1.2rem; line-height: 1.6; letter-spacing: .18em; text-transform: uppercase; }
     .work-label span { color: #00a3ff; letter-spacing: .06em; }
-    .work-label i { width: 3.2rem; height: 1px; background: linear-gradient(90deg, #00a3ff, #00ffa3); }
+    .work-label i { width: 3.2rem; height: var(--line-width); background: linear-gradient(90deg, #00a3ff, #00ffa3); }
     .mobile-project-title { display: none; }
     .section-title { font-size: clamp(5.4rem, 5.4vw, 10rem); margin-bottom: clamp(2rem, 3svh, 4rem); }
     .work-marker { position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%); z-index: 2; display: grid; place-items: center; width: 4.4rem; height: 4.4rem; }
@@ -263,6 +263,7 @@ const Wrapper = styled.div`
     .project-number { font-size: 1.1rem; font-variant-numeric: tabular-nums; letter-spacing: .12em; color: #8ea9a4; }
     ol button[aria-pressed='true'] .project-number { color: #00e4c3; }
     .project-name { font-size: clamp(2.4rem, 2.45vw, 4.4rem); font-weight: 300; letter-spacing: -.035em; line-height: 1.2; }
+    .project-route path { stroke-width: var(--line-width); }
     .project-route { position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; pointer-events: none; }
     .work-hint { margin: 2.4rem 0 0; color: #91a4a1; font-size: 1.3rem; letter-spacing: .04em; }
     .work-preview { min-width: 0; height: min(78svh, 84rem); min-height: 48rem; display: flex; flex-direction: column; padding-inline: clamp(3.2rem, 4vw, 8rem); }

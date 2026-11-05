@@ -11,7 +11,7 @@ export function VisitProjectLink({ href, domain }: { href: string; domain: strin
 const Kicker = styled.span`
     &&& { display: flex; align-items: center; gap: 1.2rem; max-width: 100%; }
     > span:first-of-type { color: #00a3ff; letter-spacing: .06em; }
-    > i { flex-shrink: 0; width: 2.4rem; height: 1px; background: var(--accent-line-gradient); }
+    > i { flex-shrink: 0; width: 2.4rem; height: var(--line-width); background: var(--accent-line-gradient); }
 `;
 const Visit = styled.a`
     &&& { display: flex; align-items: center; justify-content: space-between; gap: 2rem; width: min(100%, 32rem); min-height: 8rem; margin: 2.4rem 0 0 auto; padding: 1.6rem 2rem; border-block: 1px solid #24504e; color: #dce5e3; background: none; -webkit-text-fill-color: currentColor; text-shadow: none; font-size: 1.6rem; line-height: 1.5; }

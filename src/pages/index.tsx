@@ -174,7 +174,7 @@ const HomeLabel = styled.div`
     letter-spacing: .18em;
     text-transform: uppercase;
     span { color: #00a3ff; letter-spacing: .06em; }
-    i { width: 3.2rem; height: 1px; background: linear-gradient(90deg, #00a3ff, #00ffa3); }
+    i { width: 3.2rem; height: var(--line-width); background: linear-gradient(90deg, #00a3ff, #00ffa3); }
     @media (max-width: 999px) {
         top: calc(2.4rem + env(safe-area-inset-top, 0px));
         left: 2.4rem;

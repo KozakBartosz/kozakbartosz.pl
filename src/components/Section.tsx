@@ -194,7 +194,7 @@ const Label = styled.p`
         content: '';
         display: inline-block;
         width: 3.2rem;
-        height: 1px;
+        height: var(--line-width);
         margin-left: 1.8rem;
         vertical-align: middle;
         background: linear-gradient(90deg, #00a3ff, #00ffa3);
@@ -388,8 +388,8 @@ const Timeline = styled.div`
 
 const TimelineTrack = styled.div`
     position: absolute;
-    left: calc(50% - 1px);
-    width: 2px;
+    left: calc(50% - var(--line-width) / 2);
+    width: var(--line-width);
     background: #24423f;
     > span {
         display: block;

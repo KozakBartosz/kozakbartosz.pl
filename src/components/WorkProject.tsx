@@ -223,7 +223,7 @@ const Page = styled.article`
     .edge-back > span:first-of-type { font-size: 2.7rem; }
     .edge-marker { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 4rem; height: 4rem; display: grid; place-items: center; }
     .edge-marker svg { width: 3rem; height: 3rem; stroke-width: 1.6; filter: drop-shadow(0 0 7px rgba(0,163,255,.3)); }
-    .edge-line { position: absolute; top: calc(50% + 3rem); bottom: 7rem; left: calc(50% - .5px); width: 1px; background: #24423f; }
+    .edge-line { position: absolute; top: calc(50% + 3rem); bottom: 7rem; left: calc(50% - var(--line-width) / 2); width: var(--line-width); background: #24423f; }
     .edge-back-copy {
         display: block;
         position: absolute;
@@ -244,7 +244,7 @@ const Page = styled.article`
     .edge-line > span { display: block; position: relative; width: 100%; height: var(--reading-progress); background: linear-gradient(#00a3ff, #00ffa3); mask-image: linear-gradient(to bottom, #000 calc(100% - 50px), transparent); }
     .edge-line::after { content: ''; position: absolute; left: 50%; top: var(--reading-progress); transform: translate(-50%, -65%); width: 2rem; height: 8rem; background: radial-gradient(ellipse, #28ffcdcc 0%, #00ffc34d 35%, transparent 72%); filter: blur(5px); opacity: var(--reading-glow, 0); pointer-events: none; }
     .edge-progress-label { position: absolute; bottom: 3rem; left: 50%; transform: translateX(-50%); color: #6e9692; font-size: .9rem; font-variant-numeric: tabular-nums; }
-    .edge-lead { display: block; position: absolute; left: calc(50% - .5px); top: 12rem; bottom: calc(50% + 3rem); width: 1px; background: var(--accent-gradient); }
+    .edge-lead { display: block; position: absolute; left: calc(50% - var(--line-width) / 2); top: 12rem; bottom: calc(50% + 3rem); width: var(--line-width); background: var(--accent-gradient); }
     .website-case { border-top: 1px solid #24504e; padding-block: 6rem 1rem; }
     .website-case-heading { display: grid; grid-template-columns: 1fr 1fr; gap: 9%; align-items: center; margin-bottom: 4rem; }
     .website-case-heading h2 { font-size: clamp(3.4rem, 4vw, 6rem); }

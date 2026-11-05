@@ -5,14 +5,14 @@ import Head from 'next/head';
 import { useEffect, useLayoutEffect, useRef, useState } from 'react';
 import { Sections } from '../components/Section';
 import { Cursor } from '../components/Cursor';
-import { Loading } from '../components/Loading';
+import { HeroLoading } from '../components/Loading';
 import { Footer } from '../components/Footer';
 import { Arrow } from '../components/Arrow';
 import { WorkCarousel } from '../components/workCarousel';
 import { WorkProject } from '../components/WorkProject';
 import { useRouter } from 'next/router';
 const useRouteLayout = typeof window === 'undefined' ? useEffect : useLayoutEffect;
-const Hero = dynamic(() => import('../components/hero'), { ssr: false });
+const Hero = dynamic(() => import('../components/hero'), { ssr: false, loading: HeroLoading });
 
 const Home: NextPage = () => {
     const router = useRouter();
@@ -73,7 +73,6 @@ const Home: NextPage = () => {
                 <link rel="icon" href="/favicon.ico" />
             </Head>
             <Container id={projectView ? 'scene-shell' : 'home'} data-project-view={projectView} tabIndex={-1} aria-label={projectView ? undefined : 'Home'}>
-                {!projectView && <Loading>Loading</Loading>}
                 <Hero iconRef={iconEl} reloadY={reloadY} workPreviewRef={projectView ? projectPreviewRef : workPreviewRef}
                     workProject={projectView ? projectIndex : workProject} workCarousel={workCarousel}
                     projectView={projectView} inspectRotation={inspectRotation} />

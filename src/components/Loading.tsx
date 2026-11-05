@@ -1,6 +1,6 @@
 import styled from '@emotion/styled';
 
-export const Loading = styled.div`
+const Loading = styled.div`
     position: absolute;
     inset: 0;
     z-index: 1;
@@ -28,3 +28,12 @@ export const Loading = styled.div`
         animation: 0.35s Loading infinite cubic-bezier(0.42, 0.31, 0.51, 0.89);
     }
 `;
+
+const Placeholder = styled.div`
+    position: relative;
+    height: 100lvh;
+    min-height: 70rem;
+    [data-project-view='true'] > & { display: none; }
+`;
+
+export const HeroLoading = () => <Placeholder><Loading role="status">Loading</Loading></Placeholder>;

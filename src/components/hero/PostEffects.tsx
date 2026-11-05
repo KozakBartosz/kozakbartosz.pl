@@ -40,6 +40,11 @@ const SceneResolution = ({ workVisible }: { workVisible: { current: boolean } })
 };
 
 type DepthEffect = {
+    renderTargetMasked: WebGLRenderTarget;
+    renderTargetNear: WebGLRenderTarget;
+    renderTargetFar: WebGLRenderTarget;
+    renderTargetCoC: WebGLRenderTarget;
+    renderTargetCoCBlurred: WebGLRenderTarget;
     blendMode: { opacity: { value: number } };
     update: (renderer: WebGLRenderer, buffer: WebGLRenderTarget, delta: number) => void;
     dispose: () => void;
@@ -52,6 +57,13 @@ function SceneDepthOfField({ workVisible }: { workVisible: { current: boolean } 
         effect.current?.dispose();
         effect.current = depth;
         if (!depth) return;
+        // Three r138 drops the render-target flag when cloning a texture.
+        // DOF's cloned targets must be marked before their first GPU upload.
+        const targets = [
+            depth.renderTargetMasked, depth.renderTargetNear, depth.renderTargetFar,
+            depth.renderTargetCoC, depth.renderTargetCoCBlurred,
+        ];
+        for (const target of targets) target.texture.isRenderTargetTexture = true;
         const update = depth.update.bind(depth);
         depth.update = (renderer, buffer, delta) => {
             // A zero bokeh scale still renders all ten DOF passes.

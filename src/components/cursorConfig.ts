@@ -14,7 +14,7 @@ export const cursorConfig = {
     maxExtension: 48,
     maxTrailLength: 200,
     pressShrink: 0.12,
-    cornerRadius: 5,
+    iconHoverRadius: 34,
     maxPixelRatio: 1.5,
     hueColor: '#ff00a6',
     accentStart: '#00a3ff',

@@ -1,6 +1,8 @@
 /* eslint-disable @next/next/no-img-element -- Local media for the project case studies. */
 import styled from '@emotion/styled';
 import { ReactNode, useEffect, useRef } from 'react';
+import { MedievalStory, medievalDemo, medievalSource } from './MedievalStory';
+import { WorkCase } from './workCarousel';
 import { Arrow } from './Arrow';
 import { ViewportVideo } from './ViewportVideo';
 import { ProjectDetailList, SectionKicker, VisitProjectLink } from './ProjectCaseUI';
@@ -24,8 +26,10 @@ function DeviceFrame({ kind = 'phone', image, video, label, detail }: {
     </figure>;
 }
 
-export function ProjectStory({ model, stack, website, projectNavigation, project = 'vescape' }: { model: ReactNode; stack: ReactNode; website: ReactNode; projectNavigation?: ReactNode; project?: 'vescape' | 'braniborska' }) {
+export function ProjectStory({ model, stack, website, projectNavigation, project = 'vescape' }: { model: ReactNode; stack: ReactNode; website: ReactNode; projectNavigation?: ReactNode; project?: WorkCase }) {
     const clinic = project === 'braniborska';
+    const panels = project === 'wyciszamy';
+    const medieval = project === 'rts';
     const hero = useRef<HTMLElement>(null);
     const left = useRef<HTMLDivElement>(null);
     const center = useRef<HTMLDivElement>(null);
@@ -45,7 +49,7 @@ export function ProjectStory({ model, stack, website, projectNavigation, project
         const update = () => {
             const origin = root.getBoundingClientRect(), l = leftHeading.getBoundingClientRect(), m = b.querySelector('.case-model')!.getBoundingClientRect(), r = rightHeading.getBoundingClientRect();
             const lx = l.right - origin.left, ly = l.top - origin.top + l.height / 2;
-            const mx = m.left - origin.left + m.width * (clinic ? .115 : .19), my = m.top - origin.top + m.height * .43;
+            const mx = m.left - origin.left + m.width * (clinic || panels || medieval ? .115 : .19), my = m.top - origin.top + m.height * .43;
             const gap = rightTick.getBoundingClientRect().left - rightNumber.getBoundingClientRect().right;
             const rx = r.left - origin.left - gap, ry = r.top - origin.top + r.height / 2;
             const nx = m.right - origin.left - m.width * .13, ny = m.top - origin.top + m.height * .67;
@@ -61,23 +65,44 @@ export function ProjectStory({ model, stack, website, projectNavigation, project
         document.fonts.ready.then(update);
         update();
         return () => observer.disconnect();
-    }, [clinic]);
-    return <Epic data-clinic={clinic}>
+    }, [clinic, panels, medieval]);
+    return <Epic data-clinic={clinic} data-panels={panels}>
         <section className="epic-hero" id="case-overview" ref={hero}>
-            <div className="epic-title"><p className="project-location"><span>01</span><i />Work</p><div className="project-title-row">{projectNavigation}<h1>{clinic ? 'Braniborska' : 'Vescape'}<span>{clinic ? 'Carefully designed. Content-driven.' : 'From board to interface.'}</span></h1></div></div>
+            <div className="epic-title"><p className="project-location"><span>01</span><i />Work</p><div className="project-title-row">{projectNavigation}<h1>{medieval ? 'Medieval' : panels ? 'Wyciszamy.net' : clinic ? 'Braniborska' : 'Vescape'}<span>{medieval ? '3D real-time strategy prototype' : panels ? 'Acoustic panel configurator' : clinic ? 'Carefully designed. Content-driven.' : 'From board to interface.'}</span></h1></div></div>
             <svg className="epic-connections" aria-hidden="true"><defs><linearGradient id="epic-connection-gradient"><stop stopColor="#00a3ff" /><stop offset="1" stopColor="#00ffa3" /></linearGradient><linearGradient id="epic-left-gradient" x1="0%" y1="0%" x2="100%" y2="100%"><stop stopColor="#00ffa3" /><stop offset="1" stopColor="#00a3ff" /></linearGradient></defs><path pathLength="1" stroke="url(#epic-left-gradient)" ref={leftPath} /><path pathLength="1" stroke="url(#epic-connection-gradient)" ref={rightPath} /></svg>
             <div className="epic-layout">
-                <div className="epic-context" ref={left}><div className="epic-panel-heading" data-panel-heading><span>01</span><i /><span>The project</span><b aria-hidden="true" /></div><div className="epic-summary"><h2>{clinic ? 'A clear presence.' : 'Complex data.'}<br /><em>{clinic ? 'A considered experience.' : 'Clear decisions.'}</em></h2><p>{clinic ? 'A custom website for a multidisciplinary medical clinic. Designed around its space, specialists and services.' : 'Live board telemetry, maps and community. A VESC ride companion, designed as one experience.'}</p></div><div className="epic-platforms"><span>{clinic ? 'Frontend' : 'Mobile application'}</span><p>{clinic ? 'Next.js' : 'Android & iOS'}</p><span>{clinic ? 'Headless content' : 'Native companions'}</span><p>{clinic ? 'WroCMS · My own CMS' : 'Wear OS & watchOS'}</p></div></div>
+                <div className="epic-context" ref={left}><div className="epic-panel-heading" data-panel-heading><span>01</span><i /><span>The project</span><b aria-hidden="true" /></div>{medieval ? <>
+                    <div className="epic-summary">
+                        <h2>A medieval world <em>in the browser.</em></h2>
+                        <p>An open-source strategy prototype with a procedural landscape, a low-poly settlement, and workers that gather resources.</p>
+                    </div>
+                    <div className="epic-platforms"><span>My role</span><p>Lead 3D artist</p></div>
+                </> : panels ? <>
+                    <div className="epic-summary">
+                        <h2>Design with <em>acoustic panels.</em></h2>
+                        <p>Build a layout, try different shapes and colors, and see how the panels look together in 3D.</p>
+                    </div>
+                    <div className="epic-platforms">
+                        <span>Agency</span><p>Redhand (redhand.pl)</p>
+                        <span>My role</span><p>Lead frontend developer &amp; 3D artist</p>
+                    </div>
+                </> : <><div className="epic-summary"><h2>{clinic ? 'A clear presence.' : 'Complex data.'}<br /><em>{clinic ? 'A considered experience.' : 'Clear decisions.'}</em></h2><p>{clinic ? 'A custom website for a multidisciplinary medical clinic. Designed around its space, specialists and services.' : 'Live board telemetry, maps and community. A VESC ride companion, designed as one experience.'}</p></div><div className="epic-platforms"><span>{clinic ? 'Frontend' : 'Mobile application'}</span><p>{clinic ? 'Next.js' : 'Android & iOS'}</p><span>{clinic ? 'Headless content' : 'Native companions'}</span><p>{clinic ? 'WroCMS · My own CMS' : 'Wear OS & watchOS'}</p></div></>}</div>
                 <div className="epic-model" ref={center}>{model}</div>
-                <div className="epic-contribution" ref={right}><div className="epic-panel-heading" data-panel-heading><span>02</span><i /><span>My contribution</span><b aria-hidden="true" /></div><ul>{(clinic ? ['UX research & flows', 'Interface design', 'Next.js implementation', 'WroCMS integration'] : ['Visual identity', 'Design system & UI/UX', 'React Native interface', 'Marketing website']).map(item => <li key={item}>{item}</li>)}</ul><nav className="epic-action-grid" aria-label={clinic ? 'Explore the Braniborska project' : 'Explore the Vescape project'}>
-                    <a href={clinic ? 'https://www.braniborska.pl/' : 'https://vescape.app/'} target="_blank" rel="noreferrer"><small>Live</small><span>Website</span><Arrow /></a>
+                <div className="epic-contribution" ref={right}><div className="epic-panel-heading" data-panel-heading><span>02</span><i /><span>My contribution</span><b aria-hidden="true" /></div><ul>{(medieval ? ['All 3D models', 'Camera-based motion capture', 'Custom terrain geometry'] : panels ? ['Configuration workflow', 'Interaction design', 'Parametric 3D modeling', 'Production frontend'] : clinic ? ['UX research & flows', 'Interface design', 'Next.js implementation', 'WroCMS integration'] : ['Visual identity', 'Design system & UI/UX', 'React Native interface', 'Marketing website']).map(item => <li key={item}>{item}</li>)}</ul><nav className="epic-action-grid" aria-label={medieval ? 'Explore Medieval' : panels ? 'Explore the Wyciszamy.net project' : clinic ? 'Explore the Braniborska project' : 'Explore the Vescape project'}>
+                    <a href={medieval ? medievalDemo : panels ? 'https://wyciszamy.net/' : clinic ? 'https://www.braniborska.pl/' : 'https://vescape.app/'} target="_blank" rel="noreferrer"><small>Live</small><span>{medieval ? 'Play demo' : 'Website'}</span><Arrow /></a>
+                    {medieval ? <>
+                        <a href={medievalSource} target="_blank" rel="noreferrer"><small>Open source</small><span>GitHub</span><Arrow /></a>
+                        <a href="#medieval-engine"><small>Under the hood</small><span>Engine</span><Arrow /></a>
+                        <a href="#medieval-lighting"><small>In motion</small><span>Day and night</span><Arrow /></a>
+                    </> : panels ? <a href="#panels-interface"><small>Configurator</small><span>See it in use</span><Arrow /></a> : <>
                     <a href={clinic ? '#clinic-cms' : source} target={clinic ? undefined : '_blank'} rel="noopener noreferrer"><small>{clinic ? 'Headless' : 'Open source'}</small><span>{clinic ? 'WroCMS' : 'Source code'}</span><Arrow /></a>
                     <a href={clinic ? '#clinic-interface' : '#epic-interface'}><small>{clinic ? 'Design' : 'In motion'}</small><span>Interface</span><Arrow /></a>
                     <a href={clinic ? '#clinic-cms' : '#epic-native'}><small>Underneath</small><span>Architecture</span><Arrow /></a>
+                    </>}
                 </nav></div>
             </div>
         </section>
-        {clinic ? <ClinicSections /> : <>
+        {medieval ? <MedievalStory /> : panels ? <PanelSections /> : clinic ? <ClinicSections /> : <>
         <section className="epic-native" id="epic-native"><div><SectionKicker number="03">Under the interface</SectionKicker><h2>The screen is<br />only the <em>beginning.</em></h2><p>The native vescape-core module owns BLE, telemetry, recording and alerts. React Native presents that state and sends intents, keeping long-running board work independent of an open screen.</p><a className="text-link" href={source + '/tree/dev/modules/vescape-core'} target="_blank" rel="noreferrer">Inside vescape-core <Arrow /></a></div><ProjectDetailList items={[
             ['The connection', 'Kotlin + Swift', 'BLE · Telemetry · Recording · Alerts'],
             ['The application', 'React Native + Zustand', 'A readable interface for native state.'],
@@ -86,9 +111,50 @@ export function ProjectStory({ model, stack, website, projectNavigation, project
         <section className="epic-interface" id="epic-interface"><div className="epic-section-heading"><div><SectionKicker number="04">Working software</SectionKicker><h2>One identity.<br /><em>Every surface.</em></h2></div><p>I created the visual identity and design system, then built and refined the mobile interface in React Native. Phone and watch share a recognizable visual language, adapted to very different displays.</p></div><div className="epic-devices"><DeviceFrame image={media + 'telemetry.png'} video="app-preview" label="The mobile interface" detail="Live data and navigation, designed and implemented in React Native." /><DeviceFrame kind="watch" image="/projects/vescape-watch.webp" video="watch-preview" label="Native Watch Mirror" detail="The ride, at a glance. Native companions for Wear OS and watchOS." /></div></section>
         <section className="epic-map"><div className="epic-map-copy"><SectionKicker number="05">Spatial interface</SectionKicker><h2>Give the data<br /><em>a sense of place.</em></h2><p>The Mapbox map brings together ride navigation, community Map Points and Group Rides. Shared positions, live telemetry and group targets add context to the ride.</p><div className="epic-map-index"><span>Navigation</span><span>Community</span><span>Weather</span></div></div><div className="epic-map-devices"><DeviceFrame image={media + 'community.png'} label="Ride together" detail="Riders and group targets in one map." /><DeviceFrame image={media + 'weather.png'} label="Read the conditions" detail="Weather and rain radar in context." /></div></section>
         </>}
-        {!clinic && website}
+        {project === 'vescape' && website}
         {stack}
     </Epic>;
+}
+
+const panelMedia = '/projects/wyciszamy/';
+
+function PanelSections() {
+    return <>
+        <section className="epic-native">
+            <div>
+                <SectionKicker number="03">Working at Redhand</SectionKicker>
+                <h2>From the workflow<br />to the <em>working tool.</em></h2>
+                <p>This was the largest project I worked on at Redhand. I led frontend development and was the 3D artist on the project.</p>
+            </div>
+            <div>
+                <p>I defined the configuration workflow, the editor’s interactions and the technical approach. I used parametric modeling and planned for rendering performance early so people could see their changes as they worked.</p>
+                <p>I refined the visual interface with a UI designer, then built the production configurator, bringing real-time 3D with Three.js into the existing storefront.</p>
+            </div>
+        </section>
+        <section className="panels-interface" id="panels-interface">
+            <div className="epic-section-heading">
+                <div>
+                    <SectionKicker number="04">Inside the configurator</SectionKicker>
+                    <h2>Build a layout.<br /><em>See it in 3D.</em></h2>
+                </div>
+                <p>The editor lets you adjust each panel’s dimensions, thickness and color. You can check the layout’s dimensions and price as you go, then switch to 3D to see the arrangement from another angle.</p>
+            </div>
+            <figure className="panel-example">
+                <img src={panelMedia + 'editor.webp'} alt="Panel editor with a rectangular layout, size and color controls, and a price summary" loading="lazy" />
+                <figcaption>Layout editor</figcaption>
+            </figure>
+            <div className="panel-examples">
+                <figure className="panel-example">
+                    <img src={panelMedia + 'preview.webp'} alt="3D preview of gray and blue hexagonal acoustic panels" loading="lazy" />
+                    <figcaption>3D preview</figcaption>
+                </figure>
+                <figure className="panel-example">
+                    <ViewportVideo src={panelMedia + 'panels-in-motion.mp4'} poster={panelMedia + 'motion-poster.webp'} disablePictureInPicture aria-label="Short recording of acoustic panels in motion" />
+                    <figcaption>Panels in motion</figcaption>
+                </figure>
+            </div>
+        </section>
+    </>;
 }
 
 function BrowserShot({ image, label, address }: { image: string; label: string; address: string }) {
@@ -108,6 +174,19 @@ function ClinicSections() {
 }
 
 const Epic = styled.div`
+    .panels-interface { padding: 5rem 0; scroll-margin-top: 3rem; }
+    .panel-examples { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 2.4rem; }
+    .panel-example { min-width: 0; margin: 3rem 0 0; }
+    .panel-example img, .panel-example video { display: block; width: 100%; height: auto; }
+    .panel-example video { border-radius: 2% / 3%; pointer-events: none; }
+    .panel-example figcaption { margin-top: 1rem; color: #91a4a1; font-size: 1.2rem; }
+    @media (min-width: 641px) {
+        .panel-examples > .panel-example:last-child { margin-top: clamp(8rem, 8vw, 14rem); }
+    }
+    @media (max-width: 640px) {
+        .panel-examples { grid-template-columns: minmax(0, 1fr); gap: 0; }
+    }
+
     .epic-hero { position: relative; padding: 1rem 0 4rem; }
     .epic-title { text-align: center; position: relative; z-index: 1; }
     .epic-title h1 { font-size: clamp(6.4rem, 5.8vw, 9rem); margin-bottom: 0; }
@@ -231,10 +310,12 @@ const Epic = styled.div`
     .project-location { display: flex; justify-content: center; align-items: center; gap: 1.8rem; margin: 0 0 1.8rem; color: #aabfbd; font-size: 1.2rem !important; letter-spacing: .18em; text-transform: uppercase; }
     .project-location > span { color: #00a3ff; }
     .project-location i { width: 3.2rem; height: var(--line-width); background: var(--accent-line-gradient); }
-    &[data-clinic='true'] .epic-title h1 { font-size: clamp(4.5rem, 6vw, 9rem); }
+    &[data-clinic='true'] .epic-title h1, &[data-panels='true'] .epic-title h1 { font-size: clamp(4.5rem, 6vw, 9rem); }
     &[data-clinic='true'] .epic-model .case-model { height: 49rem; }
     .clinic-interface { padding: 5rem 0 7rem; border-block: 1px solid #24504e; scroll-margin-top: 3rem; }
-    .clinic-browser { min-width: 0; margin: 4rem 0 0; border: 1px solid #24504e; }
+    .clinic-browser, .clinic-responsive .device-phone .device-hardware { border: 1px solid #24504e; }
+    .clinic-browser { min-width: 0; margin: 4rem 0 0; }
+    .clinic-responsive .device-phone .device-hardware::before { display: none; }
     .clinic-browser figcaption { display: flex; align-items: center; gap: 1.5rem; padding: 1.4rem 1.6rem; font-size: 1.1rem; line-height: 1.5; color: #91a4a1; }
     .clinic-browser figcaption > span:last-child { margin-left: auto; font-size: .95rem; }
     .clinic-browser img { display: block; width: 100%; height: auto; }
@@ -262,7 +343,7 @@ const Epic = styled.div`
         .clinic-browser figcaption { font-size: .85rem; gap: .8rem; padding: 1rem; }
         .clinic-browser figcaption > span:last-child { font-size: .75rem; }
         .clinic-interface, .clinic-responsive { padding-block: 4rem; }
-        &[data-clinic='true'] .epic-title h1 { font-size: clamp(3.2rem, 10vw, 5rem); }
+        &[data-clinic='true'] .epic-title h1, &[data-panels='true'] .epic-title h1 { font-size: clamp(3.2rem, 10vw, 5rem); }
         &[data-clinic='true'] .epic-title h1 > span { font-size: 2rem; }
         &[data-clinic='true'] .epic-model .case-model { height: 30rem; }
     }

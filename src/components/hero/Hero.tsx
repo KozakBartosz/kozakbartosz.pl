@@ -68,7 +68,7 @@ export const Hero = ({
                     // Keep depth precision at the icons, ~150 world units away.
                     near: 5,
                     far: 1000,
-                    position: [0, 15, 150]
+                    position: [0, 15, 155]
                 }}
                 gl={{
                     powerPreference: 'high-performance',
@@ -96,23 +96,24 @@ export const Hero = ({
                 <Dust />
                 <Suspense fallback={null}><WorkModel reloadY={reloadY} elementRef={workPreviewRef} project={workProject} carouselRef={workCarousel} material={material} showcase={projectView} inspectRotation={inspectRotation} /></Suspense>
                 <fog attach="fog" color={0x090f0e} near={50} far={350} />
-                {!projectView && <Playground />}
+                {!projectView && <Suspense fallback={null}><Playground /></Suspense>}
                 {iconRef.current &&
                     iconRef.current.map((el, i) => {
                         return (
-                            <Icon
-                                material={material}
-                                browser={i === 2}
-                                coffee={i === 3}
-                                frontend={i === 0}
-                                interactive={i === 1}
-                                element={el}
-                                reloadY={reloadY}
-                                active={!projectView}
-                                scale={[15, 15, 15]}
-                                url={`/models/icon${iconNames[i]}.glb`}
-                                key={i}
-                            />
+                            <Suspense key={i} fallback={null}>
+                                <Icon
+                                    material={material}
+                                    browser={i === 2}
+                                    coffee={i === 3}
+                                    frontend={i === 0}
+                                    interactive={i === 1}
+                                    element={el}
+                                    reloadY={reloadY}
+                                    active={!projectView}
+                                    scale={[15, 15, 15]}
+                                    url={`/models/icon${iconNames[i]}.glb`}
+                                />
+                            </Suspense>
                         );
                     })}
             </Canvas>
@@ -139,7 +140,7 @@ export const Hero = ({
 };
 
 const Container = styled.div`
-    &#Hero[data-project-view="true"] { height: 0; min-height: 0; animation: none; }
+    &#Hero[data-project-view="true"] { height: 0; min-height: 0; }
     position: relative;
     height: 100%;
     height: 100lvh;

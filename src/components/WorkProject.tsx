@@ -11,6 +11,8 @@ import { BrandMark } from './BrandMark';
 import { ProjectStory } from './ProjectStory';
 import { ProjectDetailList, SectionKicker, VisitProjectLink } from './ProjectCaseUI';
 import { projectViewTransition } from './projectViewTransition';
+import { WORK_CASES, WorkCase } from './workCarousel';
+import { medievalDemo, medievalSource } from './MedievalStory';
 
 const base = '/projects/vescape/';
 const stack = [
@@ -22,6 +24,17 @@ const stack = [
     ['Companion & tooling', 'Wear OS + watchOS', 'Bun · Scripts · JS tests']
 ];
 const github = 'https://github.com/vescape-app/vescape';
+const caseNavigation = {
+    vescape: { name: 'Vescape', detail: 'Mobile app · React Native' },
+    braniborska: { name: 'Braniborska', detail: 'Website · Next.js · WroCMS' },
+    wyciszamy: { name: 'Wyciszamy.net', detail: 'Acoustic panel configurator' },
+    rts: { name: 'Medieval', detail: '3D strategy prototype' },
+};
+const caseLinks = WORK_CASES.map((key, index) => ({
+    ...caseNavigation[key],
+    number: String(index + 1).padStart(2, '0'),
+    href: '/?project=' + key,
+}));
 
 type StageProps = { anchor: MutableRefObject<HTMLDivElement | null>; rotation: MutableRefObject<number>; caption?: string; projectName?: string };
 function ModelStage({ anchor, rotation, caption = 'Phone + Watch Mirror', projectName = 'Vescape' }: StageProps) {
@@ -66,7 +79,7 @@ function ProjectEdgeRail({ projectKey = 'vescape' }: { projectKey?: string }) {
         return () => { observer.disconnect(); window.removeEventListener('scroll', update); window.removeEventListener('resize', update); };
     }, []);
     return <aside ref={rail} className="project-edge-rail" aria-label="Work section and reading progress">
-        <Link href={{ pathname: '/', query: { selected: projectKey }, hash: 'work' }}><a className="edge-back" onClick={event => {
+        <Link href={{ pathname: '/', query: { selected: projectKey }, hash: 'work' }}><a className="edge-back" data-cursor-circle onClick={event => {
             if (event.metaKey || event.ctrlKey || event.shiftKey || event.altKey || event.button !== 0) return;
             event.preventDefault();
             projectViewTransition(() => router.push({ pathname: '/', query: { selected: projectKey }, hash: 'work' }, undefined, { scroll: false }), 'close');
@@ -100,56 +113,61 @@ function scrollToProjectSection(event: MouseEvent<HTMLElement>) {
 }
 
 export const WorkProject = ({ anchor, rotation, projectKey = 'vescape' }: {
-    projectKey?: 'vescape' | 'braniborska';
+    projectKey?: WorkCase;
     anchor: MutableRefObject<HTMLDivElement | null>;
     rotation: MutableRefObject<number>;
 }) => {
     const router = useRouter();
     const clinic = projectKey === 'braniborska';
+    const panels = projectKey === 'wyciszamy';
+    const medieval = projectKey === 'rts';
     useEffect(() => { rotation.current = 0; }, [projectKey, rotation]);
-    const stage = { anchor, rotation, projectName: clinic ? 'Braniborska' : 'Vescape' };
-    const switchProject = (event: MouseEvent<HTMLAnchorElement>, direction: 'open' | 'close') => {
+    const stage = { anchor, rotation, projectName: caseNavigation[projectKey].name };
+    const switchProject = (event: MouseEvent<HTMLAnchorElement>) => {
         if (event.button !== 0 || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
         event.preventDefault();
         const href = event.currentTarget.getAttribute('href')!;
-        projectViewTransition(() => router.push(href, undefined, { shallow: true, scroll: false }), direction);
+        projectViewTransition(() => router.push(href, undefined, { shallow: true, scroll: false }), 'open');
     };
-    const previousProject = clinic
-        ? { number: '01', name: 'Vescape', href: '/?project=vescape', detail: 'Mobile app · React Native', direction: 'open' as const }
-        : null;
-    const nextProject = clinic
-        ? { number: '03', name: 'Wyciszamy', href: '/?selected=wyciszamy#work', detail: '3D configurator · React · Three.js', direction: 'close' as const }
-        : { number: '02', name: 'Braniborska', href: '/?project=braniborska', detail: 'Website · Next.js · WroCMS', direction: 'open' as const };
+    const caseIndex = WORK_CASES.indexOf(projectKey);
+    const previousProject = caseLinks[caseIndex - 1];
+    const nextProject = caseLinks[caseIndex + 1];
+    const domain = panels ? 'wyciszamy.net' : clinic ? 'braniborska.pl' : 'vescape.app';
     const projectNavigation = (
         <nav className="project-title-nav" aria-label="Browse projects">
-            {previousProject && <Link href={previousProject.href}><a onClick={event => switchProject(event, previousProject.direction)} aria-label={`Previous project: ${previousProject.name}`}><Arrow direction="left" /></a></Link>}
-            <Link href={nextProject.href}><a onClick={event => switchProject(event, nextProject.direction)} aria-label={`Next project: ${nextProject.name}`}><Arrow direction="right" /></a></Link>
+            {previousProject && <Link href={previousProject.href}><a data-cursor-circle onClick={switchProject} aria-label={`Previous project: ${previousProject.name}`}><Arrow direction="left" /></a></Link>}
+            {nextProject && <Link href={nextProject.href}><a className="title-next-project" data-cursor-circle onClick={switchProject} aria-label={`Next project: ${nextProject.name}`}><Arrow direction="right" /></a></Link>}
         </nav>
     );
     return <Page id="project-home" onClick={scrollToProjectSection}>
-        <Head><title>{clinic ? 'Braniborska — Next.js & WroCMS / Bartosz Kozak' : 'Vescape — Design & development / Bartosz Kozak'}</title><meta name="description" content={clinic ? 'Braniborska Clinic: UX research, interface design, a custom Next.js website and my own headless CMS, WroCMS.' : 'Vescape project study: React Native interface, visual identity, native BLE architecture and interactive maps.'} /></Head>
+        <Head><title>{medieval ? 'Medieval | 3D art & game engine / Bartosz Kozak' : panels ? 'Wyciszamy.net | 3D configurator / Bartosz Kozak' : clinic ? 'Braniborska — Next.js & WroCMS / Bartosz Kozak' : 'Vescape — Design & development / Bartosz Kozak'}</title><meta name="description" content={medieval ? 'Lead 3D art, camera-based motion capture and procedural terrain for Medieval, a browser-based strategy prototype.' : panels ? 'A real-time 3D acoustic panel configurator built at Redhand, where I was the lead frontend developer and 3D artist on the project.' : clinic ? 'Braniborska Clinic: UX research, interface design, a custom Next.js website and my own headless CMS, WroCMS.' : 'Vescape project study: React Native interface, visual identity, native BLE architecture and interactive maps.'} /></Head>
         <ProjectEdgeRail projectKey={projectKey} />
         <header className="case-header">
-            <Link href="/"><a className="case-signature" aria-label="Bartosz Kozak — Home"><BrandMark /></a></Link>
+            <Link href="/"><a className="case-signature" data-cursor-circle aria-label="Bartosz Kozak — Home"><BrandMark /></a></Link>
         </header>
         <main className="case-main case-container">
-            <ProjectStory project={projectKey} projectNavigation={projectNavigation} model={<ModelStage {...stage} caption={clinic ? 'Next.js + WroCMS' : 'Phone + Watch Mirror'} />} stack={<Stack clinic={clinic} number={clinic ? '06' : '07'} />} website={<WebsiteCase number="06" />} />
-            <section className="source-note"><span>Project references</span><a href={clinic ? 'https://www.braniborska.pl/' : 'https://vescape.app/'} target="_blank" rel="noreferrer">{clinic ? 'braniborska.pl' : 'vescape.app'} <Arrow /></a>{!clinic && <a href={github} target="_blank" rel="noreferrer">Source & architecture <Arrow /></a>}</section>
+            <ProjectStory project={projectKey} projectNavigation={projectNavigation} model={<ModelStage {...stage} caption={medieval ? 'Woodcutter camp' : panels ? 'Acoustic panels' : clinic ? 'Next.js + WroCMS' : 'Phone + Watch Mirror'} />} stack={!medieval && !panels && <Stack clinic={clinic} number={clinic ? '06' : '07'} />} website={<WebsiteCase number="06" />} />
+            <section className="source-note">
+                <span>Project references</span>
+                <a href={medieval ? medievalDemo : clinic ? 'https://www.braniborska.pl/' : `https://${domain}/`} target="_blank" rel="noreferrer">{medieval ? 'Play Medieval' : domain} <Arrow /></a>
+                {medieval && <a href={medievalSource} target="_blank" rel="noreferrer">GitHub <Arrow /></a>}
+                {projectKey === 'vescape' && <a href={github} target="_blank" rel="noreferrer">Source &amp; architecture <Arrow /></a>}
+            </section>
             <nav className="adjacent-projects" aria-label="Adjacent projects">
                 {previousProject && <Link href={previousProject.href}>
-                    <a className="previous-project" onClick={event => switchProject(event, previousProject.direction)}>
+                    <a className="previous-project" onClick={switchProject}>
                         <small>{previousProject.number} / Previous project</small>
                         <span><span className="adjacent-project-arrow"><Arrow direction="down-left" /></span>{previousProject.name}</span>
                         <p>{previousProject.detail}</p>
                     </a>
                 </Link>}
-                <Link href={nextProject.href}>
-                    <a className="next-project" onClick={event => switchProject(event, nextProject.direction)}>
+                {nextProject && <Link href={nextProject.href}>
+                    <a className="next-project" onClick={switchProject}>
                         <small>{nextProject.number} / Next project</small>
                         <span>{nextProject.name}<span className="adjacent-project-arrow"><Arrow /></span></span>
                         <p>{nextProject.detail}</p>
                     </a>
-                </Link>
+                </Link>}
             </nav>
         </main>
         <div className="case-container"><Footer projectPage /></div>
@@ -159,7 +177,7 @@ export const WorkProject = ({ anchor, rotation, projectKey = 'vescape' }: {
 const Page = styled.article`
     --project-header-height: 10rem;
     --project-gutter: 9rem;
-    --edge-button-size: 4.4rem;
+    --edge-button-size: 5.6rem;
     position: relative;
     min-height: 100%;
     padding-inline: var(--project-gutter);
@@ -169,10 +187,10 @@ const Page = styled.article`
     a:focus-visible, .case-model:focus-visible { outline: 1px solid #00a3ff; outline-offset: 6px; }
     .case-header, .case-main { position: relative; z-index: 5; }
     .case-header { height: var(--project-header-height); display: grid; place-items: center; }
-    .case-signature { display: inline-flex; align-items: center; justify-content: center; padding: .6rem; }
+    .case-signature { display: inline-flex; align-items: center; justify-content: center; width: 6.4rem; height: 6.4rem; }
     .case-container { max-width: 168rem; margin: auto; padding-inline: 4vw; }
     .case-main p { font-size: 1.7rem; line-height: 1.8; }
-    .case-signature svg { width: 3.6rem; height: 3.8rem; filter: drop-shadow(0 0 8px rgba(0,163,255,.15)); }
+    .case-signature svg { width: 4.6rem; height: 4.8rem; filter: drop-shadow(0 0 8px rgba(0,163,255,.15)); }
     .eyebrow { display: block; margin: 0 0 2.4rem; color: #aabfbd; font-size: 1.15rem; line-height: 1.7; letter-spacing: .17em; text-transform: uppercase; }
     h1 { color: #f2f5f4; background: none; -webkit-text-fill-color: currentColor; font-size: clamp(5.2rem, 6.2vw, 10rem); line-height: 1.04; letter-spacing: -.055em; margin: 0 0 2.8rem; font-weight: 300; padding-bottom: .1em; }
     h1 > span { display: block; background: var(--accent-gradient); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
@@ -198,12 +216,12 @@ const Page = styled.article`
     .text-link { font-size: 1.5rem; color: #dce5e3; display: inline-flex; gap: 1.8rem; align-items: center; padding-block: 1rem; }
     .text-link svg { color: #00a3ff; }
     .project-title-row { position: relative; width: fit-content; max-width: 100%; margin-inline: auto; }
-    .project-title-nav { position: absolute; inset: 0 -5.5rem auto; height: clamp(6.4rem, 6vw, 9rem); display: flex; align-items: center; justify-content: space-between; pointer-events: none; }
-    .project-title-nav a { display: grid; place-items: center; width: 4.4rem; height: 4.4rem; font-size: 2.2rem; color: #00a3ff; pointer-events: auto; }
-    .project-title-nav a:only-child { margin-left: auto; }
+    .project-title-nav { position: absolute; inset: 0 -6.6rem auto; height: clamp(6.4rem, 6vw, 9rem); display: flex; align-items: center; justify-content: space-between; pointer-events: none; }
+    .project-title-nav a { display: grid; place-items: center; width: var(--edge-button-size); height: var(--edge-button-size); font-size: 2.2rem; color: #00a3ff; pointer-events: auto; }
+    .project-title-nav .title-next-project:only-child { margin-left: auto; }
     @media (max-width: 740px) {
         .project-title-row { display: flex; flex-direction: column-reverse; }
-        .project-title-nav a:only-child { margin-left: 0; }
+        .project-title-nav .title-next-project:only-child { margin-left: 0; }
         .project-title-nav { position: static; height: auto; justify-content: center; gap: 1rem; margin-top: 1rem; }
     }
 
@@ -220,20 +238,21 @@ const Page = styled.article`
         white-space: nowrap;
         color: #00a3ff;
     }
-    .edge-back > span:first-of-type { font-size: 2.7rem; }
+    .edge-back > span:first-of-type { display: flex; align-items: center; font-size: 2.7rem; }
     .edge-marker { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 4rem; height: 4rem; display: grid; place-items: center; }
     .edge-marker svg { width: 3rem; height: 3rem; stroke-width: 1.6; filter: drop-shadow(0 0 7px rgba(0,163,255,.3)); }
     .edge-line { position: absolute; top: calc(50% + 3rem); bottom: 7rem; left: calc(50% - var(--line-width) / 2); width: var(--line-width); background: #24423f; }
     .edge-back-copy {
         display: block;
         position: absolute;
-        left: calc(100% + 1rem);
+        left: calc(50% + 4.6rem);
         top: 50%;
         transform: translateY(-50%);
         opacity: 0;
         pointer-events: none;
         color: #dce5e3;
         font-size: 1.8rem;
+        line-height: 1;
         letter-spacing: 0;
         text-transform: none;
         -webkit-text-fill-color: currentColor;
@@ -264,10 +283,11 @@ const Page = styled.article`
     @media (max-width: 640px) {
         --project-header-height: 7rem;
         --project-gutter: 5rem;
-        --edge-button-size: 3.8rem;
+        --edge-button-size: 4.8rem;
         .case-container { padding-inline: 1rem; }
         .case-main p { font-size: 1.6rem; }
-        .case-signature svg { width: 3rem; height: 3.2rem; }
+        .case-signature { width: 5.6rem; height: 5.6rem; }
+        .case-signature svg { width: 3.8rem; height: 4rem; }
         .edge-marker svg { width: 2.6rem; height: 2.6rem; }
         .edge-progress-label { bottom: 2.5rem; }
         h2 { font-size: 4rem; }

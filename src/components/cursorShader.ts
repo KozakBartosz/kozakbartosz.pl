@@ -21,7 +21,7 @@ export const cursorFragmentShader = `
     uniform float uInvert;
     uniform float uMaxExtension;
     uniform float uPressShrink;
-    uniform float uCornerRadius;
+    uniform float uRoundHover;
     uniform vec3 uHueColor;
     uniform vec3 uAccentStart;
     uniform vec3 uAccentEnd;
@@ -50,7 +50,7 @@ export const cursorFragmentShader = `
         size *= shrink;
         size.x += extension;
         p.x += extension;
-        float radius = mix(min(size.x, size.y), uCornerRadius, uMorph);
+        float radius = min(size.x, size.y) * (1.0 - uMorph * (1.0 - uRoundHover));
         float distance = roundedBox(p, size, radius);
         float fill = 1.0 - smoothstep(-0.8, 0.8, distance);
         // A crisp 2px stroke, independent from the translucent interior.

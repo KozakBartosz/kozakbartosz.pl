@@ -137,16 +137,6 @@ a:hover {
         opacity: 1;
     }
 }
-@keyframes FlyIn {
-    0% {
-        transform: scale(0.9);
-        opacity: 0;
-    }
-    100% {
-        transform: scale(1);
-        opacity: 1;
-    }
-}
 @keyframes Loading {
     0% {
         transform: rotate(0deg);
@@ -177,14 +167,6 @@ a:hover {
     100% {
         box-shadow: 0 0 30px 10px rgba(223, 1, 149, 0.612);
     }
-}
-
-#Hero {
-    animation: 1s fadeIn 1;
-}
-
-#Logo {
-    animation: 3s FlyIn 1;
 }
 
 ::selection {

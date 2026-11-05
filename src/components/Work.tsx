@@ -3,7 +3,7 @@ import { MutableRefObject, PointerEvent, RefObject, useEffect, useRef, useState 
 import { SectionSymbol } from './SectionSymbol';
 import { Arrow } from './Arrow';
 import { cursorConfig } from './cursorConfig';
-import { WorkCarousel, workProjectIndex } from './workCarousel';
+import { WORK_CASES, WorkCarousel, workProjectIndex } from './workCarousel';
 import { useRouter } from 'next/router';
 import { projectViewTransition } from './projectViewTransition';
 
@@ -14,7 +14,7 @@ const projects: Project[] = [
     { name: 'Vescape', type: 'Mobile app', links: [{ label: 'vescape.app', href: 'https://vescape.app', kind: 'Website' }, { label: 'GitHub', href: 'https://github.com/vescape-app/vescape', kind: 'Source code' }], description: 'A companion app for electric skateboard rides. Board data, ride tracking, and everything you need on the go.' },
     { name: 'Braniborska', type: 'Website', links: [{ label: 'braniborska.pl', href: 'https://braniborska.pl', kind: 'Website' }], description: 'A responsive website for Braniborska, bringing its space and services together in one clear, easy-to-explore experience.' },
     { name: 'Wyciszamy', type: '3D configurator', links: [{ label: 'wyciszamy.net', href: 'https://wyciszamy.net', kind: 'Website' }], description: 'An interactive way to explore acoustic panels. Arrange shapes and see how they come together in 3D.' },
-    { name: 'RTS Game', type: 'Work in progress', links: [{ label: 'GitHub', href: 'https://github.com/Code-Cooking-Team/Medieval', kind: 'Source code' }], description: 'An open-source game in the making. A space to experiment with real-time 3D, interaction, and playful ideas.' }
+    { name: 'Medieval', type: '3D strategy prototype', links: [{ label: 'GitHub', href: 'https://github.com/Code-Cooking-Team/Medieval', kind: 'Source code' }], description: 'A browser-based strategy prototype with procedural terrain, low-poly models, and a real-time day and night cycle.' }
 ];
 
 export type WorkProps = {
@@ -31,7 +31,7 @@ export const Work = ({ active, setActive, previewRef, carouselRef }: WorkProps) 
     const routePosition = useRef<{ x: number; y: number } | null>(null);
     const project = projects[active];
     const openProject = (index: number) => {
-        const key = index === 0 ? 'vescape' : index === 1 ? 'braniborska' : null;
+        const key = WORK_CASES[index];
         if (!key) {
             window.location.assign(projects[index].links[0].href);
             return;
@@ -39,7 +39,6 @@ export const Work = ({ active, setActive, previewRef, carouselRef }: WorkProps) 
         projectViewTransition(() => router.push({
             pathname: router.pathname,
             query: { project: key },
-            hash: 'work',
         }, undefined, { shallow: true, scroll: false }), 'open');
     };
     const moveProject = (step: number) => {
@@ -211,11 +210,11 @@ export const Work = ({ active, setActive, previewRef, carouselRef }: WorkProps) 
                         event.preventDefault();
                         moveProject(event.key === 'ArrowRight' ? 1 : -1);
                     }}>
-                    <button className="carousel-arrow carousel-previous" type="button" aria-label="Previous project"
+                    <button className="carousel-arrow carousel-previous" data-cursor-circle type="button" aria-label="Previous project"
                         onPointerDown={event => event.stopPropagation()} onClick={() => moveProject(-1)}>
                         <svg aria-hidden="true" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"><path d="m14 5-7 7 7 7" /></svg>
                     </button>
-                    <button className="carousel-arrow carousel-next" type="button" aria-label="Next project"
+                    <button className="carousel-arrow carousel-next" data-cursor-circle type="button" aria-label="Next project"
                         onPointerDown={event => event.stopPropagation()} onClick={() => moveProject(1)}>
                         <svg aria-hidden="true" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"><path d="m10 5 7 7-7 7" /></svg>
                     </button>
@@ -231,7 +230,7 @@ export const Work = ({ active, setActive, previewRef, carouselRef }: WorkProps) 
                             </a>)}
                         </div>
                         <button className="project-link" type="button" onClick={() => openProject(active)}>
-                            <span className="project-link-copy"><small>{project.name}</small><span className="project-link-name">{active < 2 ? 'Read more' : 'Open project'}</span></span>
+                            <span className="project-link-copy"><small>{project.name}</small><span className="project-link-name">{WORK_CASES[active] ? 'Read more' : 'Open project'}</span></span>
                             <span className="project-link-arrow" aria-hidden="true"><Arrow /></span>
                         </button>
                     </div>
@@ -272,7 +271,7 @@ const Wrapper = styled.div`
     .model-stage { flex: 1; min-height: 22rem; position: relative; touch-action: pan-y; user-select: none; cursor: grab; }
     .model-stage[data-dragging='true'] { cursor: grabbing; }
     .model-stage:focus-visible { outline: 1px solid #00a3ff; outline-offset: -4px; }
-    .carousel-arrow { position: absolute; top: 50%; transform: translateY(-50%); z-index: 2; display: grid; place-items: center; width: 4.4rem; height: 4.4rem; padding: 0; border: 0; background: transparent; color: #00a3ff; cursor: pointer; transition: color 200ms ease, background-color 200ms ease; }
+    .carousel-arrow { position: absolute; top: 50%; transform: translateY(-50%); z-index: 2; display: grid; place-items: center; width: 5.6rem; height: 5.6rem; padding: 0; border: 0; border-radius: 50%; background: transparent; color: #00a3ff; cursor: pointer; transition: color 200ms ease, background-color 200ms ease; }
     .carousel-previous { left: 0; }
     .carousel-next { right: 0; }
     .carousel-arrow:hover, .carousel-arrow:focus-visible { color: #00ffa3; background-color: rgba(0, 163, 255, .07); }

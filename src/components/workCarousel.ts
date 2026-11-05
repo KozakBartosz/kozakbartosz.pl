@@ -1,3 +1,6 @@
+export const WORK_CASES = ['vescape', 'braniborska', 'wyciszamy', 'rts'] as const;
+export type WorkCase = typeof WORK_CASES[number];
+
 export const WORK_PROJECT_COUNT = 4;
 
 export type WorkCarousel = {

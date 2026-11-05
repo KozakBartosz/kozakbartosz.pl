@@ -83,7 +83,7 @@ export const Playground = () => {
     );
 
     const [modeActive, setModeActive] = useState(false);
-    const [gravity, setGravity] = useState<Triplet>([0, -50, 0]);
+    const [gravity, setGravity] = useState<Triplet>([0, -0.2, 0]);
 
     const MySphere = useRef<{
         scale: Vector3;
@@ -93,8 +93,8 @@ export const Playground = () => {
     }>(null);
 
     useEffect(() => {
-        if (MySphere.current) MySphere.current.userData.scale = 0.1;
-        // Every new gravity choice supersedes intro/release impulses.
+        if (MySphere.current) MySphere.current.userData.scale = 1;
+        // Every new gravity choice supersedes pending intro or release impulses.
         const timers = new Set<ReturnType<typeof setTimeout>>();
         const later = (callback: () => void, delay: number) => {
             const timer = setTimeout(() => {
@@ -107,17 +107,12 @@ export const Playground = () => {
             timers.forEach(clearTimeout);
             timers.clear();
         };
-        later(() => {
-            setGravity([0, 0, 0]);
-            later(() => setGravity([0, 0, -10]), 100);
-            later(() => setGravity([20, 10, -20]), 300);
-            later(() => {
-                if (MySphere.current) MySphere.current.userData.scale = 1;
-                setGravity([-10, -20, 0]);
-            }, 500);
-            later(() => setGravity([-0.1, -0.2, 0]), 700);
-            later(() => setGravity([0, -0.2, 0]), 900);
-        }, 4000);
+        // Launch the triangles as soon as the scene is ready, then let them float.
+        later(() => setGravity([0, 0, -10]), 100);
+        later(() => setGravity([20, 10, -20]), 300);
+        later(() => setGravity([-10, -20, 0]), 500);
+        later(() => setGravity([-0.1, -0.2, 0]), 700);
+        later(() => setGravity([0, -0.2, 0]), 900);
 
         const release = () => setModeActive(false);
         const grab = (e: PointerEvent) => {
@@ -267,7 +262,7 @@ export const Playground = () => {
                     key={i}
                     position={[
                         Math.sin(el) * 10 + (el * 8) / 2,
-                        10 + Math.tan(el) * 5 + 80,
+                        20 + Math.tan(el) * 5,
                         Math.tan(el) * 15 - 80
                     ]}
                     rotation={[Math.random(), Math.random(), Math.random()]}

@@ -1,6 +1,8 @@
 import { useFrame, useThree } from '@react-three/fiber';
-import { RefObject, useCallback, useContext, useEffect, useMemo, useRef } from 'react';
-import { Vector2, WebGLRenderer, WebGLRenderTarget } from 'three';
+import { RefObject, useContext, useEffect, useLayoutEffect, useMemo, useRef } from 'react';
+import { Camera, Vector2, WebGLRenderer, WebGLRenderTarget } from 'three';
+// @ts-expect-error postprocessing 6.25 has no declarations.
+import { DepthOfFieldEffect as DepthOfFieldImplementation } from 'postprocessing';
 import { getSceneRenderSize } from './renderResolution';
 import { SmoothBloom } from './SmoothBloom';
 import { FOCUS_DEPTH, FOCUS_RANGE } from './depthOfField';
@@ -8,8 +10,7 @@ import { FOCUS_DEPTH, FOCUS_RANGE } from './depthOfField';
 
 import {
     EffectComposer,
-    EffectComposerContext,
-    DepthOfField
+    EffectComposerContext
 } from '@react-three/postprocessing';
 
 // Cap the scene near 1080p on large screens; 0 explicitly disables scaling.
@@ -50,13 +51,19 @@ type DepthEffect = {
     dispose: () => void;
 };
 
+const DepthOfFieldEffect: new (
+    camera: Camera,
+    options: { focusDistance: number; focalLength: number }
+) => DepthEffect = DepthOfFieldImplementation;
+
 function SceneDepthOfField({ workVisible }: { workVisible: { current: boolean } }) {
     const camera = useThree(state => state.camera);
-    const effect = useRef<DepthEffect | null>(null);
-    const configure = useCallback((depth: DepthEffect | null) => {
-        effect.current?.dispose();
-        effect.current = depth;
-        if (!depth) return;
+    const effect = useMemo(() => {
+        const cameraRange = camera.far - camera.near;
+        const depth = new DepthOfFieldEffect(camera, {
+            focusDistance: (FOCUS_DEPTH - camera.near) / cameraRange,
+            focalLength: FOCUS_RANGE / cameraRange,
+        });
         // Three r138 drops the render-target flag when cloning a texture.
         // DOF's cloned targets must be marked before their first GPU upload.
         const targets = [
@@ -70,11 +77,12 @@ function SceneDepthOfField({ workVisible }: { workVisible: { current: boolean } 
             depth.blendMode.opacity.value = workVisible.current ? 0 : 1;
             if (!workVisible.current) update(renderer, buffer, delta);
         };
-    }, [workVisible]);
-    const cameraRange = camera.far - camera.near;
-    return <DepthOfField ref={configure}
-        focusDistance={(FOCUS_DEPTH - camera.near) / cameraRange}
-        focalLength={FOCUS_RANGE / cameraRange} />;
+        return depth;
+    }, [camera, workVisible]);
+    useLayoutEffect(() => () => effect.dispose(), [effect]);
+    // R3F leaves this primitive's lifecycle to us. The library's JSX wrapper
+    // passes dispose={null}, which overwrites the actual method in R3F v7.
+    return <primitive object={effect} />;
 }
 
 export const PostEffects = ({ workPreviewRef }: { workPreviewRef: RefObject<HTMLDivElement> }) => {

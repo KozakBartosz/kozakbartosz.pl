@@ -8,6 +8,14 @@ import { cursorFragmentShader, cursorVertexShader } from './cursorShader';
 
 const INTERACTIVE = 'a[href], button:not(:disabled), [role="button"], input:not(:disabled), textarea:not(:disabled), select:not(:disabled), [data-cursor="link"]';
 
+function hoverTarget(element: Element | null) {
+    const control = element?.closest(INTERACTIVE);
+    if (!control) return null;
+    return control.matches('[data-cursor-circle]')
+        ? control
+        : element?.closest('[data-cursor-arrow]') || control;
+}
+
 export const Cursor = () => {
     const inversionRef = useRef<HTMLCanvasElement>(null);
     const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -50,7 +58,7 @@ export const Cursor = () => {
                 uPress: { value: 0 }, uOutline: { value: 0 }, uInvert: { value: 0 },
                 uMaxExtension: { value: cursorConfig.maxExtension },
                 uPressShrink: { value: cursorConfig.pressShrink },
-                uCornerRadius: { value: cursorConfig.cornerRadius },
+                uRoundHover: { value: 0 },
                 uHueColor: { value: new Color(cursorConfig.hueColor) },
                 uAccentStart: { value: new Color(cursorConfig.accentStart) },
                 uAccentEnd: { value: new Color(cursorConfig.accentEnd) },
@@ -104,11 +112,17 @@ export const Cursor = () => {
                 const shapeEase = 1 - Math.exp(-transitionSpeed * dt);
                 const rect = activeHovered?.getBoundingClientRect() || null;
                 const morph = rect ? 1 : 0;
+                const roundHover = activeHovered?.matches('[data-cursor-circle], [data-cursor-arrow]') ? 1 : 0;
                 target.copy(point).sub(origin);
                 targetSize.set(radius, radius);
                 if (rect) {
                     target.set(rect.left + rect.width / 2 - origin.x, rect.top + rect.height / 2 - origin.y);
-                    targetSize.set(rect.width / 2, rect.height / 2);
+                    if (roundHover) {
+                        const hoverRadius = Math.max(cursorConfig.iconHoverRadius, Math.max(rect.width, rect.height) / 2);
+                        targetSize.setScalar(hoverRadius);
+                    } else {
+                        targetSize.set(rect.width / 2, rect.height / 2);
+                    }
                 }
                 // A slower history point sets the trailing direction independently of
                 // the responsive head, so turning does not swing around its middle.
@@ -137,6 +151,7 @@ export const Cursor = () => {
                 // Enforce history bounds after easing as well, including abrupt stops.
                 uniforms.uStretch.value = Math.min(uniforms.uStretch.value, length / (2 * cursorConfig.maxExtension));
                 uniforms.uMorph.value += (morph - uniforms.uMorph.value) * shapeEase;
+                uniforms.uRoundHover.value += (roundHover - uniforms.uRoundHover.value) * shapeEase;
                 uniforms.uOpacity.value += ((visible ? 1 : 0) - uniforms.uOpacity.value) * ease;
                 uniforms.uPress.value += ((pressed ? 1 : 0) - uniforms.uPress.value) * ease;
                 // Rasterize only the cursor region, even on large desktop displays.
@@ -171,6 +186,7 @@ export const Cursor = () => {
                 const unsettled = Math.abs(angularDistance) > 0.001 || distance > 0.05 || center.distanceTo(target) > 0.05 || size.distanceTo(targetSize) > 0.05 ||
                     Math.abs(uniforms.uStretch.value - stretch) > 0.001 ||
                     Math.abs(uniforms.uMorph.value - morph) > 0.001 ||
+                    Math.abs(uniforms.uRoundHover.value - roundHover) > 0.001 ||
                     Math.abs(uniforms.uOpacity.value - (visible ? 1 : 0)) > 0.001 ||
                     Math.abs(uniforms.uPress.value - (pressed ? 1 : 0)) > 0.001;
                 if (unsettled) frame = requestAnimationFrame(render);
@@ -185,7 +201,7 @@ export const Cursor = () => {
                 if (event.pointerType === 'touch' || !contextAvailable) { hide(); return; }
                 radius = event.target instanceof Element && event.target.closest('#Hero') ? cursorConfig.heroRadius : cursorConfig.radius;
                 point.set(event.clientX, event.clientY);
-                hovered = event.target instanceof Element ? event.target.closest(INTERACTIVE) : null;
+                hovered = hoverTarget(event.target instanceof Element ? event.target : null);
                 if (!initialized || !visible) {
                     center.copy(point).sub(origin);
                     trail.copy(center);
@@ -210,7 +226,7 @@ export const Cursor = () => {
             const leave = (event: PointerEvent) => { if (!event.relatedTarget) hide(); };
             const scroll = () => {
                 const element = document.elementFromPoint(point.x, point.y);
-                hovered = element?.closest(INTERACTIVE) || null;
+                hovered = hoverTarget(element);
                 radius = element?.closest('#Hero') ? cursorConfig.heroRadius : cursorConfig.radius;
                 wake();
             };

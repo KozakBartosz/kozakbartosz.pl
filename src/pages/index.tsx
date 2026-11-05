@@ -8,17 +8,18 @@ import { Cursor } from '../components/Cursor';
 import { HeroLoading } from '../components/Loading';
 import { Footer } from '../components/Footer';
 import { Arrow } from '../components/Arrow';
-import { WorkCarousel } from '../components/workCarousel';
+import { WORK_CASES, WorkCarousel } from '../components/workCarousel';
 import { WorkProject } from '../components/WorkProject';
 import { useRouter } from 'next/router';
+const reloadPositionKey = 'portfolio:home-scroll';
 const useRouteLayout = typeof window === 'undefined' ? useEffect : useLayoutEffect;
 const Hero = dynamic(() => import('../components/hero'), { ssr: false, loading: HeroLoading });
 
 const Home: NextPage = () => {
     const router = useRouter();
-    const projectKey = router.query.project === 'braniborska' ? 'braniborska' : 'vescape';
-    const projectView = router.query.project === 'vescape' || router.query.project === 'braniborska';
-    const projectIndex = projectKey === 'braniborska' ? 1 : 0;
+    const projectKey = WORK_CASES.find(key => key === router.query.project);
+    const projectView = projectKey !== undefined;
+    const projectIndex = projectKey ? WORK_CASES.indexOf(projectKey) : 0;
     const reloadY = useRef<number | null>(null);
     const initialRoute = useRef(true);
     const iconEl = useRef<HTMLDivElement[]>([]);
@@ -29,13 +30,35 @@ const Home: NextPage = () => {
     const [workProject, setWorkProject] = useState(0);
 
     useEffect(() => {
-        const selected = ['vescape', 'braniborska', 'wyciszamy', 'rts'].indexOf(String(router.query.selected));
+        const selected = WORK_CASES.findIndex(key => key === router.query.selected);
         if (selected >= 0) {
             setWorkProject(selected);
             workCarousel.current.position = selected;
             workCarousel.current.target = selected;
         }
     }, [router.query.selected]);
+
+    useEffect(() => {
+        if (projectView) return;
+        const savePosition = () => {
+            const sections = document.querySelectorAll<HTMLElement>('#home, main section[id]');
+            const section = Array.from(sections).reverse().find(element =>
+                element.getBoundingClientRect().top <= window.innerHeight / 2
+            );
+            if (!section) return;
+            try {
+                sessionStorage.setItem(reloadPositionKey, JSON.stringify({
+                    url: window.location.href,
+                    id: section.id,
+                    top: section.getBoundingClientRect().top,
+                }));
+            } catch {
+                // Native restoration is still available when storage is disabled.
+            }
+        };
+        window.addEventListener('pagehide', savePosition);
+        return () => window.removeEventListener('pagehide', savePosition);
+    }, [projectView]);
 
     useRouteLayout(() => {
         if (!router.isReady) return;
@@ -47,10 +70,35 @@ const Home: NextPage = () => {
                 window.scrollTo(0, window.scrollY + bounds.top - Math.max(0, (window.innerHeight - bounds.height) / 2));
             }
         }
+        let restoreFrame = 0;
+        let restoreOnShow: (() => void) | undefined;
         if (initialRoute.current) {
             initialRoute.current = false;
             const navigation = performance.getEntriesByType('navigation')[0] as PerformanceNavigationTiming | undefined;
             if (navigation?.type === 'reload') {
+                if (!projectView) {
+                    try {
+                        const saved = JSON.parse(sessionStorage.getItem(reloadPositionKey) || 'null');
+                        const section = saved?.url === window.location.href && document.getElementById(saved.id);
+                        if (section && Number.isFinite(saved.top)) {
+                            const restore = () => {
+                                window.scrollBy(0, section.getBoundingClientRect().top - saved.top);
+                                reloadY.current = window.scrollY;
+                            };
+                            restore();
+                            // Next applies the URL fragment in a timer after hydration.
+                            restoreFrame = requestAnimationFrame(() => {
+                                restoreFrame = requestAnimationFrame(restore);
+                            });
+                            if (document.readyState !== 'complete') {
+                                restoreOnShow = restore;
+                                window.addEventListener('pageshow', restore, { once: true });
+                            }
+                        }
+                    } catch {
+                        // Fall back to the browser's restored position.
+                    }
+                }
                 reloadY.current = window.scrollY;
                 const anchor = (projectView ? projectPreviewRef : workPreviewRef).current;
                 const rect = anchor?.getBoundingClientRect();
@@ -60,6 +108,10 @@ const Home: NextPage = () => {
                 }
             }
         }
+        return () => {
+            cancelAnimationFrame(restoreFrame);
+            if (restoreOnShow) window.removeEventListener('pageshow', restoreOnShow);
+        };
     }, [projectView, router.asPath, router.isReady]);
 
     return (
@@ -88,7 +140,7 @@ const Home: NextPage = () => {
             </main>
 
             <Cursor />
-            {!projectView && <><Footer /><MargeGradientTop /><MargeGradientBottom /></>}
+            {!projectView && <Footer />}
         </>
     );
 };
@@ -100,63 +152,6 @@ const Container = styled.div`
     background-size: cover;
     position: relative;
     height: 100%;
-`;
-
-const MargeGradientBottom = styled.div`
-    pointer-events: none;
-    height: 6rem;
-    background: linear-gradient(
-        0deg,
-        rgba(9, 15, 14, 0),
-        rgb(1 1 1),
-        rgb(9 15 14),
-        rgba(9, 15, 14, 0)
-    );
-    /* background: linear-gradient(  
-    0deg,
-    rgba(9, 15, 14, 0),
-    rgba(9, 15, 14, 1),
-    rgba(9, 15, 14, 1),
-    rgba(9, 15, 14, 0)
-); */
-    /* border: 4px solid red; */
-    position: fixed;
-    bottom: -3rem;
-    left: 0;
-    right: 0;
-    z-index: 100;
-    @media (min-width: 800px) {
-        height: 20lvh;
-        bottom: -10lvh;
-    }
-`;
-const MargeGradientTop = styled.div`
-    pointer-events: none;
-    height: 6rem;
-    background: linear-gradient(
-        0deg,
-        rgba(9, 15, 14, 0),
-        rgba(9, 15, 14, 1),
-        rgba(9, 15, 14, 1),
-        rgba(9, 15, 14, 0)
-    );
-    /* background: linear-gradient(
-    0deg,
-    rgba(9, 15, 14, 0),
-    rgba(9, 15, 14, 1),
-    rgba(9, 15, 14, 1),
-    rgba(9, 15, 14, 0)
-); */
-    /* border: 4px solid red; */
-    position: fixed;
-    top: -3rem;
-    left: 0;
-    right: 0;
-    z-index: 300;
-    @media (min-width: 800px) {
-        height: 20lvh;
-        top: -10lvh;
-    }
 `;
 
 export default Home;

@@ -1,10 +1,10 @@
 import { MutableRefObject, RefObject, useEffect, useMemo, useRef } from 'react';
 import { useFrame } from '@react-three/fiber';
-import { useTexture } from '@react-three/drei';
-import { BufferGeometry, CylinderGeometry, DoubleSide, ExtrudeGeometry, Group, Path, Quaternion, Shape, ShapeGeometry, sRGBEncoding, Vector3, Vector4 } from 'three';
+import { BufferGeometry, CylinderGeometry, ExtrudeGeometry, Group, Quaternion, Shape, Vector3, Vector4 } from 'three';
 import { mergeBufferGeometries } from 'three/examples/jsm/utils/BufferGeometryUtils';
 import { WorkPreviewFade } from './WorkPreviewFade';
 import { ClinicWireframe } from './ClinicWireframe';
+import { VescapeModel } from './VescapeModel';
 import { WoodCampModel } from './WoodCampModel';
 import { solidOutline } from './solidOutline';
 import { useIconSurfaceMaterial } from './useIconSurfaceMaterial';
@@ -128,7 +128,7 @@ export function WorkModel({ reloadY, elementRef, project, carouselRef, material,
             if (!model.visible) return;
             const phone = index === 0;
             const panels = index === 2;
-            const scale = Math.min(box.width * .82 / (phone ? 1.65 : panels ? 3.1 : 1.85), box.height * .80 / (phone ? 1.8 : panels ? 2.3 : index === 3 ? 1.1 : 1.6)) * unitsPerPixel;
+            const scale = Math.min(box.width * .82 / (phone ? 1.98 : panels ? 3.1 : 1.85), box.height * .80 / (phone ? 2.27 : panels ? 2.3 : index === 3 ? 1.1 : 1.6)) * unitsPerPixel;
             if (index === project) activeScale = scale;
             model.scale.setScalar(scale * (.5 + .5 * front));
             const fade = fades[index];
@@ -163,82 +163,12 @@ export function WorkModel({ reloadY, elementRef, project, carouselRef, material,
     return <group ref={root}>
         {slots.map(index => <group key={index} ref={group => { models.current[index] = group; }}>
             <WorkPreviewFade uniforms={fades[index]}>
-            {index === 0 ? <group><group position-x={-.27}><Phone material={groupMaterial} /></group><Smartwatch material={groupMaterial} /></group> : index === 2 ? <Panels material={groupMaterial} /> :
+            {index === 0 ? <VescapeModel material={groupMaterial} /> : index === 2 ? <Panels material={groupMaterial} /> :
                 index === 3 ? <WoodCampModel material={groupMaterial} /> :
                     <ClinicWireframe material={groupMaterial} />}
             </WorkPreviewFade>
         </group>)}
     </group>;
-}
-
-function roundedRectangle(width: number, height: number, radius: number) {
-    const shape = new Shape();
-    const x = -width / 2, y = -height / 2;
-    shape.moveTo(x + radius, y);
-    shape.lineTo(x + width - radius, y);
-    shape.quadraticCurveTo(x + width, y, x + width, y + radius);
-    shape.lineTo(x + width, y + height - radius);
-    shape.quadraticCurveTo(x + width, y + height, x + width - radius, y + height);
-    shape.lineTo(x + radius, y + height);
-    shape.quadraticCurveTo(x, y + height, x, y + height - radius);
-    shape.lineTo(x, y + radius);
-    shape.quadraticCurveTo(x, y, x + radius, y);
-    shape.closePath();
-    return shape;
-}
-
-function Phone({ material }: { material: any }) {
-    const surface = useIconSurfaceMaterial();
-    const geometry = useMemo(() => {
-        const body = new ExtrudeGeometry(roundedRectangle(.84, 1.68, .07), { depth: .07, bevelEnabled: false, curveSegments: 12 });
-        body.translate(0, 0, -.07);
-        const screenShape = roundedRectangle(.75, 1.53, .045);
-        screenShape.holes.push(roundedRectangle(.73, 1.51, .035) as Path);
-        const screen = new ShapeGeometry(screenShape, 12);
-        const speaker = new ShapeGeometry(roundedRectangle(.17, .018, .009));
-        const home = new ShapeGeometry(roundedRectangle(.20, .009, .004));
-        return { body, edge: solidOutline(body), screen, speaker, home };
-    }, []);
-    useEffect(() => () => Object.values(geometry).forEach(part => part.dispose()), [geometry]);
-    const contour = <shaderMaterial {...material} side={DoubleSide} />;
-    return <group rotation={[0, 0, -.07]}>
-        <mesh geometry={geometry.body} material={surface} />
-        <mesh geometry={geometry.edge}>{contour}</mesh>
-        <mesh geometry={geometry.screen} position-z={.003}>{contour}</mesh>
-        <Screen image="/projects/vescape.webp" width={.73} height={1.51} radius={.035} position={[0, 0, .004]} />
-        <mesh geometry={geometry.speaker} position={[0, .802, .004]}>{contour}</mesh>
-        <mesh geometry={geometry.home} position={[0, -.802, .004]}>{contour}</mesh>
-    </group>;
-}
-
-const fullImage = { x: 0, y: 0, width: 1, height: 1 };
-function Screen({ image, width, height, radius, position, crop = fullImage, fill = false, circular = false }: {
-    image: string; width: number; height: number; radius: number; position: [number, number, number];
-    crop?: typeof fullImage; fill?: boolean; circular?: boolean;
-}) {
-    const texture = useTexture(image);
-    const geometry = useMemo(() => {
-        texture.encoding = sRGBEncoding;
-        texture.anisotropy = 8;
-        texture.needsUpdate = true;
-        const aspect = texture.image.width * crop.width / (texture.image.height * crop.height);
-        const w = fill ? width : Math.min(width, height * aspect);
-        const h = fill ? height : Math.min(height, width / aspect);
-        const shape = circular ? new Shape().absarc(0, 0, w / 2, 0, Math.PI * 2, false) : roundedRectangle(w, h, radius);
-        const face = new ShapeGeometry(shape, circular ? 64 : 16);
-        const positions = face.getAttribute('position');
-        const uv = face.getAttribute('uv');
-        for (let i = 0; i < positions.count; i++) {
-            uv.setXY(i,
-                crop.x + (positions.getX(i) / w + .5) * crop.width,
-                1 - crop.y - crop.height + (positions.getY(i) / h + .5) * crop.height);
-        }
-        return face;
-    }, [texture, width, height, radius, crop, fill, circular]);
-    useEffect(() => () => geometry.dispose(), [geometry]);
-    return <mesh geometry={geometry} position={position}>
-        <meshBasicMaterial map={texture} toneMapped={false} />
-    </mesh>;
 }
 
 // A branching ribbon with open space, rather than a filled honeycomb.
@@ -274,31 +204,6 @@ function Panels({ material }: { material: any }) {
     </group>;
 }
 
-
-function Smartwatch({ material }: { material: any }) {
-    const surface = useIconSurfaceMaterial();
-    const geometry = useMemo(() => {
-        const body = new CylinderGeometry(.32, .32, .09, 64);
-        body.rotateX(Math.PI / 2);
-        body.translate(0, 0, -.045);
-        const strap = new ExtrudeGeometry(roundedRectangle(.28, 1.12, .06), { depth: .035, bevelEnabled: false, curveSegments: 12 });
-        strap.translate(0, 0, -.10);
-        const crown = new CylinderGeometry(.035, .035, .05, 16);
-        crown.rotateZ(Math.PI / 2);
-        crown.translate(.335, .04, -.04);
-        return { body, edge: solidOutline(body), strap, strapEdge: solidOutline(strap), crown, crownEdge: solidOutline(crown) };
-    }, []);
-    useEffect(() => () => Object.values(geometry).forEach(part => part.dispose()), [geometry]);
-    return <group position={[.53, -.27, .15]} rotation={[0, -.12, .13]}>
-        <mesh geometry={geometry.strap} material={surface} />
-        <mesh geometry={geometry.strapEdge}><shaderMaterial {...material} /></mesh>
-        <mesh geometry={geometry.body} material={surface} />
-        <mesh geometry={geometry.edge}><shaderMaterial {...material} /></mesh>
-        <mesh geometry={geometry.crown} material={surface} />
-        <mesh geometry={geometry.crownEdge}><shaderMaterial {...material} /></mesh>
-        <Screen image="/projects/vescape-watch.webp" width={.59} height={.59} radius={0} position={[0, 0, .003]} circular fill />
-    </group>;
-}
 
 function AddPanel({ material }: { material: any }) {
     const geometry = useMemo(() => {

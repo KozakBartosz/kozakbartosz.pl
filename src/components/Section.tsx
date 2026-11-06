@@ -6,11 +6,12 @@ import { SectionNavigation } from './SectionNavigation';
 import { Work, WorkProps } from './Work';
 
 export const Sections = ({
-    iconRef, work, visible
+    iconRef, work, visible, sectionId
 }: {
     iconRef: MutableRefObject<HTMLDivElement[]>;
     work: WorkProps;
     visible: boolean;
+    sectionId?: string;
 }) => {
     return (
         <>
@@ -107,7 +108,7 @@ export const Sections = ({
                     }}
                 />
             </Section>
-            {visible && <SectionTimeline />}
+            {visible && <SectionTimeline sectionId={sectionId} />}
         </Container>
         </>
     );
@@ -314,7 +315,10 @@ const Container = styled.div`
 `;
 const useTimelineLayout = typeof window === 'undefined' ? useEffect : useLayoutEffect;
 
-const SectionTimeline = () => {
+const timelineSections = ['work', 'frontend', 'interactive', 'design', 'contact'];
+
+const SectionTimeline = ({ sectionId = 'work' }: { sectionId?: string }) => {
+    const sectionIndex = timelineSections.indexOf(sectionId);
     const timelineRef = useRef<HTMLDivElement>(null);
 
     useTimelineLayout(() => {
@@ -372,7 +376,12 @@ const SectionTimeline = () => {
     }, []);
 
     return <Timeline ref={timelineRef} aria-hidden="true">
-        {[0, 1, 2, 3, 4, 5].map(index => <TimelineTrack key={index} className={index === 0 ? 'work-track-before' : index === 1 ? 'work-track-after' : undefined}><span /></TimelineTrack>)}
+        {Array.from({ length: timelineSections.length + 1 }, (_, index) => (
+            <TimelineTrack key={index}
+                className={index === 0 ? 'work-track-before' : index === 1 ? 'work-track-after' : undefined}
+                data-return-track={sectionIndex < 0 ? undefined : index === sectionIndex ? 'before' : index === sectionIndex + 1 ? 'after' : undefined}
+            ><span /></TimelineTrack>
+        ))}
     </Timeline>;
 };
 

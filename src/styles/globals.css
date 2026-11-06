@@ -199,7 +199,7 @@ a:hover {
 
 /* Fade page content independently of the shared scene and Work rail. */
 #Hero canvas { view-transition-name: portfolio-scene; }
-html[data-project-transition='open'] { overflow-anchor: none; }
+html[data-project-transition] { overflow-anchor: none; }
 html[data-project-transition] .shader-cursor { visibility: hidden; }
 html[data-project-transition] #work { view-transition-name: work-content; }
 html[data-project-transition]::view-transition-group(root),
@@ -245,11 +245,25 @@ html[data-project-transition]::view-transition-group(project-heading-detail) {
     animation-timing-function: cubic-bezier(.16, 1, .3, 1);
 }
 
-/* The matching Work marker and tracks move between desktop views. */
+/* Match the project rail to the timeline around the destination section. */
 @media (min-width: 1000px) {
-    html[data-project-transition] :is(.work-marker, .edge-marker) { view-transition-name: work-section-marker; }
-    html[data-project-transition] .work-track-before { view-transition-name: work-track-before; }
-    html[data-project-transition] .work-track-after { view-transition-name: work-track-after; }
+    html[data-project-transition] .edge-marker,
+    html[data-project-transition='open'] .work-marker,
+    html[data-project-transition='close'] main[data-return-section='work'] .work-marker {
+        view-transition-name: work-section-marker;
+    }
+
+    html[data-project-transition] .edge-lead,
+    html[data-project-transition='open'] .work-track-before,
+    html[data-project-transition='close'] [data-return-track='before'] {
+        view-transition-name: work-track-before;
+    }
+
+    html[data-project-transition] .edge-line,
+    html[data-project-transition='open'] .work-track-after,
+    html[data-project-transition='close'] [data-return-track='after'] {
+        view-transition-name: work-track-after;
+    }
 
     html[data-project-transition]::view-transition-group(work-section-marker),
     html[data-project-transition]::view-transition-group(work-track-before),
@@ -259,15 +273,23 @@ html[data-project-transition]::view-transition-group(project-heading-detail) {
     }
 
     html[data-project-transition]::view-transition-old(work-section-marker),
-    html[data-project-transition]::view-transition-old(work-track-before),
-    html[data-project-transition]::view-transition-old(work-track-after) {
+    html[data-project-transition='open']::view-transition-old(work-track-before),
+    html[data-project-transition='open']::view-transition-old(work-track-after) {
         display: none;
     }
 
     html[data-project-transition]::view-transition-new(work-section-marker),
-    html[data-project-transition]::view-transition-new(work-track-before),
-    html[data-project-transition]::view-transition-new(work-track-after) {
+    html[data-project-transition='open']::view-transition-new(work-track-before),
+    html[data-project-transition='open']::view-transition-new(work-track-after) {
         animation: none;
+        mix-blend-mode: normal;
+    }
+
+    html[data-project-transition='close']:has(main[data-return-section='home'])::view-transition-old(work-section-marker),
+    html[data-project-transition='close']:has(main[data-return-section='home'])::view-transition-old(work-track-before),
+    html[data-project-transition='close']:has(main[data-return-section='home'])::view-transition-old(work-track-after) {
+        display: block;
+        animation: project-content-out 220ms ease-out both;
         mix-blend-mode: normal;
     }
 }

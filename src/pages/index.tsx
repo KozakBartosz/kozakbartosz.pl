@@ -19,6 +19,7 @@ const Home: NextPage = () => {
     const router = useRouter();
     const projectKey = WORK_CASES.find(key => key === router.query.project);
     const projectView = projectKey !== undefined;
+    const sectionId = router.asPath.split('#')[1];
     const projectIndex = projectKey ? WORK_CASES.indexOf(projectKey) : 0;
     const reloadY = useRef<number | null>(null);
     const initialRoute = useRef(true);
@@ -76,8 +77,8 @@ const Home: NextPage = () => {
                 // History can restore its previous scroll after the route commits.
                 afterRouteScroll(scrollToTop);
             }
-        } else if (router.asPath.includes('#work')) {
-            const section = document.getElementById('work');
+        } else if (sectionId) {
+            const section = document.getElementById(sectionId);
             if (section) {
                 const bounds = section.getBoundingClientRect();
                 window.scrollTo(0, window.scrollY + bounds.top - Math.max(0, (window.innerHeight - bounds.height) / 2));
@@ -121,7 +122,7 @@ const Home: NextPage = () => {
             cancelAnimationFrame(restoreFrame);
             if (restoreOnShow) window.removeEventListener('pageshow', restoreOnShow);
         };
-    }, [projectView, router.asPath, router.isReady]);
+    }, [projectView, router.asPath, router.isReady, sectionId]);
 
     return (
         <>
@@ -141,11 +142,11 @@ const Home: NextPage = () => {
                 {!projectView && <ExploreControl />}
             </Container>
             {projectView && <WorkProject key={projectKey} projectKey={projectKey} anchor={projectPreviewRef} rotation={inspectRotation} />}
-            <main hidden={projectView}>
+            <main hidden={projectView} data-return-section={sectionId}>
                 {/* <Suspense fallback=""> */}
                 {/* </Suspense> */}
 
-                <Sections visible={!projectView} iconRef={iconEl} work={{ active: workProject, setActive: setWorkProject, previewRef: workPreviewRef, carouselRef: workCarousel }} />
+                <Sections sectionId={sectionId} visible={!projectView} iconRef={iconEl} work={{ active: workProject, setActive: setWorkProject, previewRef: workPreviewRef, carouselRef: workCarousel }} />
             </main>
 
             <Cursor />

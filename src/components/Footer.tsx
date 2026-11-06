@@ -1,5 +1,7 @@
 import styled from '@emotion/styled';
 import { MouseEvent } from 'react';
+import { useRouter } from 'next/router';
+import { projectViewTransition } from './projectViewTransition';
 import { Arrow } from './Arrow';
 
 const links = [
@@ -24,13 +26,29 @@ const navigate = (event: MouseEvent<HTMLAnchorElement>, id: string) => {
     });
 };
 
-export const Footer = ({ projectPage = false }: { projectPage?: boolean }) => (
-    <Root data-project-page={projectPage || undefined} id="footer" aria-label="Footer">
+export const Footer = ({ projectPage = false }: { projectPage?: boolean }) => {
+    const router = useRouter();
+    const followLink = (event: MouseEvent<HTMLAnchorElement>, id: string) => {
+        if (event.defaultPrevented || event.button !== 0 || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
+        if (!projectPage) {
+            navigate(event, id);
+            return;
+        }
+
+        event.preventDefault();
+        projectViewTransition(async () => {
+            const navigated = await router.push(`/#${id}`, undefined, { scroll: false });
+            if (navigated) document.getElementById(id)?.focus({ preventScroll: true });
+            return navigated;
+        }, 'close');
+    };
+
+    return <Root data-project-page={projectPage || undefined} id="footer" aria-label="Footer">
         <div className="footer-composition">
             <p className="signature">Bartosz<br /><span>Kozak.</span></p>
                 <nav id="footer-grid" aria-label="Footer navigation">
                     {links.map(({ id, label }, index) => (
-                        <a key={id} href={projectPage ? `/#${id}` : `#${id}`} onClick={projectPage ? undefined : event => navigate(event, id)}>
+                        <a key={id} href={projectPage ? `/#${id}` : `#${id}`} onClick={event => followLink(event, id)}>
                             <span className="link-number">0{index}</span>
                             <span className="link-name">{label}</span>
                             <span className="link-arrow" aria-hidden="true"><Arrow /></span>
@@ -40,10 +58,10 @@ export const Footer = ({ projectPage = false }: { projectPage?: boolean }) => (
         </div>
         <div className="footer-bottom">
             <small>© {new Date().getFullYear()} Bartosz Kozak</small>
-            <a href={projectPage ? '#project-home' : '#home'} onClick={projectPage ? undefined : event => navigate(event, 'home')}>Back to top <span aria-hidden="true"><Arrow direction="up" /></span></a>
+            <a href={projectPage ? '#project-home' : '#home'} onClick={projectPage ? undefined : event => followLink(event, 'home')}>Back to top <span aria-hidden="true"><Arrow direction="up" /></span></a>
         </div>
-    </Root>
-);
+    </Root>;
+};
 
 const Root = styled.footer`
     position: relative;

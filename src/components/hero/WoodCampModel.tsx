@@ -38,15 +38,17 @@ export function WoodCampModel({ material }: { material: any }) {
             const part = object.geometry.clone().applyMatrix4(object.matrixWorld);
             parts.push(part);
             if (part.userData.outline === 'hem') {
-                // Outline the cloth perimeter and the modeled fold above the front flap.
+                // Follow the cloth perimeter and the modeled folds above both flaps.
                 hems.push(...edgeSegments(part, 180));
-                const fold: number[] = part.userData.fold ?? [];
+                const folds: number[][] = part.userData.folds ?? [];
                 const positions = part.getAttribute('position');
-                for (let i = 1; i < fold.length; i++) {
-                    hems.push([
-                        new Vector3().fromBufferAttribute(positions, fold[i - 1]),
-                        new Vector3().fromBufferAttribute(positions, fold[i]),
-                    ]);
+                for (const fold of folds) {
+                    for (let i = 1; i < fold.length; i++) {
+                        hems.push([
+                            new Vector3().fromBufferAttribute(positions, fold[i - 1]),
+                            new Vector3().fromBufferAttribute(positions, fold[i]),
+                        ]);
+                    }
                 }
             } else structure.push(part);
         });

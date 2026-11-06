@@ -11,7 +11,7 @@ import { BrandMark } from './BrandMark';
 import { projectHeadings, ProjectStory } from './ProjectStory';
 import { ProjectDetailList, SectionKicker, VisitProjectLink } from './ProjectCaseUI';
 import { projectViewTransition } from './projectViewTransition';
-import { WORK_CASES, WorkCase } from './workCarousel';
+import { WORK_CASES, WorkCase, workProjectIndex } from './workCarousel';
 import { medievalDemo, medievalSource } from './MedievalStory';
 
 const base = '/projects/vescape/';
@@ -125,8 +125,8 @@ export const WorkProject = ({ anchor, rotation, projectKey = 'vescape' }: {
         projectViewTransition(() => router.push(href, undefined, { shallow: true, scroll: false }), 'open', link);
     };
     const caseIndex = WORK_CASES.indexOf(projectKey);
-    const previousProject = caseLinks[caseIndex - 1];
-    const nextProject = caseLinks[caseIndex + 1];
+    const previousProject = caseLinks[workProjectIndex(caseIndex - 1)];
+    const nextProject = caseLinks[workProjectIndex(caseIndex + 1)];
     const domain = panels ? 'wyciszamy.net' : clinic ? 'braniborska.pl' : 'vescape.app';
     const projectNavigation = (
         <nav className="project-title-nav" aria-label="Browse projects">

@@ -79,6 +79,9 @@ export async function projectViewTransition(navigate: () => Promise<boolean>, di
     window.clearTimeout(lineTimer);
     root.dataset.projectTransition = direction;
     const preventScroll = (event: Event) => event.preventDefault();
+    const keepProjectAtTop = () => {
+        if (window.scrollY) window.scrollTo(0, 0);
+    };
     if (direction === 'open') {
         // Wheel and touch momentum from the old view can reach the incoming page.
         window.addEventListener('wheel', preventScroll, { passive: false });
@@ -101,8 +104,13 @@ export async function projectViewTransition(navigate: () => Promise<boolean>, di
                 delete root.dataset.projectLines;
                 return;
             }
+            if (direction === 'open') {
+                // Pin the incoming viewport before capture and through the swap.
+                // History restoration and scroll anchoring can bypass input listeners.
+                window.addEventListener('scroll', keepProjectAtTop, { passive: true });
+                keepProjectAtTop();
+            }
             // Rendering is paused here: never wait for requestAnimationFrame.
-            // The incoming model stays hidden until the snapshot is ready.
         });
         const startDrawing = () => {
             if (root.dataset.projectLines === 'waiting') startEnterReveal();
@@ -117,6 +125,7 @@ export async function projectViewTransition(navigate: () => Promise<boolean>, di
             delete root.dataset.projectLines;
             root.style.removeProperty('--project-reveal-duration');
         }
+        window.removeEventListener('scroll', keepProjectAtTop);
         window.removeEventListener('wheel', preventScroll);
         window.removeEventListener('touchmove', preventScroll);
         root.style.removeProperty('--project-line-exit-offset');

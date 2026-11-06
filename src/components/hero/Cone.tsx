@@ -2,7 +2,7 @@ import { Triplet, useCylinder } from '@react-three/cannon';
 import { useGLTF } from '@react-three/drei';
 import { useFrame } from '@react-three/fiber';
 import { useEffect, useRef, useState } from 'react';
-import { Vector3 } from 'three';
+import { Material, Vector3 } from 'three';
 import { useGrabPointer } from './GrabPointer';
 import { HERO_DEPHTH } from './consts';
 
@@ -12,9 +12,11 @@ interface Props {
     rotation?: Triplet;
     material?: any;
     force: boolean;
+    surface: Material;
+    highlight: Material;
 }
 
-export function Cone({ force, material, ...props }: Props) {
+export function Cone({ force, material, surface, highlight, ...props }: Props) {
     const a = 8;
     const [ref, api] = useCylinder(() => ({
         mass: 2,
@@ -135,23 +137,9 @@ export function Cone({ force, material, ...props }: Props) {
                 receiveShadow
                 scale={[0.95, 0.95, 0.95]}
                 ref={meshRef}
+                material={color ? highlight : surface}
             >
                 <cylinderGeometry args={[0, a / 2, 0.816 * a, 3]} />
-                {/* <meshPhysicalMaterial
-                    // color={0x0e1211}
-                    reflectivity={1}
-                    flatShading
-                    ref={meshRef}
-                /> */}
-                {color ? (
-                    <shaderMaterial attach="material" {...material} />
-                ) : (
-                    <meshPhysicalMaterial
-                        color={0x0e1211}
-                        reflectivity={1}
-                        flatShading
-                    />
-                )}
             </mesh>
             {/* <shaderMaterial attach="material" {...material} />; */}
         </group>

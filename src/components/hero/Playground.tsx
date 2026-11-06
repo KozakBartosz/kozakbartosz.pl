@@ -1,4 +1,5 @@
 import { Physics, Debug, Triplet } from '@react-three/cannon';
+import { createIconSurfaceMaterial } from './iconSurfaceFade';
 import { Plane } from './Plane';
 import { GrabPointerProvider } from './GrabPointer';
 import { Cone } from './Cone';
@@ -9,7 +10,9 @@ import {
     MathUtils,
     Mesh,
     MeshBasicMaterial,
+    MeshPhysicalMaterial,
     Object3D,
+    ShaderMaterial,
     Vector3,
     Vector4
 } from 'three';
@@ -81,6 +84,15 @@ export const Playground = () => {
         }),
         []
     );
+
+    const coneSurface = useMemo(() => createIconSurfaceMaterial(
+        new MeshPhysicalMaterial({ color: 0x0e1211, reflectivity: 1, flatShading: true })
+    ), []);
+    const coneHighlight = useMemo(() => new ShaderMaterial(material), [material]);
+    useEffect(() => () => {
+        coneSurface.dispose();
+        coneHighlight.dispose();
+    }, [coneSurface, coneHighlight]);
 
     const [modeActive, setModeActive] = useState(false);
     const [gravity, setGravity] = useState<Triplet>([0, -0.2, 0]);
@@ -268,6 +280,8 @@ export const Playground = () => {
                     rotation={[Math.random(), Math.random(), Math.random()]}
                     material={material}
                     force={modeActive}
+                    surface={coneSurface}
+                    highlight={coneHighlight}
                 />
             ))}
             <Cone
@@ -276,6 +290,8 @@ export const Playground = () => {
                 rotation={[Math.random(), Math.random(), Math.random()]}
                 material={material}
                 force={modeActive}
+                surface={coneSurface}
+                highlight={coneHighlight}
             />
             <Bydlak material={material} scale={[20, 20, 20]} />
 

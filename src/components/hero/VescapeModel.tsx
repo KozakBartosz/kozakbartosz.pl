@@ -1,10 +1,11 @@
 import { useEffect, useMemo } from 'react';
-import { BufferGeometry, CylinderGeometry, ExtrudeGeometry, Path, PlaneGeometry, Shape, Vector2 } from 'three';
+import { BufferGeometry, Color, CylinderGeometry, ExtrudeGeometry, Path, PlaneGeometry, Shape, Vector2 } from 'three';
 import { mergeBufferGeometries } from 'three/examples/jsm/utils/BufferGeometryUtils';
 import { solidOutline } from './solidOutline';
 import { useIconSurfaceMaterial } from './useIconSurfaceMaterial';
 
 type Point = [number, number];
+const deckColor = new Color(0x090f0e).convertSRGBToLinear();
 
 const digits: Record<string, Point[]> = {
     '2': [[0, .8], [.2, 1], [.8, 1], [1, .8], [1, .62], [0, 0], [1, 0]],
@@ -48,21 +49,23 @@ function mergeAndDispose(parts: BufferGeometry[]) {
 
 export function VescapeModel({ material }: { material: any }) {
     const surface = useIconSurfaceMaterial();
+
     const geometry = useMemo(() => {
         const solids: BufferGeometry[] = [];
+        const deckParts: BufferGeometry[] = [];
         const strokes: BufferGeometry[] = [];
-        const solid = (body: BufferGeometry, radius = .0035) => {
+        const solid = (body: BufferGeometry, radius = .0035, surfaces = solids) => {
             strokes.push(solidOutline(body, radius));
-            solids.push(body.index ? body.toNonIndexed() : body);
+            surfaces.push(body.index ? body.toNonIndexed() : body);
             if (body.index) body.dispose();
         };
-        const linework = (x: number, y: number, z: number, scale: number) => {
+        const linework = (x: number, y: number, z: number, scale: number, facing = 0) => {
             const line = (points: Point[], width = .011) => {
                 for (let i = 1; i < points.length; i++) {
                     const [ax, ay] = points[i - 1], [bx, by] = points[i];
                     const dx = bx - ax, dy = by - ay;
                     strokes.push(new PlaneGeometry(Math.hypot(dx, dy) * scale, width * scale)
-                        .rotateZ(Math.atan2(dy, dx))
+                        .rotateY(facing).rotateZ(Math.atan2(dy, dx))
                         .translate(x + (ax + bx) * scale / 2, y + (ay + by) * scale / 2, z));
                 }
             };
@@ -110,11 +113,18 @@ export function VescapeModel({ material }: { material: any }) {
         phone.line([[.13, -.61], [.24, -.61]]);
         phone.line([[-.075, -.755], [.075, -.755]]);
 
+        const cameraX = -.635, cameraY = .96;
+        solid(extrude(roundedShape(.25, .25, .045), .026).translate(cameraX, cameraY, -.075));
+        const cameras = linework(cameraX, cameraY, -.106, 1, Math.PI);
+        cameras.arc(-.052, .052, .041);
+        cameras.arc(.052, -.052, .041);
+        cameras.arc(.055, .057, .017);
+
         const watchX = .49, watchY = .29, watchScale = .76;
         const watchPart = (part: BufferGeometry) => part.scale(watchScale, watchScale, watchScale).translate(watchX, watchY, 0);
         const band = roundedShape(.47, 1.12, .18);
-        band.holes.push(new Path(roundedShape(.38, 1.03, .155).getPoints(8)));
-        solid(watchPart(extrude(band, .24).rotateY(Math.PI / 2).translate(.12, 0, -.28)));
+        band.holes.push(new Path().copy(roundedShape(.38, 1.03, .135)));
+        solid(watchPart(extrude(band, .24).rotateY(Math.PI / 2).translate(.12, 0, -.28)), .0025);
         solid(watchPart(new CylinderGeometry(.32, .32, .085, 48).rotateX(Math.PI / 2).translate(0, 0, -.043)));
         solid(watchPart(new CylinderGeometry(.035, .035, .047, 16).rotateZ(Math.PI / 2).translate(.33, .035, -.042)));
         const watch = linework(watchX, watchY, .008, watchScale);
@@ -124,38 +134,50 @@ export function VescapeModel({ material }: { material: any }) {
         watch.number('23', 0, -.065, .15);
         watch.arc(0, -.145, .027);
 
+        const sensors = linework(watchX, watchY, -.069, watchScale, Math.PI);
+        sensors.arc(0, 0, .15);
+        sensors.arc(0, 0, .074);
+
         // Tire diameter is about a third of the board length. Twin rails
         // bridge the tire, with footpads filling the width at either end.
         const board = (part: BufferGeometry) => part
             .rotateX(.35).rotateY(-.15).rotateZ(-.15).translate(.035, -.75, .31);
-        solid(board(new CylinderGeometry(.29, .29, .50, 48).rotateX(Math.PI / 2)));
+        solid(board(new CylinderGeometry(.32, .32, .50, 64).rotateX(Math.PI / 2)));
         const railProfile: Point[] = [
             [-.92, .065], [.92, .065], [.84, -.055], [-.84, -.055],
         ];
-        const frontRail = profile(railProfile);
-        for (const x of [-.055, 0, .055]) frontRail.holes.push(circle(x, .004, .014));
-        solid(board(extrude(frontRail, .032).translate(0, 0, .31)));
-        solid(board(extrude(profile(railProfile), .032).translate(0, 0, -.278)));
+        const railShape = profile(railProfile);
+        for (const x of [-.055, 0, .055]) railShape.holes.push(circle(x, .004, .014));
+        solid(board(extrude(railShape, .032).translate(0, 0, .31)), .0035, deckParts);
+        solid(board(extrude(railShape, .032).translate(0, 0, -.278)), .0035, deckParts);
         for (const side of [-1, 1]) {
-            const pad = profile([[side * .30, .065], [side * .92, .065], [side * .84, -.055], [side * .30, -.055]]);
-            solid(board(extrude(pad, .556).translate(0, 0, .278)));
+            const pad = profile([[side * .365, .065], [side * .92, .065], [side * .84, -.055], [side * .365, -.055]]);
+            solid(board(extrude(pad, .556).translate(0, 0, .278)), .0035, deckParts);
         }
         const firstBoardStroke = strokes.length;
         const hub = linework(0, 0, .254, 1);
         hub.arc(0, 0, .182);
+        const rearHub = linework(0, 0, -.254, 1, Math.PI);
+        rearHub.arc(0, 0, .182);
         const rail = linework(0, 0, .316, 1);
         rail.arc(-.72, .006, .024);
+        const rearRail = linework(0, 0, -.316, 1, Math.PI);
+        rearRail.arc(-.72, .006, .014);
         strokes.slice(firstBoardStroke).forEach(board);
 
-        return { body: mergeAndDispose(solids), outline: mergeAndDispose(strokes) };
+        return { body: mergeAndDispose(solids), deck: mergeAndDispose(deckParts), outline: mergeAndDispose(strokes) };
     }, []);
     useEffect(() => () => {
         geometry.body.dispose();
+        geometry.deck.dispose();
         geometry.outline.dispose();
     }, [geometry]);
 
     return <>
         <mesh geometry={geometry.body} material={surface} />
+        <mesh geometry={geometry.deck}>
+            <meshBasicMaterial color={deckColor} />
+        </mesh>
         <mesh geometry={geometry.outline}><shaderMaterial {...material} /></mesh>
     </>;
 }

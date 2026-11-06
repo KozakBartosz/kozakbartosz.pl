@@ -1,6 +1,7 @@
 import { useCylinder } from '@react-three/cannon';
 import { useGLTF } from '@react-three/drei';
 import { Vector3 } from 'three';
+import { useFadedIconSurface } from './useIconSurfaceMaterial';
 
 export function Bydlak({ material, position, scale }: any) {
     const [ref] = useCylinder(() => ({
@@ -20,12 +21,13 @@ export function Bydlak({ material, position, scale }: any) {
 // Shared visual model; the hero adds its physics body separately.
 export function BydlakModel({ material }: any) {
     const { nodes, materials } = useGLTF('/models/logo.glb');
+    const surface = useFadedIconSurface(materials['Material.001']);
     return <group dispose={null}>
             <mesh
                 castShadow
                 receiveShadow
                 geometry={(nodes.Cone as any).geometry}
-                material={materials['Material.001']}
+                material={surface}
                 rotation={[0, Math.PI / -4, 0]}
             />
             <mesh

@@ -52,7 +52,7 @@ export function WorkModel({ reloadY, elementRef, project, carouselRef, material,
     }, [elementRef]);
 
     useEffect(() => {
-        if (!showcase || reducedMotion) return;
+        if (reducedMotion) return;
         const follow = (event: PointerEvent) => {
             if (event.pointerType === 'mouse' && event.buttons === 0) {
                 cursor.current = { x: event.clientX, y: event.clientY };
@@ -61,17 +61,17 @@ export function WorkModel({ reloadY, elementRef, project, carouselRef, material,
         const reset = () => { cursor.current = null; };
         const leave = (event: PointerEvent) => { if (!event.relatedTarget) reset(); };
         window.addEventListener('pointermove', follow, { passive: true });
-        window.addEventListener('pointerdown', reset, { passive: true });
+        window.addEventListener('pointerdown', reset, { capture: true, passive: true });
         window.addEventListener('pointerout', leave, { passive: true });
         window.addEventListener('blur', reset);
         return () => {
             window.removeEventListener('pointermove', follow);
-            window.removeEventListener('pointerdown', reset);
+            window.removeEventListener('pointerdown', reset, true);
             window.removeEventListener('pointerout', leave);
             window.removeEventListener('blur', reset);
             reset();
         };
-    }, [showcase, reducedMotion]);
+    }, [reducedMotion]);
 
     useFrame(({ camera, size, clock }, delta) => {
         const carousel = carouselRef.current;
@@ -141,7 +141,7 @@ export function WorkModel({ reloadY, elementRef, project, carouselRef, material,
         });
         const linear = (box.top + box.height / 2 - size.height / 2) / 100;
         const scrollRotation = reducedMotion ? 0 : linear * 4 / HERO_DEPHTH;
-        const pointer = showcase && !reducedMotion ? cursor.current : null;
+        const pointer = !reducedMotion && !carousel.dragging ? cursor.current : null;
         const unit = (value: number) => Math.max(-1, Math.min(1, value));
         const pitch = pointer ? .075 * unit((pointer.y - box.top - box.height / 2) / (size.height / 2)) : 0;
         const yaw = pointer ? .12 * unit((pointer.x - box.left - box.width / 2) / (size.width / 2)) : 0;
@@ -189,8 +189,20 @@ function Panels({ material }: { material: any }) {
             else hexagon.lineTo(x, y);
         }
         hexagon.closePath();
-        const body = new ExtrudeGeometry(hexagon, { depth: .14, bevelEnabled: true, bevelSize: .095, bevelThickness: .10, bevelSegments: 1, steps: 1 });
-        body.translate(0, 0, -.14);
+        const straightDepth = .14;
+        const bevelDepth = .10;
+        const depth = straightDepth + bevelDepth;
+        const body = new ExtrudeGeometry(hexagon, { depth, bevelEnabled: false, steps: 2 });
+        const positions = body.getAttribute('position');
+        const outerScale = 1 + .095 / (.33 * Math.cos(Math.PI / 6));
+        // Widen the middle and rear rings equally, leaving the rear cap flat.
+        for (let i = 0; i < positions.count; i++) {
+            const z = positions.getZ(i);
+            if (z > straightDepth) continue;
+            positions.setXYZ(i, positions.getX(i) * outerScale, positions.getY(i) * outerScale, z === 0 ? 0 : straightDepth);
+        }
+        body.translate(0, 0, -straightDepth);
+        body.computeVertexNormals();
         return { body, edge: solidOutline(body) };
     }, []);
     useEffect(() => () => Object.values(geometry).forEach(part => part.dispose()), [geometry]);

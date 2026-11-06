@@ -69,7 +69,7 @@ export function ProjectStory({ model, stack, website, projectNavigation, project
     return <Epic data-clinic={clinic} data-panels={panels}>
         <section className="epic-hero" id="case-overview" ref={hero}>
             <div className="epic-title"><p className="project-location"><span>01</span><i />Work</p><div className="project-title-row">{projectNavigation}<h1>{medieval ? 'Medieval' : panels ? 'Wyciszamy.net' : clinic ? 'Braniborska' : 'Vescape'}<span>{medieval ? '3D real-time strategy prototype' : panels ? 'Acoustic panel configurator' : clinic ? 'Carefully designed. Content-driven.' : 'From board to interface.'}</span></h1></div></div>
-            <svg className="epic-connections" aria-hidden="true"><defs><linearGradient id="epic-connection-gradient"><stop stopColor="#00a3ff" /><stop offset="1" stopColor="#00ffa3" /></linearGradient><linearGradient id="epic-left-gradient" x1="0%" y1="0%" x2="100%" y2="100%"><stop stopColor="#00ffa3" /><stop offset="1" stopColor="#00a3ff" /></linearGradient></defs><path pathLength="1" stroke="url(#epic-left-gradient)" ref={leftPath} /><path pathLength="1" stroke="url(#epic-connection-gradient)" ref={rightPath} /></svg>
+            <svg className="epic-connections" aria-hidden="true"><defs><linearGradient id="epic-connection-gradient"><stop stopColor="#00a3ff" /><stop offset="1" stopColor="#00ffa3" /></linearGradient><linearGradient id="epic-left-gradient" x1="0%" y1="0%" x2="100%" y2="100%"><stop stopColor="#00a3ff" /><stop offset="1" stopColor="#00ffa3" /></linearGradient></defs><path pathLength="1" stroke="url(#epic-left-gradient)" ref={leftPath} /><path pathLength="1" stroke="url(#epic-connection-gradient)" ref={rightPath} /></svg>
             <div className="epic-layout">
                 <div className="epic-context" ref={left}><div className="epic-panel-heading" data-panel-heading><span>01</span><i /><span>The project</span><b aria-hidden="true" /></div>{medieval ? <>
                     <div className="epic-summary">
@@ -230,6 +230,7 @@ const Epic = styled.div`
     .device-hardware { position: relative; padding: 1rem; border: 1px solid #3b6561; background: #0b1312; box-shadow: 0 2rem 5rem #0004, inset 0 0 0 3px #14201e; }
     .device-hardware::before { content: ''; position: absolute; inset: -2px; border-radius: inherit; padding: var(--line-width); background: var(--accent-line-gradient); -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0); -webkit-mask-composite: xor; mask-composite: exclude; pointer-events: none; opacity: .7; }
     .device-phone .device-hardware { border-radius: 3.4rem; }
+    .device-phone .device-hardware::before { display: none; }
     .device-phone .device-hardware::after { content: ''; position: absolute; right: -.45rem; top: 24%; width: .35rem; height: 4rem; border-radius: 0 2px 2px 0; background: #6e9692; }
     .device-hardware video, .device-hardware img { display: block; width: 100%; height: auto; background: #090f0e; }
     .device-phone .device-hardware video { aspect-ratio: 9/20; object-fit: cover; border-radius: 2.5rem; }
@@ -315,7 +316,6 @@ const Epic = styled.div`
     .clinic-interface { padding: 5rem 0 7rem; border-block: 1px solid #24504e; scroll-margin-top: 3rem; }
     .clinic-browser, .clinic-responsive .device-phone .device-hardware { border: 1px solid #24504e; }
     .clinic-browser { min-width: 0; margin: 4rem 0 0; }
-    .clinic-responsive .device-phone .device-hardware::before { display: none; }
     .clinic-browser figcaption { display: flex; align-items: center; gap: 1.5rem; padding: 1.4rem 1.6rem; font-size: 1.1rem; line-height: 1.5; color: #91a4a1; }
     .clinic-browser figcaption > span:last-child { margin-left: auto; font-size: .95rem; }
     .clinic-browser img { display: block; width: 100%; height: auto; }

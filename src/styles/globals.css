@@ -199,8 +199,11 @@ a:hover {
 
 /* Fade page content independently of the shared scene and Work rail. */
 #Hero canvas { view-transition-name: portfolio-scene; }
+html[data-project-transition='open'] { overflow-anchor: none; }
 html[data-project-transition] .shader-cursor { visibility: hidden; }
+html[data-project-transition] #work { view-transition-name: work-content; }
 html[data-project-transition]::view-transition-group(root),
+html[data-project-transition]::view-transition-group(work-content),
 html[data-project-transition]::view-transition-group(portfolio-scene),
 html[data-project-transition]::view-transition-new(portfolio-scene) {
     animation: none;
@@ -210,12 +213,14 @@ html[data-project-transition]::view-transition-old(portfolio-scene) {
     display: none;
 }
 
-html[data-project-transition]::view-transition-old(root) {
+html[data-project-transition]::view-transition-old(root),
+html[data-project-transition]::view-transition-old(work-content) {
     animation: project-content-out 220ms ease-out both;
     mix-blend-mode: normal;
 }
 
-html[data-project-transition]::view-transition-new(root) {
+html[data-project-transition]::view-transition-new(root),
+html[data-project-transition]::view-transition-new(work-content) {
     animation: project-content-in 300ms ease-out both;
     mix-blend-mode: normal;
 }

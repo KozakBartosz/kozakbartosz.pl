@@ -5,18 +5,19 @@ import { createIconSurfaceMaterial, IconFadeMatrix } from './iconSurfaceFade';
 
 export const IconSurfaceFadeContext = createContext<IconFadeMatrix | null>(null);
 
-export function useFadedIconSurface(source: Material): Material {
+export function useFadedIconSurface(source: Material, fresnel = true): Material {
     const matrix = useContext(IconSurfaceFadeContext);
-    const material = useMemo(() => matrix ? createIconSurfaceMaterial(source, matrix) : source, [source, matrix]);
+    const material = useMemo(() => matrix || fresnel
+        ? createIconSurfaceMaterial(source, matrix || undefined, fresnel)
+        : source, [source, matrix, fresnel]);
     useEffect(() => () => { if (material !== source) material.dispose(); }, [material, source]);
     return material;
 }
 
-// Preserve the GLTF's PBR settings. Section icons get a local fading copy;
-// project previews keep the cached source and their own existing fade.
-export function useIconSurfaceMaterial(): Material {
+// Preserve the GLTF's PBR settings and add the shared neon rim on a local copy.
+export function useIconSurfaceMaterial(fresnel = true): Material {
     const { materials } = useGLTF('/models/icon1.glb') as unknown as {
         materials: { normal: Material };
     };
-    return useFadedIconSurface(materials.normal);
+    return useFadedIconSurface(materials.normal, fresnel);
 }

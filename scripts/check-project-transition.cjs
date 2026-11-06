@@ -9,15 +9,25 @@ const source = ts.transpileModule(fs.readFileSync('src/components/projectViewTra
 async function scenario({ supported = true, reducedMotion = false, skipped = false } = {}) {
     let navigations = 0;
     let transitions = 0;
+    let scrollY = 0;
+    const input = new EventTarget();
+    const simulateScroll = position => {
+        scrollY = position;
+        input.dispatchEvent(new Event('scroll'));
+    };
     const document = { documentElement: { dataset: {}, style: { setProperty() {}, removeProperty() {} } } };
     if (supported) document.startViewTransition = update => {
         transitions++;
-        const done = Promise.resolve().then(update);
+        const done = Promise.resolve().then(update).then(() => {
+            simulateScroll(1500);
+            assert.equal(scrollY, 0, 'incoming project stays at the top until the transition finishes');
+        });
         return { ready: skipped ? Promise.reject(new Error('Animation skipped')) : done, finished: done };
     };
-    const input = new EventTarget();
     const context = { exports: {}, setTimeout, performance: require('node:perf_hooks').performance, document, window: {
         clearTimeout() {}, setTimeout() {}, matchMedia: () => ({ matches: reducedMotion }),
+        get scrollY() { return scrollY; },
+        scrollTo(x, y) { scrollY = y; },
         addEventListener: input.addEventListener.bind(input), removeEventListener: input.removeEventListener.bind(input),
     },
         requestAnimationFrame: () => { throw new Error('View transition update must not wait for a rendered frame'); } };
@@ -29,6 +39,8 @@ async function scenario({ supported = true, reducedMotion = false, skipped = fal
         return true;
     }, 'open');
     assert.equal(wheel(), true, 'wheel scroll resumes after the transition');
+    simulateScroll(200);
+    assert.equal(scrollY, 200, 'the scroll guard is removed after the transition');
     assert.equal(navigations, 1);
     assert.equal(transitions, supported && !reducedMotion ? 1 : 0);
     assert.equal(document.documentElement.dataset.projectTransition, undefined);

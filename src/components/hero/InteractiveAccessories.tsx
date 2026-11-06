@@ -1,44 +1,22 @@
 import { useEffect, useMemo, useRef } from 'react';
 import { useFrame } from '@react-three/fiber';
-import { BoxGeometry, BufferGeometry, CylinderGeometry, EdgesGeometry, Group, Matrix4, OctahedronGeometry, Quaternion, Vector3 } from 'three';
-import { mergeBufferGeometries } from 'three/examples/jsm/utils/BufferGeometryUtils';
+import { BoxGeometry, Group, Matrix4, OctahedronGeometry, Vector3 } from 'three';
+import { solidOutline } from './solidOutline';
 import { useReducedMotion } from '../useReducedMotion';
 import { useIconSurfaceMaterial } from './useIconSurfaceMaterial';
-
-function outline(surface: BufferGeometry) {
-    const edges = new EdgesGeometry(surface);
-    const positions = edges.getAttribute('position');
-    const segments: BufferGeometry[] = [];
-    const start = new Vector3(), end = new Vector3(), direction = new Vector3();
-    const up = new Vector3(0, 1, 0), rotation = new Quaternion();
-    for (let i = 0; i < positions.count; i += 2) {
-        start.fromBufferAttribute(positions, i);
-        end.fromBufferAttribute(positions, i + 1);
-        direction.subVectors(end, start);
-        const segment = new CylinderGeometry(.005, .005, direction.length(), 6);
-        rotation.setFromUnitVectors(up, direction.normalize());
-        segment.applyQuaternion(rotation);
-        segment.translate((start.x + end.x) / 2, (start.y + end.y) / 2, (start.z + end.z) / 2);
-        segments.push(segment);
-    }
-    const result = mergeBufferGeometries(segments)!;
-    edges.dispose();
-    segments.forEach(segment => segment.dispose());
-    return result;
-}
 
 export function InteractiveAccessories({ material }: { material: any }) {
     const cube = useRef<Group>(null!);
     const octahedron = useRef<Group>(null!);
     const reducedMotion = useReducedMotion();
-    const surfaceMaterial = useIconSurfaceMaterial();
+    const surfaceMaterial = useIconSurfaceMaterial(false);
     const contourUniforms = useMemo(() => ({
         ...material.uniforms,
         myPosition: { value: new Vector3(10, 0, 0) },
         useGradientMatrix: { value: true },
         gradientMatrix: { value: new Matrix4() }
     }), [material]);
-    const parts = useMemo(() => [new BoxGeometry(.38, .38, .38), new OctahedronGeometry(.27)].map(surface => ({ surface, edge: outline(surface) })), []);
+    const parts = useMemo(() => [new BoxGeometry(.38, .38, .38), new OctahedronGeometry(.27)].map(surface => ({ surface, edge: solidOutline(surface, .0034) })), []);
     useEffect(() => () => parts.forEach(({ surface, edge }) => { surface.dispose(); edge.dispose(); }), [parts]);
     useFrame(({ clock }) => {
         const time = reducedMotion ? 0 : clock.elapsedTime;

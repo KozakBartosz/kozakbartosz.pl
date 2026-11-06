@@ -1,8 +1,9 @@
 import { useEffect, useMemo, useRef } from 'react';
 import { useFrame } from '@react-three/fiber';
 import { useReducedMotion } from '../useReducedMotion';
+import { roundedShape } from './roundedShape';
 import { useIconSurfaceMaterial } from './useIconSurfaceMaterial';
-import { BufferAttribute, BufferGeometry, CubicBezierCurve3, DoubleSide, DynamicDrawUsage, EllipseCurve, Float32BufferAttribute, Group, PlaneGeometry, Vector3 } from 'three';
+import { BufferAttribute, BufferGeometry, CubicBezierCurve3, DoubleSide, DynamicDrawUsage, EllipseCurve, Float32BufferAttribute, Group, Path, PlaneGeometry, ShapeGeometry, Vector3 } from 'three';
 import { mergeBufferGeometries } from 'three/examples/jsm/utils/BufferGeometryUtils';
 
 // Flat panels at distinct depths. Contours are filled strips, so their width
@@ -14,9 +15,9 @@ export function BrowserModel({ material, active = true }: { material: any; activ
     const surfaceMaterial = useIconSurfaceMaterial();
     const uniforms = useMemo(() => ({ ...material.uniforms, myPosition: { value: new Vector3(10, 0, 0) } }), [material]);
     const parts = useMemo(() => {
-        const panels: PlaneGeometry[] = [];
+        const panels: BufferGeometry[] = [];
         const strokes: BufferGeometry[] = [];
-        const thickness = .012;
+        const thickness = .008;
         const parts: { surface: BufferGeometry | null; outline: BufferGeometry; floating: boolean; phase: number; deformation?: { base: Float32Array; target: Float32Array } }[] = [];
         const flush = (floating = false, phase = 0) => {
             const surface = panels.length ? mergeBufferGeometries(panels)! : null;
@@ -39,6 +40,12 @@ export function BrowserModel({ material, active = true }: { material: any; activ
             stroke(x, y - (h - thickness) / 2, front, w);
             stroke(x - (w - thickness) / 2, y, front, thickness, h - thickness * 2);
             stroke(x + (w - thickness) / 2, y, front, thickness, h - thickness * 2);
+        };
+        const roundedFrame = (x: number, y: number, z: number, w: number, h: number, radius: number) => {
+            const shape = roundedShape(w, h, radius);
+            panels.push(new ShapeGeometry(shape, 8).translate(x, y, z));
+            shape.holes.push(new Path().copy(roundedShape(w - 2 * thickness, h - 2 * thickness, radius - thickness)));
+            strokes.push(new ShapeGeometry(shape, 8).translate(x, y, z + .003));
         };
         const ribbon = (points: Vector3[], width = thickness) => {
             const positions: number[] = [];
@@ -67,7 +74,7 @@ export function BrowserModel({ material, active = true }: { material: any; activ
         };
 
         // Simple geometric lettering on a floating tile overlapping the toolbar.
-        frame(-.44, .70, .48, .65, .50);
+        roundedFrame(-.44, .70, .48, .65, .50, .08);
         ribbon([new Vector3(-.69, .54, .495), new Vector3(-.56, .87, .495), new Vector3(-.43, .54, .495)]);
         stroke(-.56, .65, .495, .17);
         const bowl = new EllipseCurve(-.28, .635, .085, .09, 0, Math.PI * 2, false, 0);
@@ -109,7 +116,7 @@ export function BrowserModel({ material, active = true }: { material: any; activ
         alternateCurve.outline.dispose();
 
         // One outer contour, one toolbar divider, and flat window controls.
-        frame(0, 0, 0, 1.68, 1.22);
+        roundedFrame(0, 0, 0, 1.68, 1.22, .10);
         stroke(0, .455, .003, 1.68 - thickness * 2);
         [-.7, -.6, -.5].forEach(x => frame(x, .53, .012, .035, .035, false));
         stroke(.2, .53, .015, .76, .006);
@@ -127,7 +134,8 @@ export function BrowserModel({ material, active = true }: { material: any; activ
             { x: .53, y: -.07, z: .26, h: .39 }
         ];
         cards.forEach(({ x, y, z, h }, index) => {
-            frame(x, y, z, .40, h);
+            if (index === 1) roundedFrame(x, y, z, .40, h, .065);
+            else frame(x, y, z, .40, h);
             // Simple content strokes instead of nested rectangular boxes.
             frame(x, y + .06, z + .012, .28, .085, false);
             stroke(x - .035, y - .075, z + .012, .21);

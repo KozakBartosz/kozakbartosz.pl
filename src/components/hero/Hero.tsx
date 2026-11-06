@@ -1,7 +1,7 @@
 import { Canvas } from '@react-three/fiber';
 import { Physics, Debug, Triplet } from '@react-three/cannon';
 import { OrbitControls } from '@react-three/drei';
-import { MutableRefObject, RefObject, Suspense, useEffect, useMemo, useState } from 'react';
+import { MutableRefObject, RefObject, Suspense, useEffect, useMemo, useRef, useState } from 'react';
 import { Plane } from './Plane';
 import { Cone } from './Cone';
 import { Bydlak } from './Bydlak';
@@ -34,6 +34,7 @@ export const Hero = ({
     workProject: number;
     workCarousel: MutableRefObject<WorkCarousel>;
 }) => {
+    const heroRef = useRef<HTMLDivElement>(null);
     const [gravity, setGravity] = useState(false);
 
     const material = useMemo(
@@ -55,7 +56,7 @@ export const Hero = ({
 
 
     return (
-        <Container id="Hero" data-project-view={projectView}>
+        <Container id="Hero" ref={heroRef} data-project-view={projectView}>
             <Canvas
                 style={{
                     height: '100%',
@@ -96,7 +97,7 @@ export const Hero = ({
                 <Dust />
                 <Suspense fallback={null}><WorkModel reloadY={reloadY} elementRef={workPreviewRef} project={workProject} carouselRef={workCarousel} material={material} showcase={projectView} inspectRotation={inspectRotation} /></Suspense>
                 <fog attach="fog" color={0x090f0e} near={50} far={350} />
-                {!projectView && <Suspense fallback={null}><Playground /></Suspense>}
+                {!projectView && <Suspense fallback={null}><Playground heroRef={heroRef} /></Suspense>}
                 {iconRef.current &&
                     iconRef.current.map((el, i) => {
                         return (

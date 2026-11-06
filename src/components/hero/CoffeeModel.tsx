@@ -7,16 +7,16 @@ import { useIconSurfaceMaterial } from './useIconSurfaceMaterial';
 
 // Faceted ceramic, with explicit latitude/longitude contours like the other icons.
 export function CoffeeModel({ material }: { material: any }) {
-    const surfaceMaterial = useIconSurfaceMaterial();
+    const surfaceMaterial = useIconSurfaceMaterial(false);
     const reducedMotion = useReducedMotion();
     const bubbles = useRef<(Group | null)[]>([]);
     const parts = useMemo(() => {
-        const makePart = (solids: BufferGeometry[], paths: Vector3[][]) => {
+        const makePart = (solids: BufferGeometry[], paths: Vector3[][], radius: number) => {
             const strokes: BufferGeometry[] = [];
             paths.forEach(points => points.slice(1).forEach((end, index) => {
                 const start = points[index];
                 const direction = end.clone().sub(start);
-                const stroke = new CylinderGeometry(.005, .005, direction.length(), 6);
+                const stroke = new CylinderGeometry(radius, radius, direction.length(), 6);
                 stroke.applyQuaternion(new Quaternion().setFromUnitVectors(new Vector3(0, 1, 0), direction.normalize()));
                 stroke.translate((start.x + end.x) / 2, (start.y + end.y) / 2, (start.z + end.z) / 2);
                 strokes.push(stroke);
@@ -64,20 +64,33 @@ export function CoffeeModel({ material }: { material: any }) {
         const positions = edge.getAttribute('position');
         for (let i = 0; i < positions.count; i += 2) paths.push([new Vector3().fromBufferAttribute(positions, i), new Vector3().fromBufferAttribute(positions, i + 1)]);
         edge.dispose();
-        const result = [makePart([cup, saucer, handleBody], paths)];
+        const result = [makePart([cup, saucer, handleBody], paths, .003)];
         [-1, 1].forEach(side => {
             const shape = new Shape();
-            const points = [[-.31, -.13], [.03, -.13], [.25, -.28], [.18, -.13], [.31, -.13], [.36, -.08], [.36, .20], [.30, .26], [-.30, .26], [-.36, .20], [-.36, -.07], [-.31, -.13]];
-            points.forEach(([x, y], i) => i ? shape.lineTo(x * side, y) : shape.moveTo(x * side, y));
+            shape.moveTo(-.26 * side, -.13);
+            shape.lineTo(.015 * side, -.13);
+            shape.quadraticCurveTo(.036 * side, -.13, .053 * side, -.145);
+            shape.lineTo(.214 * side, -.264);
+            shape.quadraticCurveTo(.243 * side, -.285, .232 * side, -.252);
+            shape.lineTo(.193 * side, -.154);
+            shape.quadraticCurveTo(.183 * side, -.13, .209 * side, -.13);
+            shape.lineTo(.26 * side, -.13);
+            shape.quadraticCurveTo(.36 * side, -.13, .36 * side, -.03);
+            shape.lineTo(.36 * side, .16);
+            shape.quadraticCurveTo(.36 * side, .26, .26 * side, .26);
+            shape.lineTo(-.26 * side, .26);
+            shape.quadraticCurveTo(-.36 * side, .26, -.36 * side, .16);
+            shape.lineTo(-.36 * side, -.03);
+            shape.quadraticCurveTo(-.36 * side, -.13, -.26 * side, -.13);
             shape.closePath();
-            const body = new ExtrudeGeometry(shape, { depth: .065, bevelEnabled: false });
-            const edges = new EdgesGeometry(body);
+            const body = new ExtrudeGeometry(shape, { depth: .065, bevelEnabled: false, curveSegments: 8 });
+            const edges = new EdgesGeometry(body, 25);
             const p = edges.getAttribute('position');
             const lines: Vector3[][] = [];
             for (let i = 0; i < p.count; i += 2) lines.push([new Vector3().fromBufferAttribute(p, i), new Vector3().fromBufferAttribute(p, i + 1)]);
             [.025, .125].forEach(y => lines.push([new Vector3(-.22, y, .07), new Vector3(.22, y, .07)]));
             edges.dispose();
-            result.push(makePart([body], lines));
+            result.push(makePart([body], lines, .0036));
         });
         return result;
     }, []);

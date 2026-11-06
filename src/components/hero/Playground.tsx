@@ -5,9 +5,8 @@ import { GrabPointerProvider } from './GrabPointer';
 import { Cone } from './Cone';
 import { Bydlak } from './Bydlak';
 import { Icon } from './Icon';
-import { useEffect, useMemo, useRef, useState } from 'react';
+import { RefObject, useEffect, useMemo, useRef, useState } from 'react';
 import {
-    Group,
     MathUtils,
     Mesh,
     MeshBasicMaterial,
@@ -21,7 +20,6 @@ import { fragmentShader, vertexShader } from './shaders';
 import { Sphere, Torus } from '@react-three/drei';
 import { useFrame } from '@react-three/fiber';
 import { isPlaygroundPointer } from './isPlaygroundPointer';
-import { HERO_MIRROR_Y } from './consts';
 
 function createArray(size: number, shift: number) {
     return new Array(size)
@@ -52,23 +50,25 @@ if (hash != undefined && hash > 0) {
 }
 // const rubbish = createArray(61, -30);
 
-export const Playground = () => {
-    const models = useRef<Group>(null);
+export const Playground = ({ heroRef }: { heroRef: RefObject<HTMLDivElement> }) => {
     const [isPaused, setIsPaused] = useState(false);
 
     useEffect(() => {
+        const hero = heroRef.current;
+        if (!hero) return;
         const updatePaused = () => {
-            setIsPaused(window.scrollY >= window.innerHeight);
+            setIsPaused(hero.getBoundingClientRect().bottom <= 0);
         };
 
         updatePaused();
+        const observer = new ResizeObserver(updatePaused);
+        observer.observe(hero);
         window.addEventListener('scroll', updatePaused, { passive: true });
-        window.addEventListener('resize', updatePaused);
         return () => {
+            observer.disconnect();
             window.removeEventListener('scroll', updatePaused);
-            window.removeEventListener('resize', updatePaused);
         };
-    }, []);
+    }, [heroRef]);
 
     const material = useMemo(
         () => ({
@@ -213,9 +213,7 @@ export const Playground = () => {
         };
     }, []);
 
-    useFrame(({ camera }) => {
-        if (models.current) models.current.visible = camera.position.y > HERO_MIRROR_Y;
-
+    useFrame(() => {
         if (
             MySphere.current &&
             MySphere.current.scale &&
@@ -274,7 +272,7 @@ export const Playground = () => {
 
             <Plane position={[0, -13, 85.5]} rotation={[0, Math.PI, 0]} />
 
-            <group ref={models} name="playground-models">
+            <group visible={!isPaused} name="playground-models">
                 {rubbish.map((el, i) => (
                     <Cone
                         key={i}

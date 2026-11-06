@@ -1,8 +1,7 @@
-import { useCylinder } from '@react-three/cannon';
-import { Shadow, useGLTF } from '@react-three/drei';
+import { useGLTF } from '@react-three/drei';
 import { useFrame, useThree } from '@react-three/fiber';
 import { useEffect, useMemo, useRef, useState } from 'react';
-import { Vector3, PerspectiveCamera, Group, Matrix4, Vector4 } from 'three';
+import { BufferGeometry, Vector3, PerspectiveCamera, Group, Matrix4, Vector4 } from 'three';
 import { useReducedMotion } from '../useReducedMotion';
 import { HERO_DEPHTH, getHeroScrollOffset } from './consts';
 import { initialModelReveal, reloadRevealStart } from '../projectViewTransition';
@@ -12,10 +11,13 @@ import { InteractiveAccessories } from './InteractiveAccessories';
 import { CoffeeModel } from './CoffeeModel';
 import { BrowserModel } from './BrowserModel';
 import { FrontendAccessories } from './FrontendAccessories';
+import { Edge, strokeEdges } from './solidOutline';
 import { IconSurfaceFadeContext, useFadedIconSurface } from './useIconSurfaceMaterial';
 
 export function Icon({ material, element, reloadY, url, browser = false, coffee = false, frontend = false, interactive = false, gradientWidth = 40, active = true }: any) {
     const { camera } = useThree();
+    // Match the apparent size of the Front-end icon despite different model bounds.
+    const modelScale = coffee ? .80 : interactive ? .85 : browser ? .88 : 1;
     const reducedMotion = useReducedMotion();
     const revealStarted = useRef<number | null>();
     const reveal = useMemo(() => ({
@@ -127,6 +129,10 @@ export function Icon({ material, element, reloadY, url, browser = false, coffee 
         meshRef.current.position.x = projected.x;
         meshRef.current.position.y = projected.y - 2.5;
         meshRef.current.position.z = (linear * linear) / -2.5 + 10;
+        // Stacked sections have a fixed vertical gap above their headings.
+        const fitWidth = !frontend && window.innerWidth < 1000 ? Math.min(state.size.width, 460) : state.size.width;
+        const viewportScale = Math.min(20, fitWidth / state.size.height * 36);
+        meshRef.current.scale.setScalar(viewportScale * modelScale);
 
         if (window.innerWidth < 1000) {
             // Use the rendered camera so the mobile model stays at its DOM anchor.
@@ -178,9 +184,8 @@ export function Icon({ material, element, reloadY, url, browser = false, coffee 
         <IconSurfaceFadeContext.Provider value={fadeMatrix}>
             <group visible={active} scale={[20, 20, 20]} ref={meshRef}>
                 <WorkPreviewFade uniforms={reveal} edgeFade={false}>
-                {coffee ? <CoffeeModel material={groupMaterial} /> : browser ? <BrowserModel material={groupMaterial} active={active} /> : <GltfModel url={url} material={groupMaterial} />}
+                {frontend ? <FrontendAccessories material={groupMaterial} /> : coffee ? <CoffeeModel material={groupMaterial} /> : browser ? <BrowserModel material={groupMaterial} active={active} /> : <GltfModel url={url} material={groupMaterial} />}
                 {interactive && <InteractiveAccessories material={groupMaterial} />}
-                {frontend && <FrontendAccessories material={groupMaterial} />}
                 </WorkPreviewFade>
                 <ShadowDrop />
             </group>
@@ -188,12 +193,43 @@ export function Icon({ material, element, reloadY, url, browser = false, coffee 
     );
 }
 
+function suzanneOutline(body: BufferGeometry) {
+    const indices = body.getIndex()!;
+    const positions = body.getAttribute('position');
+    const edges = new Map<string, Edge>();
+    const add = (a: number, b: number) => {
+        const start = new Vector3().fromBufferAttribute(positions, a);
+        const end = new Vector3().fromBufferAttribute(positions, b);
+        const key = [start.toArray().join(','), end.toArray().join(',')].sort().join('|');
+        if (!start.equals(end)) edges.set(key, [start, end]);
+    };
+    for (let i = 0; i < indices.count;) {
+        const a = indices.getX(i++), b = indices.getX(i++), c = indices.getX(i++);
+        add(a, b);
+        add(b, c);
+        // The asset exports quads as consecutive triangles [a,b,c] [a,c,d].
+        // Keep the authored quad edges, including on non-planar faces.
+        if (i + 2 < indices.count && indices.getX(i) === a && indices.getX(i + 1) === c) {
+            const d = indices.getX(i + 2);
+            add(c, d);
+            add(d, a);
+            i += 3;
+        } else {
+            add(c, a);
+        }
+    }
+    return strokeEdges(Array.from(edges.values()), .003);
+}
+
 export function GltfModel({ url, material }: any) {
     const { nodes, materials } = useGLTF(url) as { nodes: any; materials: any };
-    const surface = useFadedIconSurface(materials.normal);
+    const surface = useFadedIconSurface(materials.normal, false);
+    // Keep Suzanne's facet pattern while replacing the wide baked wireframe.
+    const outline = useMemo(() => suzanneOutline(nodes.model.geometry), [nodes]);
+    useEffect(() => () => outline.dispose(), [outline]);
     return <>
         <mesh geometry={nodes.model.geometry} material={surface} castShadow receiveShadow />
-        <mesh geometry={nodes.edge.geometry} castShadow receiveShadow>
+        <mesh geometry={outline} castShadow receiveShadow>
             <shaderMaterial {...material} uniforms={{ ...material.uniforms, myPosition: { value: new Vector3(10, 0, 0) } }} />
         </mesh>
     </>;

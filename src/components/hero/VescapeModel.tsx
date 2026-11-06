@@ -1,6 +1,7 @@
 import { useEffect, useMemo } from 'react';
 import { BufferGeometry, Color, CylinderGeometry, ExtrudeGeometry, Path, PlaneGeometry, Shape, Vector2 } from 'three';
 import { mergeBufferGeometries } from 'three/examples/jsm/utils/BufferGeometryUtils';
+import { roundedShape } from './roundedShape';
 import { solidOutline } from './solidOutline';
 import { useIconSurfaceMaterial } from './useIconSurfaceMaterial';
 
@@ -13,21 +14,6 @@ const digits: Record<string, Point[]> = {
     '4': [[.8, 0], [.8, 1], [0, .37], [1, .37]],
     '8': [[.5, .5], [0, .72], [0, .86], [.2, 1], [.8, 1], [1, .86], [1, .72], [.5, .5], [0, .28], [0, .14], [.2, 0], [.8, 0], [1, .14], [1, .28], [.5, .5]],
 };
-
-function roundedShape(width: number, height: number, radius: number) {
-    const x = width / 2, y = height / 2;
-    const shape = new Shape();
-    shape.moveTo(-x + radius, -y);
-    shape.lineTo(x - radius, -y);
-    shape.quadraticCurveTo(x, -y, x, -y + radius);
-    shape.lineTo(x, y - radius);
-    shape.quadraticCurveTo(x, y, x - radius, y);
-    shape.lineTo(-x + radius, y);
-    shape.quadraticCurveTo(-x, y, -x, y - radius);
-    shape.lineTo(-x, -y + radius);
-    shape.quadraticCurveTo(-x, -y, -x + radius, -y);
-    return shape;
-}
 
 function extrude(shape: Shape, depth: number) {
     return new ExtrudeGeometry(shape, { depth, bevelEnabled: false, curveSegments: 8 }).translate(0, 0, -depth);

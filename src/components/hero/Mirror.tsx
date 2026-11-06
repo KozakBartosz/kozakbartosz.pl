@@ -24,8 +24,10 @@ export const Mirror = ({ elementRef }: { elementRef?: RefObject<HTMLDivElement> 
             position={[0, -13, -170]}>
             {(Material, props) => <Material metalness={1} roughness={1} {...props} />}
         </Reflector>
-        <mesh position={[0, -13.5, -170]} rotation={[Math.PI / 2, 0, 0]}>
-            <planeGeometry args={[512, 512]} /><meshPhysicalMaterial color={0x090f0e} />
+        {/* Hide geometry through the underside and front edge while keeping the page background visible. */}
+        <mesh position={[0, -14.51, -170.6]} renderOrder={-1}>
+            <boxGeometry args={[512, 3, 512]} />
+            <meshBasicMaterial colorWrite={false} />
         </mesh>
         {elementRef && <Gradient />}
     </group>;

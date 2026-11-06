@@ -87,11 +87,35 @@ function SceneDepthOfField({ workVisible }: { workVisible: { current: boolean } 
 
 export const PostEffects = ({ workPreviewRef }: { workPreviewRef: RefObject<HTMLDivElement> }) => {
     const workVisible = useRef(false);
+    const previewObserver = useRef<IntersectionObserver | null>(null);
+    const observedPreview = useRef<HTMLDivElement | null>(null);
     useEffect(() => {
-        const observer = new IntersectionObserver(([entry]) => { workVisible.current = entry.isIntersecting; }, { threshold: .15 });
-        if (workPreviewRef.current) observer.observe(workPreviewRef.current);
-        return () => observer.disconnect();
-    }, [workPreviewRef]);
+        const observer = new IntersectionObserver(entries => {
+            for (const entry of entries) {
+                if (entry.target === observedPreview.current && entry.target.isConnected) {
+                    workVisible.current = entry.isIntersecting;
+                }
+            }
+        }, { threshold: .15 });
+        previewObserver.current = observer;
+        return () => {
+            observer.disconnect();
+            previewObserver.current = null;
+            observedPreview.current = null;
+        };
+    }, []);
+    // Project navigation can replace the DOM node without changing its ref.
+    // Read the committed anchor before sizing and rendering the scene.
+    useFrame(() => {
+        const observer = previewObserver.current;
+        const preview = workPreviewRef.current;
+        const previous = observedPreview.current;
+        if (!observer || preview === previous) return;
+        if (previous) observer.unobserve(previous);
+        observedPreview.current = preview;
+        if (preview) observer.observe(preview);
+        else workVisible.current = false;
+    }, 0.25);
     const children = useMemo(() => {
         const effects = [<SceneDepthOfField key="depth" workVisible={workVisible} />, <SmoothBloom key="bloom" />];
         if (pixelBudget > 0 && Number.isFinite(pixelBudget)) effects.unshift(<SceneResolution key="resolution" workVisible={workVisible} />);

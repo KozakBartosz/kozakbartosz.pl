@@ -17,6 +17,24 @@ export const SectionNavigation = () => {
 
     useEffect(() => {
         let frame = 0;
+        let hashTimer = 0;
+        let scrolled = false;
+
+        const syncHash = (current: string) => {
+            const { hash, href, pathname, search } = window.location;
+            if (!current || hash === `#${current}`) return;
+            // Keep fragments used by the scene or other anchors.
+            if (hash && !entries.some(({ id }) => hash === `#${id}`)) return;
+
+            hashTimer = window.setTimeout(() => {
+                // A link or history navigation may have changed the URL meanwhile.
+                if (window.location.href !== href) return;
+                const url = `${pathname}${search}#${current}`;
+                const state = window.history.state;
+                window.history.replaceState(state?.__N ? { ...state, as: url } : state, '', url);
+            }, 200);
+        };
+
         const update = () => {
             frame = 0;
             const marker = window.innerHeight / 2;
@@ -34,17 +52,27 @@ export const SectionNavigation = () => {
                     (marker - rect.top) / Math.max(1, rect.height)
                 )));
             } else setProgress(0);
+            if (scrolled) {
+                scrolled = false;
+                syncHash(current);
+            }
+        };
+        const scheduleUpdate = () => {
+            if (!frame) frame = requestAnimationFrame(update);
         };
         const onScroll = () => {
-            if (!frame) frame = requestAnimationFrame(update);
+            window.clearTimeout(hashTimer);
+            scrolled = true;
+            scheduleUpdate();
         };
         update();
         window.addEventListener('scroll', onScroll, { passive: true });
-        window.addEventListener('resize', onScroll);
+        window.addEventListener('resize', scheduleUpdate);
         return () => {
             cancelAnimationFrame(frame);
+            window.clearTimeout(hashTimer);
             window.removeEventListener('scroll', onScroll);
-            window.removeEventListener('resize', onScroll);
+            window.removeEventListener('resize', scheduleUpdate);
         };
     }, []);
 

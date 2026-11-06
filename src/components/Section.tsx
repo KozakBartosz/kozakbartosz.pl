@@ -15,7 +15,7 @@ export const Sections = ({
 }) => {
     return (
         <>
-        <SectionNavigation />
+        {visible && <SectionNavigation />}
         <Container>
             <Work {...work} />
             <Section id="frontend" aria-labelledby="frontend-title" tabIndex={-1}>

@@ -1,9 +1,10 @@
 import { useCylinder } from '@react-three/cannon';
 import { useGLTF } from '@react-three/drei';
-import { Vector3 } from 'three';
-import { useFadedIconSurface } from './useIconSurfaceMaterial';
+import { useEffect, useMemo } from 'react';
+import { Mesh, Vector3 } from 'three';
+import { solidOutline } from './solidOutline';
 
-export function Bydlak({ material, position, scale }: any) {
+export function Bydlak({ material, surface, position, scale }: any) {
     const [ref] = useCylinder(() => ({
         mass: 10,
         position: position ? position : [0, 0, 0],
@@ -13,27 +14,29 @@ export function Bydlak({ material, position, scale }: any) {
     }));
     return (
         <group dispose={null} scale={scale ? scale : [0, 0, 0]} ref={ref}>
-            <BydlakModel material={material} />
+            <BydlakModel material={material} surface={surface} />
         </group>
     );
 }
 
 // Shared visual model; the hero adds its physics body separately.
-export function BydlakModel({ material }: any) {
-    const { nodes, materials } = useGLTF('/models/logo.glb');
-    const surface = useFadedIconSurface(materials['Material.001']);
+export function BydlakModel({ material, surface }: any) {
+    const { nodes } = useGLTF('/models/logo.glb');
+    const body = (nodes.Cone as Mesh).geometry;
+    const outline = useMemo(() => solidOutline(body, .0075), [body]);
+    useEffect(() => () => outline.dispose(), [outline]);
     return <group dispose={null}>
             <mesh
                 castShadow
                 receiveShadow
-                geometry={(nodes.Cone as any).geometry}
+                geometry={body}
                 material={surface}
                 rotation={[0, Math.PI / -4, 0]}
             />
             <mesh
                 castShadow
                 receiveShadow
-                geometry={(nodes.Corner as any).geometry}
+                geometry={outline}
                 rotation={[0, Math.PI / -4, 0]}
             >
                 {/* <meshBasicMaterial color={0x00ffee} /> */}

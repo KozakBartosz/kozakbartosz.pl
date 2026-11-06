@@ -1,10 +1,9 @@
 import { Triplet, useCylinder } from '@react-three/cannon';
-import { useGLTF } from '@react-three/drei';
 import { useFrame } from '@react-three/fiber';
-import { useEffect, useRef, useState } from 'react';
-import { Material, Vector3 } from 'three';
+import { useEffect, useRef } from 'react';
+import { CylinderGeometry, Material, Vector3 } from 'three';
 import { useGrabPointer } from './GrabPointer';
-import { HERO_DEPHTH } from './consts';
+import { solidOutline } from './solidOutline';
 
 interface Props {
     position?: Triplet;
@@ -13,25 +12,26 @@ interface Props {
     material?: any;
     force: boolean;
     surface: Material;
-    highlight: Material;
 }
 
-export function Cone({ force, material, surface, highlight, ...props }: Props) {
-    const a = 8;
+const coneSize = 8;
+const cone = new CylinderGeometry(0, coneSize / 2, coneSize * .816, 3);
+const body = cone.toNonIndexed();
+cone.dispose();
+body.computeVertexNormals();
+const outline = solidOutline(body, .053);
+
+export function Cone({ force, material, surface, ...props }: Props) {
     const [ref, api] = useCylinder(() => ({
         mass: 2,
         ...props,
-        args: [0.01, a / 2, 0.816 * a, 3]
+        args: [0.01, coneSize / 2, 0.816 * coneSize, 3]
         // type: 'Static'
     }));
 
     const materialRef = useRef(null);
     const meshRef = useRef(null);
     const { position: localForceVec, touch: phone } = useGrabPointer();
-
-    const [color, setColor] = useState(0);
-
-    const { nodes, materials } = useGLTF('/models/cone.glb');
 
     const localForce = useRef(false);
 
@@ -112,17 +112,13 @@ export function Cone({ force, material, surface, highlight, ...props }: Props) {
                     (Math.random() - 0.5) * 2000
                 ]);
 
-                setColor(1);
-            }}
-            onPointerLeave={(e) => {
-                setColor(0);
             }}
         >
             <mesh
                 castShadow
                 receiveShadow
-                geometry={(nodes.Cone as any).geometry}
-                rotation={[0, Math.PI / -4, 0]}
+                geometry={outline}
+                scale={.95}
             >
                 <shaderMaterial
                     attach="material"
@@ -137,10 +133,9 @@ export function Cone({ force, material, surface, highlight, ...props }: Props) {
                 receiveShadow
                 scale={[0.95, 0.95, 0.95]}
                 ref={meshRef}
-                material={color ? highlight : surface}
-            >
-                <cylinderGeometry args={[0, a / 2, 0.816 * a, 3]} />
-            </mesh>
+                material={surface}
+                geometry={body}
+            />
             {/* <shaderMaterial attach="material" {...material} />; */}
         </group>
     );

@@ -19,8 +19,8 @@ export const Mirror = ({ elementRef }: { elementRef?: RefObject<HTMLDivElement> 
         floor.current.visible = box.bottom > 0 && box.top < size.height;
     });
     return <group ref={floor}>
-        <Reflector blur={[512, 512]} mixBlur={1} mixStrength={elementRef ? .65 : .3}
-            resolution={512} args={[512, 512]} rotation={[-Math.PI / 2, 0, 0]}
+        <Reflector blur={1024} mixBlur={0.4} mixStrength={elementRef ? .65 : .3}
+            resolution={1024} args={[512, 512]} rotation={[-Math.PI / 2, 0, 0]}
             mirror={1} minDepthThreshold={.1} maxDepthThreshold={3} depthScale={3}
             position={[0, HERO_MIRROR_Y, -170]}>
             {(Material, props) => <Material metalness={1} roughness={1} {...props} />}

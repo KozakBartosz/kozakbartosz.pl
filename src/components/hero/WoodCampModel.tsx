@@ -42,14 +42,14 @@ export function WoodCampModel({ material }: { material: any }) {
                 hems.push(...edgeSegments(part, 180));
                 const folds: number[][] = part.userData.folds ?? [];
                 const positions = part.getAttribute('position');
-                for (const fold of folds) {
-                    for (let i = 1; i < fold.length; i++) {
-                        hems.push([
-                            new Vector3().fromBufferAttribute(positions, fold[i - 1]),
-                            new Vector3().fromBufferAttribute(positions, fold[i]),
-                        ]);
+                folds.forEach((fold, index) => {
+                    // The second fold runs along the back. Lift it clear of the cloth.
+                    const offset = new Vector3(0, index === 1 ? .065 : 0, index === 1 ? -.025 : 0);
+                    const points = fold.map(vertex => new Vector3().fromBufferAttribute(positions, vertex).add(offset));
+                    for (let i = 1; i < points.length; i++) {
+                        hems.push([points[i - 1].clone(), points[i].clone()]);
                     }
-                }
+                });
             } else structure.push(part);
         });
         const body = mergeBufferGeometries(parts)!;

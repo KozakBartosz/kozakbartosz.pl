@@ -1,5 +1,4 @@
 import { Physics, Debug, Triplet } from '@react-three/cannon';
-import { createIconSurfaceMaterial } from './iconSurfaceFade';
 import { Plane } from './Plane';
 import { GrabPointerProvider } from './GrabPointer';
 import { Cone } from './Cone';
@@ -10,14 +9,12 @@ import {
     MathUtils,
     Mesh,
     MeshBasicMaterial,
-    MeshPhysicalMaterial,
     Object3D,
-    ShaderMaterial,
     Vector3,
     Vector4
 } from 'three';
 import { fragmentShader, vertexShader } from './shaders';
-import { Sphere, Torus } from '@react-three/drei';
+import { Sphere, Torus, useGLTF } from '@react-three/drei';
 import { useFrame } from '@react-three/fiber';
 import { isPlaygroundPointer } from './isPlaygroundPointer';
 
@@ -88,14 +85,8 @@ export const Playground = ({ heroRef }: { heroRef: RefObject<HTMLDivElement> }) 
         []
     );
 
-    const coneSurface = useMemo(() => createIconSurfaceMaterial(
-        new MeshPhysicalMaterial({ color: 0x0e1211, reflectivity: 1, flatShading: true })
-    ), []);
-    const coneHighlight = useMemo(() => new ShaderMaterial(material), [material]);
-    useEffect(() => () => {
-        coneSurface.dispose();
-        coneHighlight.dispose();
-    }, [coneSurface, coneHighlight]);
+    const { materials } = useGLTF('/models/logo.glb');
+    const modelSurface = materials['Material.001'];
 
     const [modeActive, setModeActive] = useState(false);
     const [gravity, setGravity] = useState<Triplet>([0, -0.2, 0]);
@@ -284,8 +275,7 @@ export const Playground = ({ heroRef }: { heroRef: RefObject<HTMLDivElement> }) 
                         rotation={[Math.random(), Math.random(), Math.random()]}
                         material={material}
                         force={modeActive}
-                        surface={coneSurface}
-                        highlight={coneHighlight}
+                        surface={modelSurface}
                     />
                 ))}
                 <Cone
@@ -294,10 +284,9 @@ export const Playground = ({ heroRef }: { heroRef: RefObject<HTMLDivElement> }) 
                     rotation={[Math.random(), Math.random(), Math.random()]}
                     material={material}
                     force={modeActive}
-                    surface={coneSurface}
-                    highlight={coneHighlight}
+                    surface={modelSurface}
                 />
-                <Bydlak material={material} scale={[20, 20, 20]} />
+                <Bydlak material={material} surface={modelSurface} scale={[20, 20, 20]} />
 
                 <mesh
                     position={[0, -13, 0]}

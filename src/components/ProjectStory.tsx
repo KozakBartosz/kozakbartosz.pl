@@ -18,7 +18,7 @@ export const projectHeadings: Record<WorkCase, { name: string; detail: string }>
 };
 
 function DeviceFrame({ kind = 'phone', image, video, label, detail }: {
-    kind?: 'phone' | 'watch' | 'tablet'; image: string; video?: string; label: string; detail: string;
+    kind?: 'phone' | 'watch'; image: string; video?: string; label: string; detail: string;
 }) {
     return <figure className={`device-exhibit device-${kind}`}>
         <div className="device-object">
@@ -156,26 +156,60 @@ function PanelSections() {
                 </div>
                 <p>The editor lets you adjust each panel’s dimensions, thickness and color. You can check the layout’s dimensions and price as you go, then switch to 3D to see the arrangement from another angle.</p>
             </div>
-            <figure className="panel-example">
+            <ProjectPreview domain="wyciszamy.net" label="Layout editor">
                 <img src={panelMedia + 'editor.webp'} alt="Panel editor with a rectangular layout, size and color controls, and a price summary" loading="lazy" />
-                <figcaption>Layout editor</figcaption>
-            </figure>
+            </ProjectPreview>
             <div className="panel-examples">
-                <figure className="panel-example">
+                <ProjectPreview domain="wyciszamy.net" label="3D preview">
                     <img src={panelMedia + 'preview.webp'} alt="3D preview of gray and blue hexagonal acoustic panels" loading="lazy" />
-                    <figcaption>3D preview</figcaption>
-                </figure>
-                <figure className="panel-example">
+                </ProjectPreview>
+                <ProjectPreview domain="wyciszamy.net" label="Panels in motion">
                     <ViewportVideo src={panelMedia + 'panels-in-motion.mp4'} poster={panelMedia + 'motion-poster.webp'} disablePictureInPicture aria-label="Short recording of acoustic panels in motion" />
-                    <figcaption>Panels in motion</figcaption>
-                </figure>
+                </ProjectPreview>
             </div>
         </section>
     </>;
 }
 
-function BrowserShot({ image, label, address }: { image: string; label: string; address: string }) {
-    return <figure className="clinic-browser"><figcaption><span className="website-frame-dots" aria-hidden="true"><i /><i /><i /></span><span>{address}</span><span>{label}</span></figcaption><img src={'/projects/braniborska/' + image + '.png'} alt={label} loading="lazy" /></figure>;
+function ProjectPreview({ children, domain, label, detail, kind = 'desktop' }: {
+    children: ReactNode; domain: string; label: string; detail?: string; kind?: 'desktop' | 'tablet' | 'phone';
+}) {
+    return <figure className={`project-preview project-preview-${kind}`}>
+        <div className="project-preview-frame">
+            {kind === 'desktop' && <div className="project-preview-bar">
+                <span className="website-frame-dots" aria-hidden="true"><i /><i /><i /></span>
+                <span>{domain}</span>
+                <span>{label}</span>
+            </div>}
+            {kind === 'phone' && <div className="project-phone-status" aria-hidden="true">
+                <span>9:41</span>
+                <span className="project-preview-camera" />
+                <span className="project-phone-indicators">
+                    <svg width="9.1" height="7" viewBox="0 0 13 10" fill="currentColor">
+                        <path d="M0 7h2v3H0z M3.5 5h2v5h-2z M7 2.5h2V10H7z M10.5 0h2v10h-2z" />
+                    </svg>
+                    <svg width="13.3" height="7" viewBox="0 0 19 10" fill="none">
+                        <rect x=".5" y=".5" width="16" height="9" rx="2" stroke="currentColor" />
+                        <rect x="2.5" y="2.5" width="11" height="5" rx=".75" fill="currentColor" />
+                        <path d="M18 3.5v3" stroke="currentColor" />
+                    </svg>
+                </span>
+            </div>}
+            {kind === 'tablet' && <div className="project-tablet-bezel" aria-hidden="true">
+                <span className="project-preview-camera" />
+            </div>}
+            {children}
+        </div>
+        {detail && <figcaption><span>{label}</span>{detail}</figcaption>}
+    </figure>;
+}
+
+function ClinicPreview({ image, label, ...props }: {
+    image: string; label: string; detail?: string; kind?: 'desktop' | 'tablet' | 'phone';
+}) {
+    return <ProjectPreview domain="braniborska.pl" label={label} {...props}>
+        <img src={`/projects/braniborska/${image}.png`} alt={label} loading="lazy" />
+    </ProjectPreview>;
 }
 
 function ClinicSections() {
@@ -185,20 +219,18 @@ function ClinicSections() {
             ['Present', 'Next.js', 'A custom frontend connected to the content layer.'],
             ['Experience', 'A responsive interface', 'Clear navigation, considered layouts and fluid interactions.'],
         ]} /></section>
-        <section className="clinic-interface" id="clinic-interface"><div className="epic-section-heading"><div><SectionKicker number="04">Visual direction</SectionKicker><h2>The space.<br />The people.<br /><em>The details.</em></h2></div><div><p>The website brings together the clinic’s interior, its specialists and its medical services. I shaped the interface around a clean hierarchy, expressive layouts and interactions that support exploration.</p><VisitProjectLink href="https://www.braniborska.pl/" domain="braniborska.pl" /></div></div><BrowserShot image="home-desktop" address="braniborska.pl" label="Homepage / Desktop" /><div className="clinic-screen-pair"><BrowserShot image="offer-desktop" address="braniborska.pl" label="Services / Desktop" /><DeviceFrame kind="tablet" image="/projects/braniborska/home-tablet.png" label="Homepage / Tablet" detail="The clinic homepage at the tablet breakpoint." /></div></section>
-        <section className="clinic-responsive"><div className="epic-section-heading"><div><SectionKicker number="05">Responsive composition</SectionKicker><h2>Different screens.<br /><em>The same care.</em></h2></div><p>The desktop and mobile layouts share the same visual identity while adapting navigation, imagery and the order of information to the available space.</p></div><div className="clinic-profile"><BrowserShot image="specialist-desktop" address="braniborska.pl" label="Specialist profile / Desktop" /><DeviceFrame image="/projects/braniborska/specialist-mobile.png" label="The mobile profile" detail="A clear route from a specialist’s profile to booking options." /></div><div className="clinic-mobile-pair"><DeviceFrame image="/projects/braniborska/home-mobile.png" label="Homepage / Mobile" detail="The clinic’s atmosphere, carried onto a smaller screen." /><div><span className="eyebrow">From layout to interaction</span><h2>Room to read.<br /><em>Easy to explore.</em></h2><p>Responsive navigation, a clear service structure and carefully composed specialist profiles keep the experience consistent across the website.</p><BrowserShot image="service-desktop" address="braniborska.pl" label="Service detail / Desktop" /></div></div></section>
+        <section className="clinic-interface" id="clinic-interface"><div className="epic-section-heading"><div><SectionKicker number="04">Visual direction</SectionKicker><h2>The space.<br />The people.<br /><em>The details.</em></h2></div><div><p>The website brings together the clinic’s interior, its specialists and its medical services. I shaped the interface around a clean hierarchy, expressive layouts and interactions that support exploration.</p><VisitProjectLink href="https://www.braniborska.pl/" domain="braniborska.pl" /></div></div><ClinicPreview image="home-desktop" label="Homepage / Desktop" /><div className="clinic-screen-pair"><ClinicPreview image="offer-desktop" label="Services / Desktop" /><ClinicPreview kind="tablet" image="home-tablet" label="Homepage / Tablet" detail="The clinic homepage at the tablet breakpoint." /></div></section>
+        <section className="clinic-responsive"><div className="epic-section-heading"><div><SectionKicker number="05">Responsive composition</SectionKicker><h2>Different screens.<br /><em>The same care.</em></h2></div><p>The desktop and mobile layouts share the same visual identity while adapting navigation, imagery and the order of information to the available space.</p></div><div className="clinic-profile"><ClinicPreview image="specialist-desktop" label="Specialist profile / Desktop" /><ClinicPreview kind="phone" image="specialist-mobile" label="The mobile profile" detail="A clear route from a specialist’s profile to booking options." /></div><div className="clinic-mobile-pair"><ClinicPreview kind="phone" image="home-mobile" label="Homepage / Mobile" detail="The clinic’s atmosphere, carried onto a smaller screen." /><div><span className="eyebrow">From layout to interaction</span><h2>Room to read.<br /><em>Easy to explore.</em></h2><p>Responsive navigation, a clear service structure and carefully composed specialist profiles keep the experience consistent across the website.</p><ClinicPreview image="service-desktop" label="Service detail / Desktop" /></div></div></section>
     </>;
 }
 
 const Epic = styled.div`
     .panels-interface { padding: 5rem 0; scroll-margin-top: 3rem; }
     .panel-examples { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 2.4rem; }
-    .panel-example { min-width: 0; margin: 3rem 0 0; }
-    .panel-example img, .panel-example video { display: block; width: 100%; height: auto; }
-    .panel-example video { border-radius: 2% / 3%; pointer-events: none; }
-    .panel-example figcaption { margin-top: 1rem; color: #91a4a1; font-size: 1.2rem; }
+    .panels-interface .project-preview { margin-top: 3rem; }
+    .panel-examples video { pointer-events: none; }
     @media (min-width: 641px) {
-        .panel-examples > .panel-example:last-child { margin-top: clamp(8rem, 8vw, 14rem); }
+        .panel-examples > .project-preview:last-child { margin-top: clamp(8rem, 8vw, 14rem); }
     }
     @media (max-width: 640px) {
         .panel-examples { grid-template-columns: minmax(0, 1fr); gap: 0; }
@@ -331,16 +363,27 @@ const Epic = styled.div`
     &[data-clinic='true'] .epic-title h1, &[data-panels='true'] .epic-title h1 { font-size: clamp(4.5rem, 6vw, 9rem); }
     &[data-clinic='true'] .epic-model .case-model { height: 49rem; }
     .clinic-interface { padding: 5rem 0 7rem; border-block: 1px solid #24504e; scroll-margin-top: 3rem; }
-    .clinic-browser, .clinic-responsive .device-phone .device-hardware { border: 1px solid #24504e; }
-    .clinic-browser { min-width: 0; margin: 4rem 0 0; }
-    .clinic-browser figcaption { display: flex; align-items: center; gap: 1.5rem; padding: 1.4rem 1.6rem; font-size: 1.1rem; line-height: 1.5; color: #91a4a1; }
-    .clinic-browser figcaption > span:last-child { margin-left: auto; font-size: .95rem; }
-    .clinic-browser img { display: block; width: 100%; height: auto; }
-    .clinic-screen-pair { display: grid; grid-template-columns: 1fr 1fr; gap: 3rem; }
+    .project-preview { min-width: 0; margin: 4rem 0 0; }
+    .project-preview-frame { padding: .8rem; border: 1px solid #24504e; border-radius: 1.6rem; background: #0b1312; }
+    .project-preview-bar, .project-phone-status { color: #aabfbd; }
+    .project-preview-bar { display: flex; flex-wrap: wrap; align-items: center; gap: .4rem 1rem; padding: .5rem .5rem 1rem; font-size: 1.1rem; line-height: 1.5; }
+    .project-preview-bar > span:last-child { margin-left: auto; }
+    .project-preview-frame > :is(img, video) { display: block; width: 100%; height: auto; border-radius: .8rem; }
+    .project-preview figcaption { margin-top: 1.4rem; text-align: center; font-size: 1.45rem; line-height: 1.6; color: #aabfbd; }
+    .project-preview figcaption > span { display: block; margin-bottom: .5rem; font-size: 1.65rem; color: #dce5e3; }
+    .project-preview-tablet { width: min(100%, 49rem); margin-inline: auto; }
+    .project-preview-phone { width: min(100%, 28rem); margin-inline: auto; }
+    .project-preview-phone .project-preview-frame { border-radius: 2.8rem; }
+    .project-preview-phone img { border-radius: 1.8rem; }
+    .project-phone-status { display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; padding: .15rem 1.2rem .45rem; font-size: .9rem; line-height: 1.2; font-variant-numeric: tabular-nums; }
+    .project-phone-indicators { display: flex; align-items: center; justify-self: end; gap: .6rem; }
+    .project-tablet-bezel { display: grid; place-items: center; height: 1.8rem; margin-top: -.3rem; }
+    .project-preview-camera { width: .7rem; height: .7rem; border: 1px solid #365550; border-radius: 50%; background: #162c36; box-shadow: inset 0 0 0 1px #080e11; }
+    .clinic-screen-pair { display: grid; grid-template-columns: 1fr 1fr; align-items: start; gap: 3rem; }
     .clinic-responsive { padding: 7rem 0 1rem; }
     .clinic-profile { display: grid; grid-template-columns: 2.2fr 1fr; gap: 5%; align-items: center; margin-top: 4rem; }
-    .clinic-profile .clinic-browser { margin: 0; }
-    .clinic-profile .device-object { max-width: 25rem; }
+    .clinic-profile .project-preview, .clinic-mobile-pair > .project-preview { margin-top: 0; }
+    .clinic-profile .project-preview-phone { max-width: 25rem; }
     .clinic-mobile-pair { display: grid; grid-template-columns: 1fr 2fr; gap: 10%; align-items: center; padding-top: 7rem; }
     @media (min-width: 641px) and (max-width: 1100px) {
         .epic-contribution { display: block; }
@@ -355,10 +398,8 @@ const Epic = styled.div`
         .epic-layout { margin-top: 2rem; }
         .epic-model { order: -1; }
         .clinic-screen-pair, .clinic-profile, .clinic-mobile-pair { display: block; }
-        .clinic-profile .device-exhibit { margin-top: 4rem; }
+        .clinic-profile .project-preview-phone { margin-top: 4rem; }
         .clinic-mobile-pair > div { margin-top: 4rem; }
-        .clinic-browser figcaption { font-size: .85rem; gap: .8rem; padding: 1rem; }
-        .clinic-browser figcaption > span:last-child { font-size: .75rem; }
         .clinic-interface, .clinic-responsive { padding-block: 4rem; }
         &[data-clinic='true'] .epic-title h1, &[data-panels='true'] .epic-title h1 { font-size: clamp(3.2rem, 10vw, 5rem); }
         &[data-clinic='true'] .epic-title h1 > .project-transition-detail { font-size: 2rem; }
@@ -384,10 +425,4 @@ const Epic = styled.div`
         .epic-platforms { margin-top: 0; }
     }
     @media (max-width: 640px) { .epic-native > .project-detail-list { margin-top: 3rem; } }
-
-    .clinic-screen-pair { align-items: start; }
-    .clinic-screen-pair .device-tablet { margin: 4rem 0 0; }
-    .device-tablet .device-object { width: min(100%, 49rem); }
-    .device-tablet .device-hardware { padding: 1rem; border-radius: 2.4rem; }
-    .device-tablet .device-hardware img { display: block; border-radius: 1.5rem; }
 `;

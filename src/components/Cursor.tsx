@@ -5,6 +5,7 @@ import {
 } from 'three';
 import { cursorConfig } from './cursorConfig';
 import { cursorFragmentShader, cursorVertexShader } from './cursorShader';
+import { updateProjectCursor } from './projectCursor';
 
 const INTERACTIVE = 'a[href], button:not(:disabled), [role="button"], input:not(:disabled), textarea:not(:disabled), select:not(:disabled), [data-cursor="link"]';
 
@@ -154,6 +155,18 @@ export const Cursor = () => {
                 uniforms.uRoundHover.value += (roundHover - uniforms.uRoundHover.value) * shapeEase;
                 uniforms.uOpacity.value += ((visible ? 1 : 0) - uniforms.uOpacity.value) * ease;
                 uniforms.uPress.value += ((pressed ? 1 : 0) - uniforms.uPress.value) * ease;
+                if (visible && activeHovered?.hasAttribute('data-project-cursor')) {
+                    // Match the shader's rotated, press-scaled right edge. The
+                    // trailing extension moves only the opposite edge.
+                    const edge = size.x * (1 - cursorConfig.pressShrink * uniforms.uPress.value * (1 - uniforms.uMorph.value));
+                    updateProjectCursor({
+                        button: activeHovered,
+                        x: center.x + origin.x + Math.cos(angle) * edge,
+                        y: center.y + origin.y + Math.sin(angle) * edge,
+                    });
+                } else {
+                    updateProjectCursor(null);
+                }
                 // Rasterize only the cursor region, even on large desktop displays.
                 const trailLength = 2 * cursorConfig.maxExtension * uniforms.uStretch.value * (1 - uniforms.uMorph.value);
                 const reachX = Math.max(size.x, size.y) * 1.8 + trailLength;
@@ -215,6 +228,7 @@ export const Cursor = () => {
                 visible = false;
                 pressed = false;
                 hovered = null;
+                updateProjectCursor(null);
                 delete document.documentElement.dataset.shaderCursor;
                 wake();
             };
@@ -280,6 +294,7 @@ export const Cursor = () => {
             destroy = () => {
                 sizeObserver.disconnect();
                 cancelAnimationFrame(frame);
+                updateProjectCursor(null);
                 delete document.documentElement.dataset.shaderCursor;
                 window.removeEventListener('pointermove', move);
                 window.removeEventListener('pointerdown', down);

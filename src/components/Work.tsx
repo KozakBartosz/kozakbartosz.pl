@@ -6,6 +6,7 @@ import { cursorConfig } from './cursorConfig';
 import { WORK_CASES, WorkCarousel, workProjectIndex } from './workCarousel';
 import { useRouter } from 'next/router';
 import { projectViewTransition } from './projectViewTransition';
+import { subscribeToProjectCursor } from './projectCursor';
 
 type ProjectLink = { label: string; href: string; kind: 'Website' | 'Source code' };
 type Project = { name: string; type: string; description: string; links: ProjectLink[] };
@@ -103,13 +104,25 @@ export const Work = ({ active, setActive, previewRef, carouselRef }: WorkProps) 
         if (!section || !button || !caption) return;
         let frame = 0;
         let disposed = false;
-        const transitionStart = performance.now();
+        let transitionStart = performance.now();
         let previousTime = transitionStart;
+        let cursorEdge: { x: number; y: number } | null = null;
+        const draw = (x: number, y: number, endX: number, endY: number) => {
+            routePosition.current = { x, y };
+            const third = (endX - x) / 3;
+            pathRef.current?.setAttribute('d', `M${x},${y} H${x + third} L${x + third * 2},${endY} H${endX}`);
+        };
         const update = (time: number) => {
             frame = 0;
             const origin = section.getBoundingClientRect();
-            const start = button.getBoundingClientRect();
             const end = caption.getBoundingClientRect();
+            const endX = origin.width / 2;
+            const endY = end.bottom - origin.top;
+            if (cursorEdge) {
+                draw(cursorEdge.x - origin.left, cursorEdge.y - origin.top, endX, endY);
+                return;
+            }
+            const start = button.getBoundingClientRect();
             const targetX = start.right - origin.left;
             const targetY = start.top + start.height / 2 - origin.top;
             const dt = Math.min((time - previousTime) / 1000 || 1 / 60, cursorConfig.maxFrameDelta);
@@ -121,17 +134,22 @@ export const Work = ({ active, setActive, previewRef, carouselRef }: WorkProps) 
             const position = routePosition.current || { x: targetX, y: targetY };
             position.x += (targetX - position.x) * ease;
             position.y += (targetY - position.y) * ease;
-            routePosition.current = position;
             const { x, y } = position;
-            const endX = origin.width / 2;
-            const endY = end.bottom - origin.top;
-            const third = (endX - x) / 3;
-            const firstBend = x + third;
-            const secondBend = x + third * 2;
-            pathRef.current?.setAttribute('d', `M${x},${y} H${firstBend} L${secondBend},${endY} H${endX}`);
+            draw(x, y, endX, endY);
             if (!disposed && Math.abs(x - targetX) + Math.abs(y - targetY) > .05) frame = requestAnimationFrame(update);
         };
         const schedule = () => { if (!frame && !disposed) frame = requestAnimationFrame(update); };
+        const unsubscribe = subscribeToProjectCursor(edge => {
+            if (edge && section.contains(edge.button)) {
+                cursorEdge = edge;
+                cancelAnimationFrame(frame);
+                update(performance.now());
+            } else if (cursorEdge) {
+                cursorEdge = null;
+                previousTime = transitionStart = performance.now();
+                schedule();
+            }
+        });
         const observer = new ResizeObserver(schedule);
         [section, button, caption].forEach(element => observer.observe(element));
         window.addEventListener('resize', schedule);
@@ -139,6 +157,7 @@ export const Work = ({ active, setActive, previewRef, carouselRef }: WorkProps) 
         schedule();
         return () => {
             disposed = true;
+            unsubscribe();
             observer.disconnect();
             cancelAnimationFrame(frame);
             window.removeEventListener('resize', schedule);
@@ -162,7 +181,7 @@ export const Work = ({ active, setActive, previewRef, carouselRef }: WorkProps) 
                 <div className="work-marker" data-section-marker aria-hidden="true"><SectionSymbol section="work" /></div>
                 <ol aria-label="Select a project">
                     {projects.map((item, index) => <li key={item.name}>
-                        <button type="button" aria-pressed={active === index} aria-controls="work-preview"
+                        <button type="button" data-project-cursor aria-pressed={active === index} aria-controls="work-preview"
                             onPointerEnter={() => { if (!carouselRef.current.dragging) setActive(index); }} onFocus={() => setActive(index)} onClick={() => openProject(index)}>
                             <span className="project-number">0{index + 1}</span>
                             <span className="project-name">{item.name}</span>

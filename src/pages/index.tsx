@@ -7,7 +7,7 @@ import { Sections } from '../components/Section';
 import { Cursor } from '../components/Cursor';
 import { HeroLoading } from '../components/Loading';
 import { Footer } from '../components/Footer';
-import { Arrow } from '../components/Arrow';
+import { Arrow, ArrowHoverArea } from '../components/Arrow';
 import { WORK_CASES, WorkCarousel } from '../components/workCarousel';
 import { WorkProject } from '../components/WorkProject';
 import { useRouter } from 'next/router';
@@ -194,7 +194,8 @@ const Explore = styled.a`
     display: flex;
     align-items: center;
     height: 2rem;
-    width: 18.8rem;
+    width: max-content;
+    gap: .6rem;
     justify-content: center;
     left: 50%;
     transform: translateX(-50%);
@@ -211,43 +212,24 @@ const Explore = styled.a`
     span {
         color: #00cdbd;
         font-size: 2rem;
-        margin-left: .8rem;
     }
 `;
 
-const ExploreControl = () => {
-    const [explored, setExplored] = useState(false);
-
-    useEffect(() => {
-        const update = () => {
-            const section = document.getElementById('work');
-            setExplored(!!section && section.getBoundingClientRect().top <= window.innerHeight / 2);
-        };
-        update();
-        window.addEventListener('scroll', update, { passive: true });
-        window.addEventListener('resize', update);
-        return () => {
-            window.removeEventListener('scroll', update);
-            window.removeEventListener('resize', update);
-        };
-    }, []);
-
-    return (
-        <Explore id="explore-more" href={explored ? '#home' : '#work'}
-                    onClick={event => {
-                        const target = document.getElementById(explored ? 'home' : 'work');
-                        if (!target) return;
-                        event.preventDefault();
-                        history.pushState(null, '', explored ? '#home' : '#work');
-                        target.focus({ preventScroll: true });
-                        const bounds = target.getBoundingClientRect();
-                        window.scrollTo({
-                            top: window.scrollY + bounds.top - Math.max(0, (window.innerHeight - bounds.height) / 2),
-                            behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth'
-                        });
-                    }}>
-                    {explored ? 'Back to home' : 'Scroll to explore'}
-                    <span aria-hidden="true"><Arrow direction={explored ? 'up' : 'down'} /></span>
-                </Explore>
-    );
-};
+const ExploreControl = () => (
+    <Explore id="explore-more" data-cursor-follow-arrow href="#work"
+        onClick={event => {
+            const target = document.getElementById('work');
+            if (!target) return;
+            event.preventDefault();
+            history.pushState(null, '', '#work');
+            target.focus({ preventScroll: true });
+            const bounds = target.getBoundingClientRect();
+            window.scrollTo({
+                top: window.scrollY + bounds.top - Math.max(0, (window.innerHeight - bounds.height) / 2),
+                behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth'
+            });
+        }}>
+        Scroll to explore
+        <ArrowHoverArea aria-hidden="true"><Arrow direction="down" /></ArrowHoverArea>
+    </Explore>
+);

@@ -2,7 +2,7 @@ import styled from '@emotion/styled';
 import { MouseEvent } from 'react';
 import { useRouter } from 'next/router';
 import { projectViewTransition } from './projectViewTransition';
-import { Arrow } from './Arrow';
+import { Arrow, ArrowHoverArea } from './Arrow';
 
 const links = [
     { id: 'home', label: 'Home' },
@@ -58,7 +58,9 @@ export const Footer = ({ projectPage = false }: { projectPage?: boolean }) => {
         </div>
         <div className="footer-bottom">
             <small>© {new Date().getFullYear()} Bartosz Kozak</small>
-            <a href={projectPage ? '#project-home' : '#home'} onClick={projectPage ? undefined : event => followLink(event, 'home')}>Back to top <span aria-hidden="true"><Arrow direction="up" /></span></a>
+            <a data-cursor-follow-arrow href={projectPage ? '#project-home' : '#home'} onClick={projectPage ? undefined : event => followLink(event, 'home')}>
+                Back to top <ArrowHoverArea aria-hidden="true"><Arrow direction="up" /></ArrowHoverArea>
+            </a>
         </div>
     </Root>;
 };
@@ -99,7 +101,7 @@ const Root = styled.footer`
     .signature span { background: linear-gradient(100deg, #00a3ff, #00edbc); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
     .footer-bottom { display: flex; justify-content: space-between; align-items: center; gap: 2rem; padding-top: 2.4rem; border-top: 1px solid #24504e; }
     small { font-size: 1.2rem; color: #819894; line-height: 1.5; }
-    .footer-bottom a { display: flex; align-items: center; gap: 2rem; padding: 1.4rem 0 1.4rem 1.4rem; color: #bacfca; font-size: 1.1rem; letter-spacing: .14em; text-transform: uppercase; line-height: 1.5; }
+    .footer-bottom a { display: flex; align-items: center; gap: .6rem; padding: 1.4rem 0 1.4rem 1.4rem; color: #bacfca; font-size: 1.1rem; letter-spacing: .14em; text-transform: uppercase; line-height: 1.5; }
     .footer-bottom a span { color: #00a3ff; font-size: 2rem; }
     @media (min-width: 1000px) {
         --footer-right: var(--section-gutter);
@@ -120,6 +122,6 @@ const Root = styled.footer`
         .signature { font-size: clamp(7rem, 18vw, 12rem); margin: 2rem 0 4rem; }
         .footer-bottom { gap: 1rem; }
         small { font-size: 1rem; }
-        .footer-bottom a { font-size: .95rem; gap: 1rem; }
+        .footer-bottom a { font-size: .95rem; }
     }
 `;

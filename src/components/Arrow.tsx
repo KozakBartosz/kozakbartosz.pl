@@ -1,3 +1,6 @@
+import styled from '@emotion/styled';
+import { cursorConfig } from './cursorConfig';
+
 export const Arrow = ({ direction = 'up-right' }: { direction?: 'up-right' | 'up' | 'down' | 'left' | 'right' | 'down-left' }) => (
     <svg data-cursor-arrow aria-hidden="true" focusable="false" width="24" height="24" viewBox="0 0 24 24"
         fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="butt" strokeLinejoin="miter"
@@ -7,3 +10,10 @@ export const Arrow = ({ direction = 'up-right' }: { direction?: 'up-right' | 'up
         </g>
     </svg>
 );
+
+export const ArrowHoverArea = styled.span`
+    display: grid;
+    place-items: center;
+    flex: none;
+    width: max(1em, ${2 * cursorConfig.iconHoverRadius}px);
+`;

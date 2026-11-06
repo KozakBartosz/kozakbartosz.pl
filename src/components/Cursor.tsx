@@ -12,9 +12,11 @@ const INTERACTIVE = 'a[href], button:not(:disabled), [role="button"], input:not(
 function hoverTarget(element: Element | null) {
     const control = element?.closest(INTERACTIVE);
     if (!control) return null;
-    return control.matches('[data-cursor-circle]')
-        ? control
-        : element?.closest('[data-cursor-arrow]') || control;
+    if (control.matches('[data-cursor-circle]')) return control;
+    if (control.hasAttribute('data-cursor-follow-arrow')) {
+        return control.querySelector('[data-cursor-arrow]') || control;
+    }
+    return element?.closest('[data-cursor-arrow]') || control;
 }
 
 export const Cursor = () => {

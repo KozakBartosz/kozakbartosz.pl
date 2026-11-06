@@ -1,5 +1,6 @@
 // export const HERO_DEPHTH = 22;
 export const HERO_DEPHTH = 32;
+export const HERO_MIRROR_Y = -13;
 // export const HERO_DEPHTH = 40;
 
 // Preserve the scene travel at the reference 1440px viewport height.

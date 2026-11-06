@@ -7,6 +7,7 @@ import { Bydlak } from './Bydlak';
 import { Icon } from './Icon';
 import { useEffect, useMemo, useRef, useState } from 'react';
 import {
+    Group,
     MathUtils,
     Mesh,
     MeshBasicMaterial,
@@ -20,6 +21,7 @@ import { fragmentShader, vertexShader } from './shaders';
 import { Sphere, Torus } from '@react-three/drei';
 import { useFrame } from '@react-three/fiber';
 import { isPlaygroundPointer } from './isPlaygroundPointer';
+import { HERO_MIRROR_Y } from './consts';
 
 function createArray(size: number, shift: number) {
     return new Array(size)
@@ -51,6 +53,7 @@ if (hash != undefined && hash > 0) {
 // const rubbish = createArray(61, -30);
 
 export const Playground = () => {
+    const models = useRef<Group>(null);
     const [isPaused, setIsPaused] = useState(false);
 
     useEffect(() => {
@@ -210,7 +213,9 @@ export const Playground = () => {
         };
     }, []);
 
-    useFrame(() => {
+    useFrame(({ camera }) => {
+        if (models.current) models.current.visible = camera.position.y > HERO_MIRROR_Y;
+
         if (
             MySphere.current &&
             MySphere.current.scale &&
@@ -269,49 +274,51 @@ export const Playground = () => {
 
             <Plane position={[0, -13, 85.5]} rotation={[0, Math.PI, 0]} />
 
-            {rubbish.map((el, i) => (
+            <group ref={models} name="playground-models">
+                {rubbish.map((el, i) => (
+                    <Cone
+                        key={i}
+                        position={[
+                            Math.sin(el) * 10 + (el * 8) / 2,
+                            20 + Math.tan(el) * 5,
+                            Math.tan(el) * 15 - 80
+                        ]}
+                        rotation={[Math.random(), Math.random(), Math.random()]}
+                        material={material}
+                        force={modeActive}
+                        surface={coneSurface}
+                        highlight={coneHighlight}
+                    />
+                ))}
                 <Cone
-                    key={i}
-                    position={[
-                        Math.sin(el) * 10 + (el * 8) / 2,
-                        20 + Math.tan(el) * 5,
-                        Math.tan(el) * 15 - 80
-                    ]}
+                    key={9999}
+                    position={[-10, 20, 30]}
                     rotation={[Math.random(), Math.random(), Math.random()]}
                     material={material}
                     force={modeActive}
                     surface={coneSurface}
                     highlight={coneHighlight}
                 />
-            ))}
-            <Cone
-                key={9999}
-                position={[-10, 20, 30]}
-                rotation={[Math.random(), Math.random(), Math.random()]}
-                material={material}
-                force={modeActive}
-                surface={coneSurface}
-                highlight={coneHighlight}
-            />
-            <Bydlak material={material} scale={[20, 20, 20]} />
+                <Bydlak material={material} scale={[20, 20, 20]} />
 
-            <mesh
-                position={[0, -13, 0]}
-                rotation={[0, 0, 0]}
-                ref={MySphere}
-                scale={[1, 1, 1]}
-            >
-                <torusGeometry args={[50, 0.16, 10, 90, Math.PI]} />
-                <shaderMaterial
-                    attach="material"
-                    {...material}
-                    // uniforms={{
-                    //     myPosition: {
-                    //         value: new Vector3(0.0, 0.0, 0.0)
-                    //     }
-                    // }}
-                />
-            </mesh>
+                <mesh
+                    position={[0, -13, 0]}
+                    rotation={[0, 0, 0]}
+                    ref={MySphere}
+                    scale={[1, 1, 1]}
+                >
+                    <torusGeometry args={[50, 0.16, 10, 90, Math.PI]} />
+                    <shaderMaterial
+                        attach="material"
+                        {...material}
+                        // uniforms={{
+                        //     myPosition: {
+                        //         value: new Vector3(0.0, 0.0, 0.0)
+                        //     }
+                        // }}
+                    />
+                </mesh>
+            </group>
             </GrabPointerProvider>
         </Physics>
     );

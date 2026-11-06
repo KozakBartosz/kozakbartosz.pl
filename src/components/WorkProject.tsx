@@ -8,7 +8,7 @@ import { Arrow } from './Arrow';
 import { Footer } from './Footer';
 import { SectionSymbol } from './SectionSymbol';
 import { BrandMark } from './BrandMark';
-import { ProjectStory } from './ProjectStory';
+import { projectHeadings, ProjectStory } from './ProjectStory';
 import { ProjectDetailList, SectionKicker, VisitProjectLink } from './ProjectCaseUI';
 import { projectViewTransition } from './projectViewTransition';
 import { WORK_CASES, WorkCase } from './workCarousel';
@@ -24,14 +24,8 @@ const stack = [
     ['Companion & tooling', 'Wear OS + watchOS', 'Bun · Scripts · JS tests']
 ];
 const github = 'https://github.com/vescape-app/vescape';
-const caseNavigation = {
-    vescape: { name: 'Vescape', detail: 'Mobile app · React Native' },
-    braniborska: { name: 'Braniborska', detail: 'Website · Next.js · WroCMS' },
-    wyciszamy: { name: 'Wyciszamy.net', detail: 'Acoustic panel configurator' },
-    rts: { name: 'Medieval', detail: '3D strategy prototype' },
-};
 const caseLinks = WORK_CASES.map((key, index) => ({
-    ...caseNavigation[key],
+    ...projectHeadings[key],
     number: String(index + 1).padStart(2, '0'),
     href: '/?project=' + key,
 }));
@@ -122,12 +116,13 @@ export const WorkProject = ({ anchor, rotation, projectKey = 'vescape' }: {
     const panels = projectKey === 'wyciszamy';
     const medieval = projectKey === 'rts';
     useEffect(() => { rotation.current = 0; }, [projectKey, rotation]);
-    const stage = { anchor, rotation, projectName: caseNavigation[projectKey].name };
+    const stage = { anchor, rotation, projectName: projectHeadings[projectKey].name };
     const switchProject = (event: MouseEvent<HTMLAnchorElement>) => {
         if (event.button !== 0 || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
         event.preventDefault();
-        const href = event.currentTarget.getAttribute('href')!;
-        projectViewTransition(() => router.push(href, undefined, { shallow: true, scroll: false }), 'open');
+        const link = event.currentTarget;
+        const href = link.getAttribute('href')!;
+        projectViewTransition(() => router.push(href, undefined, { shallow: true, scroll: false }), 'open', link);
     };
     const caseIndex = WORK_CASES.indexOf(projectKey);
     const previousProject = caseLinks[caseIndex - 1];
@@ -135,12 +130,28 @@ export const WorkProject = ({ anchor, rotation, projectKey = 'vescape' }: {
     const domain = panels ? 'wyciszamy.net' : clinic ? 'braniborska.pl' : 'vescape.app';
     const projectNavigation = (
         <nav className="project-title-nav" aria-label="Browse projects">
-            {previousProject && <Link href={previousProject.href}><a data-cursor-circle onClick={switchProject} aria-label={`Previous project: ${previousProject.name}`}><Arrow direction="left" /></a></Link>}
-            {nextProject && <Link href={nextProject.href}><a className="title-next-project" data-cursor-circle onClick={switchProject} aria-label={`Next project: ${nextProject.name}`}><Arrow direction="right" /></a></Link>}
+            {previousProject && <Link href={previousProject.href}>
+                <a className="title-previous-project" data-cursor-circle onClick={switchProject} aria-label={`Previous project: ${previousProject.name}`}>
+                    <Arrow direction="left" />
+                    <span className="project-title-preview" aria-hidden="true">
+                        <span className="project-transition-title">{previousProject.name}</span>
+                        <span className="project-transition-detail">{previousProject.detail}</span>
+                    </span>
+                </a>
+            </Link>}
+            {nextProject && <Link href={nextProject.href}>
+                <a className="title-next-project" data-cursor-circle onClick={switchProject} aria-label={`Next project: ${nextProject.name}`}>
+                    <Arrow direction="right" />
+                    <span className="project-title-preview" aria-hidden="true">
+                        <span className="project-transition-title">{nextProject.name}</span>
+                        <span className="project-transition-detail">{nextProject.detail}</span>
+                    </span>
+                </a>
+            </Link>}
         </nav>
     );
     return <Page id="project-home" onClick={scrollToProjectSection}>
-        <Head><title>{medieval ? 'Medieval | 3D art & game engine / Bartosz Kozak' : panels ? 'Wyciszamy.net | 3D configurator / Bartosz Kozak' : clinic ? 'Braniborska — Next.js & WroCMS / Bartosz Kozak' : 'Vescape — Design & development / Bartosz Kozak'}</title><meta name="description" content={medieval ? 'Lead 3D art, camera-based motion capture and procedural terrain for Medieval, a browser-based strategy prototype.' : panels ? 'A real-time 3D acoustic panel configurator built at Redhand, where I was the lead frontend developer and 3D artist on the project.' : clinic ? 'Braniborska Clinic: UX research, interface design, a custom Next.js website and my own headless CMS, WroCMS.' : 'Vescape project study: React Native interface, visual identity, native BLE architecture and interactive maps.'} /></Head>
+        <Head><title>{medieval ? 'Medieval | Frontend, rendering & 3D art / Bartosz Kozak' : panels ? 'Wyciszamy.net | 3D configurator / Bartosz Kozak' : clinic ? 'Braniborska — Next.js & WroCMS / Bartosz Kozak' : 'Vescape — Design & development / Bartosz Kozak'}</title><meta name="description" content={medieval ? 'Frontend development, game-wide Three.js rendering and lead 3D art for Medieval, a browser-based strategy prototype.' : panels ? 'A real-time 3D acoustic panel configurator built at Redhand, where I was the lead frontend developer and 3D artist on the project.' : clinic ? 'Braniborska Clinic: UX research, interface design, a custom Next.js website and my own headless CMS, WroCMS.' : 'Vescape project study: React Native interface, visual identity, native BLE architecture and interactive maps.'} /></Head>
         <ProjectEdgeRail projectKey={projectKey} />
         <header className="case-header">
             <Link href="/"><a className="case-signature" data-cursor-circle aria-label="Bartosz Kozak — Home"><BrandMark /></a></Link>
@@ -157,15 +168,15 @@ export const WorkProject = ({ anchor, rotation, projectKey = 'vescape' }: {
                 {previousProject && <Link href={previousProject.href}>
                     <a className="previous-project" onClick={switchProject}>
                         <small>{previousProject.number} / Previous project</small>
-                        <span><span className="adjacent-project-arrow"><Arrow direction="down-left" /></span>{previousProject.name}</span>
-                        <p>{previousProject.detail}</p>
+                        <span><span className="adjacent-project-arrow"><Arrow direction="down-left" /></span><span className="project-transition-title">{previousProject.name}</span></span>
+                        <p className="project-transition-detail">{previousProject.detail}</p>
                     </a>
                 </Link>}
                 {nextProject && <Link href={nextProject.href}>
                     <a className="next-project" onClick={switchProject}>
                         <small>{nextProject.number} / Next project</small>
-                        <span>{nextProject.name}<span className="adjacent-project-arrow"><Arrow /></span></span>
-                        <p>{nextProject.detail}</p>
+                        <span><span className="project-transition-title">{nextProject.name}</span><span className="adjacent-project-arrow"><Arrow /></span></span>
+                        <p className="project-transition-detail">{nextProject.detail}</p>
                     </a>
                 </Link>}
             </nav>
@@ -193,7 +204,9 @@ const Page = styled.article`
     .case-signature svg { width: 4.6rem; height: 4.8rem; filter: drop-shadow(0 0 8px rgba(0,163,255,.15)); }
     .eyebrow { display: block; margin: 0 0 2.4rem; color: #aabfbd; font-size: 1.15rem; line-height: 1.7; letter-spacing: .17em; text-transform: uppercase; }
     h1 { color: #f2f5f4; background: none; -webkit-text-fill-color: currentColor; font-size: clamp(5.2rem, 6.2vw, 10rem); line-height: 1.04; letter-spacing: -.055em; margin: 0 0 2.8rem; font-weight: 300; padding-bottom: .1em; }
-    h1 > span { display: block; background: var(--accent-gradient); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+    h1 > .project-transition-title { display: inline-block; }
+    h1 > .project-transition-detail { display: block; }
+    .project-transition-detail { background: var(--accent-gradient); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
     h2 { font-size: clamp(3.4rem, 4.6vw, 7rem); font-weight: 300; line-height: 1.1; letter-spacing: -.045em; margin: 0 0 3rem; }
     h2 em { font-style: normal; background: var(--accent-gradient); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
     p { color: #b8cbc7; font-size: 1.55rem; line-height: 1.9; margin: 0 0 2rem; }
@@ -210,14 +223,34 @@ const Page = styled.article`
     .adjacent-projects .previous-project { grid-column: 1; text-align: right; padding-right: 4rem; }
     .adjacent-projects .next-project { grid-column: 2; padding-left: 4rem; border-left: 1px solid #24504e; }
     .adjacent-projects small { font-size: 1.15rem; text-transform: uppercase; letter-spacing: .16em; color: #6e9692; }
-    .adjacent-projects > a > span { display: flex; align-items: center; justify-content: space-between; gap: 1rem; font-size: clamp(3rem, 4.5vw, 7.2rem); line-height: 1.5; font-weight: 300; letter-spacing: -.05em; background: var(--accent-gradient); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+    .adjacent-projects > a > span { display: flex; align-items: center; justify-content: space-between; gap: 1rem; font-size: clamp(3rem, 4.5vw, 7.2rem); line-height: 1.5; font-weight: 300; letter-spacing: -.05em; }
+    .adjacent-projects .project-transition-title { color: #f2f5f4; }
     .adjacent-project-arrow { font-size: .65em; color: #00a3ff; }
-    .case-main .adjacent-projects p { font-size: 1.4rem; margin: 1rem 0 0; }
+    .case-main .adjacent-projects p { width: fit-content; font-size: 1.8rem; line-height: 1.4; margin: 1rem 0 0; }
+    .adjacent-projects .previous-project p { align-self: flex-end; }
     .text-link { font-size: 1.5rem; color: #dce5e3; display: inline-flex; gap: 1.8rem; align-items: center; padding-block: 1rem; }
     .text-link svg { color: #00a3ff; }
     .project-title-row { position: relative; width: fit-content; max-width: 100%; margin-inline: auto; }
     .project-title-nav { position: absolute; inset: 0 -6.6rem auto; height: clamp(6.4rem, 6vw, 9rem); display: flex; align-items: center; justify-content: space-between; pointer-events: none; }
     .project-title-nav a { display: grid; place-items: center; width: var(--edge-button-size); height: var(--edge-button-size); font-size: 2.2rem; color: #00a3ff; pointer-events: auto; }
+    .project-title-preview {
+        position: absolute;
+        top: 0;
+        left: 50%;
+        width: min(44vw, 50rem);
+        transform: translateX(calc(-50% + var(--preview-offset)));
+        display: grid;
+        justify-items: center;
+        gap: 1rem;
+        text-align: center;
+        pointer-events: none;
+        color: #f2f5f4;
+    }
+    .project-title-preview > span { opacity: 0; }
+    .project-title-preview .project-transition-title { font-size: clamp(3.2rem, 5.8vw, 9rem); line-height: 1.04; font-weight: 300; letter-spacing: -.055em; }
+    .project-title-preview .project-transition-detail { font-size: clamp(1.6rem, 2.2vw, 3rem); line-height: 1.4; letter-spacing: -.025em; }
+    .title-previous-project { --preview-offset: max(-26vw, -32rem); }
+    .title-next-project { --preview-offset: min(26vw, 32rem); }
     .project-title-nav .title-next-project:only-child { margin-left: auto; }
     @media (max-width: 740px) {
         .project-title-row { display: flex; flex-direction: column-reverse; }
@@ -301,7 +334,7 @@ const Page = styled.article`
         .adjacent-projects .next-project { padding-left: .8rem; }
         .adjacent-projects > a > span { gap: .4rem; font-size: clamp(1.65rem, 4vw, 3.5rem); }
         .adjacent-projects small { font-size: .9rem; letter-spacing: .08em; }
-        .case-main .adjacent-projects p { font-size: 1.15rem; }
+        .case-main .adjacent-projects p { font-size: 1.4rem; }
         .website-case { padding-top: 4rem; }
         .website-case-heading { display: block; margin-bottom: 2.5rem; }
         .website-case-heading h2 { font-size: 3.6rem; }

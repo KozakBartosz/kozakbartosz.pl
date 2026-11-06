@@ -228,6 +228,23 @@ html[data-project-transition]::view-transition-new(work-content) {
 @keyframes project-content-out { to { opacity: 0; } }
 @keyframes project-content-in { from { opacity: 0; } }
 
+/* Pair the clicked link’s text with the incoming project heading. */
+[data-project-heading-source] .project-transition-title,
+html[data-project-heading-destination] .project-title-row h1 > .project-transition-title {
+    view-transition-name: project-heading-title;
+}
+
+[data-project-heading-source] .project-transition-detail,
+html[data-project-heading-destination] .project-title-row h1 > .project-transition-detail {
+    view-transition-name: project-heading-detail;
+}
+
+html[data-project-transition]::view-transition-group(project-heading-title),
+html[data-project-transition]::view-transition-group(project-heading-detail) {
+    animation-duration: 650ms;
+    animation-timing-function: cubic-bezier(.16, 1, .3, 1);
+}
+
 /* The matching Work marker and tracks move between desktop views. */
 @media (min-width: 1000px) {
     html[data-project-transition] :is(.work-marker, .edge-marker) { view-transition-name: work-section-marker; }

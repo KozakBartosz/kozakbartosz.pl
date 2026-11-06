@@ -20,7 +20,7 @@ export function MedievalStory() {
             <div>
                 <SectionKicker number="03">The engine</SectionKicker>
                 <h2>A game engine<br /><em>built for the browser.</em></h2>
-                <p>We built the game engine in TypeScript, with Three.js for rendering and React for the interface. The simulation keeps track of the world and its actors, while the renderer turns that state into a 3D scene.</p>
+                <p>I worked on the React frontend and was responsible for how the entire game was rendered in Three.js. The renderer turns the simulation’s world state into a 3D scene. I also contributed to other parts of the TypeScript engine.</p>
                 <p>I extended Three.js with custom terrain geometry. The generator uses layers of noise to shape the map, and the ground renderer applies the world’s tile heights and colors to the mesh.</p>
                 <a className="text-link" href={medievalSource + '/tree/6b33c26/src/game'} target="_blank" rel="noreferrer">Explore the engine code <Arrow /></a>
             </div>

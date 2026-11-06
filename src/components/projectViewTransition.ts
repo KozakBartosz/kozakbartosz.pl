@@ -59,7 +59,7 @@ export function finishReloadSetup(eligible: boolean) {
     }
 }
 
-export async function projectViewTransition(navigate: () => Promise<boolean>, direction: 'open' | 'close') {
+export async function projectViewTransition(navigate: () => Promise<boolean>, direction: 'open' | 'close', headingSource?: HTMLAnchorElement) {
     if (navigating) return;
     const page = document as TransitionDocument;
     if (reduceMotion()) {
@@ -98,7 +98,9 @@ export async function projectViewTransition(navigate: () => Promise<boolean>, di
         root.style.setProperty('--project-line-exit-offset', String(1 - hologram.exitFrom));
         root.dataset.projectLines = 'erasing';
         await new Promise<void>(resolve => setTimeout(resolve, EXIT_DURATION));
+        if (headingSource) headingSource.dataset.projectHeadingSource = '';
         const transition = page.startViewTransition(async () => {
+            if (headingSource) delete headingSource.dataset.projectHeadingSource;
             root.dataset.projectLines = 'waiting';
             if (!await navigate()) {
                 delete root.dataset.projectLines;
@@ -109,6 +111,7 @@ export async function projectViewTransition(navigate: () => Promise<boolean>, di
                 // History restoration and scroll anchoring can bypass input listeners.
                 window.addEventListener('scroll', keepProjectAtTop, { passive: true });
                 keepProjectAtTop();
+                if (headingSource) root.dataset.projectHeadingDestination = '';
             }
             // Rendering is paused here: never wait for requestAnimationFrame.
         });
@@ -129,7 +132,9 @@ export async function projectViewTransition(navigate: () => Promise<boolean>, di
         window.removeEventListener('wheel', preventScroll);
         window.removeEventListener('touchmove', preventScroll);
         root.style.removeProperty('--project-line-exit-offset');
-        delete page.documentElement.dataset.projectTransition;
+        if (headingSource) delete headingSource.dataset.projectHeadingSource;
+        delete root.dataset.projectHeadingDestination;
+        delete root.dataset.projectTransition;
         navigating = false;
     }
 }

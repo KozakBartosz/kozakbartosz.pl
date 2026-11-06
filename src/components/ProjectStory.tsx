@@ -10,6 +10,13 @@ import { ProjectDetailList, SectionKicker, VisitProjectLink } from './ProjectCas
 const media = '/projects/vescape/';
 const source = 'https://github.com/vescape-app/vescape';
 
+export const projectHeadings: Record<WorkCase, { name: string; detail: string }> = {
+    vescape: { name: 'Vescape', detail: 'From board to interface.' },
+    braniborska: { name: 'Braniborska', detail: 'Carefully designed. Content-driven.' },
+    wyciszamy: { name: 'Wyciszamy.net', detail: 'Acoustic panel configurator' },
+    rts: { name: 'Medieval', detail: '3D real-time strategy prototype' },
+};
+
 function DeviceFrame({ kind = 'phone', image, video, label, detail }: {
     kind?: 'phone' | 'watch' | 'tablet'; image: string; video?: string; label: string; detail: string;
 }) {
@@ -27,6 +34,7 @@ function DeviceFrame({ kind = 'phone', image, video, label, detail }: {
 }
 
 export function ProjectStory({ model, stack, website, projectNavigation, project = 'vescape' }: { model: ReactNode; stack: ReactNode; website: ReactNode; projectNavigation?: ReactNode; project?: WorkCase }) {
+    const { name, detail } = projectHeadings[project];
     const clinic = project === 'braniborska';
     const panels = project === 'wyciszamy';
     const medieval = project === 'rts';
@@ -68,7 +76,16 @@ export function ProjectStory({ model, stack, website, projectNavigation, project
     }, [clinic, panels, medieval]);
     return <Epic data-clinic={clinic} data-panels={panels}>
         <section className="epic-hero" id="case-overview" ref={hero}>
-            <div className="epic-title"><p className="project-location"><span>01</span><i />Work</p><div className="project-title-row">{projectNavigation}<h1>{medieval ? 'Medieval' : panels ? 'Wyciszamy.net' : clinic ? 'Braniborska' : 'Vescape'}<span>{medieval ? '3D real-time strategy prototype' : panels ? 'Acoustic panel configurator' : clinic ? 'Carefully designed. Content-driven.' : 'From board to interface.'}</span></h1></div></div>
+            <div className="epic-title">
+                <p className="project-location"><span>01</span><i />Work</p>
+                <div className="project-title-row">
+                    {projectNavigation}
+                    <h1>
+                        <span className="project-transition-title">{name}</span>
+                        <span className="project-transition-detail">{detail}</span>
+                    </h1>
+                </div>
+            </div>
             <svg className="epic-connections" aria-hidden="true"><defs><linearGradient id="epic-connection-gradient"><stop stopColor="#00a3ff" /><stop offset="1" stopColor="#00ffa3" /></linearGradient><linearGradient id="epic-left-gradient" x1="0%" y1="0%" x2="100%" y2="100%"><stop stopColor="#00a3ff" /><stop offset="1" stopColor="#00ffa3" /></linearGradient></defs><path pathLength="1" stroke="url(#epic-left-gradient)" ref={leftPath} /><path pathLength="1" stroke="url(#epic-connection-gradient)" ref={rightPath} /></svg>
             <div className="epic-layout">
                 <div className="epic-context" ref={left}><div className="epic-panel-heading" data-panel-heading><span>01</span><i /><span>The project</span><b aria-hidden="true" /></div>{medieval ? <>
@@ -76,7 +93,7 @@ export function ProjectStory({ model, stack, website, projectNavigation, project
                         <h2>A medieval world <em>in the browser.</em></h2>
                         <p>An open-source strategy prototype with a procedural landscape, a low-poly settlement, and workers that gather resources.</p>
                     </div>
-                    <div className="epic-platforms"><span>My role</span><p>Lead 3D artist</p></div>
+                    <div className="epic-platforms"><span>My role</span><p>Frontend developer &amp; lead 3D artist</p></div>
                 </> : panels ? <>
                     <div className="epic-summary">
                         <h2>Design with <em>acoustic panels.</em></h2>
@@ -88,7 +105,7 @@ export function ProjectStory({ model, stack, website, projectNavigation, project
                     </div>
                 </> : <><div className="epic-summary"><h2>{clinic ? 'A clear presence.' : 'Complex data.'}<br /><em>{clinic ? 'A considered experience.' : 'Clear decisions.'}</em></h2><p>{clinic ? 'A custom website for a multidisciplinary medical clinic. Designed around its space, specialists and services.' : 'Live board telemetry, maps and community. A VESC ride companion, designed as one experience.'}</p></div><div className="epic-platforms"><span>{clinic ? 'Frontend' : 'Mobile application'}</span><p>{clinic ? 'Next.js' : 'Android & iOS'}</p><span>{clinic ? 'Headless content' : 'Native companions'}</span><p>{clinic ? 'WroCMS · My own CMS' : 'Wear OS & watchOS'}</p></div></>}</div>
                 <div className="epic-model" ref={center}>{model}</div>
-                <div className="epic-contribution" ref={right}><div className="epic-panel-heading" data-panel-heading><span>02</span><i /><span>My contribution</span><b aria-hidden="true" /></div><ul>{(medieval ? ['All 3D models', 'Camera-based motion capture', 'Custom terrain geometry'] : panels ? ['Configuration workflow', 'Interaction design', 'Parametric 3D modeling', 'Production frontend'] : clinic ? ['UX research & flows', 'Interface design', 'Next.js implementation', 'WroCMS integration'] : ['Visual identity', 'Design system & UI/UX', 'React Native interface', 'Marketing website']).map(item => <li key={item}>{item}</li>)}</ul><nav className="epic-action-grid" aria-label={medieval ? 'Explore Medieval' : panels ? 'Explore the Wyciszamy.net project' : clinic ? 'Explore the Braniborska project' : 'Explore the Vescape project'}>
+                <div className="epic-contribution" ref={right}><div className="epic-panel-heading" data-panel-heading><span>02</span><i /><span>My contribution</span><b aria-hidden="true" /></div><ul>{(medieval ? ['Game-wide 3D rendering', 'Frontend development', 'All 3D models', 'Camera-based motion capture'] : panels ? ['Configuration workflow', 'Interaction design', 'Parametric 3D modeling', 'Production frontend'] : clinic ? ['UX research & flows', 'Interface design', 'Next.js implementation', 'WroCMS integration'] : ['Visual identity', 'Design system & UI/UX', 'React Native interface', 'Marketing website']).map(item => <li key={item}>{item}</li>)}</ul><nav className="epic-action-grid" aria-label={medieval ? 'Explore Medieval' : panels ? 'Explore the Wyciszamy.net project' : clinic ? 'Explore the Braniborska project' : 'Explore the Vescape project'}>
                     <a href={medieval ? medievalDemo : panels ? 'https://wyciszamy.net/' : clinic ? 'https://www.braniborska.pl/' : 'https://vescape.app/'} target="_blank" rel="noreferrer"><small>Live</small><span>{medieval ? 'Play demo' : 'Website'}</span><Arrow /></a>
                     {medieval ? <>
                         <a href={medievalSource} target="_blank" rel="noreferrer"><small>Open source</small><span>GitHub</span><Arrow /></a>
@@ -190,7 +207,7 @@ const Epic = styled.div`
     .epic-hero { position: relative; padding: 1rem 0 4rem; }
     .epic-title { text-align: center; position: relative; z-index: 1; }
     .epic-title h1 { font-size: clamp(6.4rem, 5.8vw, 9rem); margin-bottom: 0; }
-    .epic-title h1 > span { font-size: clamp(2.4rem, 2.2vw, 3rem); line-height: 1.4; letter-spacing: -.025em; margin-top: 1rem; }
+    .epic-title h1 > .project-transition-detail { font-size: clamp(2.4rem, 2.2vw, 3rem); line-height: 1.4; letter-spacing: -.025em; margin-top: 1rem; }
     .epic-title .eyebrow { margin-bottom: 1.2rem; }
     .epic-layout { display: grid; grid-template-columns: .95fr 2fr 1fr; gap: 3%; align-items: center; position: relative; margin-top: -3rem; }
     .epic-model { min-width: 0; }
@@ -269,7 +286,7 @@ const Epic = styled.div`
     @media (max-width: 640px) {
         .epic-hero { padding-top: 1rem; }
         .epic-title h1 { font-size: 6.5rem; }
-        .epic-title h1 > span { font-size: 2.1rem; }
+        .epic-title h1 > .project-transition-detail { font-size: 2.1rem; }
         .epic-title .eyebrow { font-size: 1rem; letter-spacing: .1em; }
         .epic-layout { display: flex; flex-direction: column; gap: 3rem; }
         .epic-model { width: 100%; order: -1; }
@@ -344,7 +361,7 @@ const Epic = styled.div`
         .clinic-browser figcaption > span:last-child { font-size: .75rem; }
         .clinic-interface, .clinic-responsive { padding-block: 4rem; }
         &[data-clinic='true'] .epic-title h1, &[data-panels='true'] .epic-title h1 { font-size: clamp(3.2rem, 10vw, 5rem); }
-        &[data-clinic='true'] .epic-title h1 > span { font-size: 2rem; }
+        &[data-clinic='true'] .epic-title h1 > .project-transition-detail { font-size: 2rem; }
         &[data-clinic='true'] .epic-model .case-model { height: 30rem; }
     }
 

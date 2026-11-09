@@ -2,7 +2,10 @@ const { PHASE_DEVELOPMENT_SERVER } = require('next/constants');
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-    reactStrictMode: true
+    reactStrictMode: true,
+    async rewrites() {
+        return [{ source: '/quiz', destination: '/quiz/index.html' }];
+    }
 };
 
 module.exports = (phase) => ({

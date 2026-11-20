@@ -50,6 +50,9 @@ that would require providing its content as a GPU texture.
 - Changes of hover target briefly reduce position, size and morph interpolation speed
   to 12/s, recovering smoothly to the normal 38/s over 320ms.
 - Links, buttons, form controls, and `[data-cursor="link"]` morph into a box matching the element bounds.
+- Decorative arrows keep their parent control's box hover. Icon-only controls opt
+  into a circle with `data-cursor-circle`; the explore and back-to-top links use
+  `data-cursor-follow-arrow` to center that circle on their arrow across the whole link.
 - Scrolling refreshes the hovered element; box bounds are read during interpolation.
 - Two draw calls render hue and outline during ordinary movement. The inversion pass runs only while a press fades in/out (three draws), and clears once after release. Scissoring limits fragment work to their region;
   device pixel ratio is capped at 1.5. The transparent surfaces still span the viewport.

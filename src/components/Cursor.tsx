@@ -16,7 +16,7 @@ function hoverTarget(element: Element | null) {
     if (control.hasAttribute('data-cursor-follow-arrow')) {
         return control.querySelector('[data-cursor-arrow]') || control;
     }
-    return element?.closest('[data-cursor-arrow]') || control;
+    return control;
 }
 
 export const Cursor = () => {
